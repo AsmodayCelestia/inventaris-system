@@ -1,0 +1,3262 @@
+[
+  {
+    "item_code": "ITM-001",
+    "name": "AC Panasonic CS-PNSSKJ",
+    "quantity": 1,
+    "brand_id": 1,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Panasonic",
+    "manufacture_year": 2018
+  },
+  {
+    "item_code": "ITM-002",
+    "name": "AC Sharp (Hemat Energi)",
+    "quantity": 1,
+    "brand_id": 2,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Sharp",
+    "manufacture_year": 2018
+  },
+  {
+    "item_code": "ITM-003",
+    "name": "AC Sharp (Hemat Energi)",
+    "quantity": 1,
+    "brand_id": 2,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Sharp",
+    "manufacture_year": 2018
+  },
+  {
+    "item_code": "ITM-004",
+    "name": "Ambulan",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 3,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2022
+  },
+  {
+    "item_code": "ITM-005",
+    "name": "Blender Farmasi SCI",
+    "quantity": 1,
+    "brand_id": 4,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "SCI",
+    "manufacture_year": 2014
+  },
+  {
+    "item_code": "ITM-006",
+    "name": "ECG Edan Se-300",
+    "quantity": 1,
+    "brand_id": 5,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Edan",
+    "manufacture_year": 2018
+  },
+  {
+    "item_code": "ITM-007",
+    "name": "Vacum Cliner Nilfisk",
+    "quantity": 1,
+    "brand_id": 6,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Nilfisk",
+    "manufacture_year": 2020
+  },
+  {
+    "item_code": "ITM-008",
+    "name": "Freezer Panasonic NR-AK5ED",
+    "quantity": 1,
+    "brand_id": 1,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Panasonic",
+    "manufacture_year": 2014
+  },
+  {
+    "item_code": "ITM-009",
+    "name": "Gedung",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 2,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2017
+  },
+  {
+    "item_code": "ITM-010",
+    "name": "Inova",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 3,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2019
+  },
+  {
+    "item_code": "ITM-011",
+    "name": "Karpet Tangga Hitam Anti Slip",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2023
+  },
+  {
+    "item_code": "ITM-012",
+    "name": "Kipas Angin",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2018
+  },
+  {
+    "item_code": "ITM-013",
+    "name": "Komputer Farmasi ACER cpu LG",
+    "quantity": 1,
+    "brand_id": 7,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Acer",
+    "manufacture_year": 2014
+  },
+  {
+    "item_code": "ITM-014",
+    "name": "Komputer Hp",
+    "quantity": 1,
+    "brand_id": 8,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "HP",
+    "manufacture_year": 2020
+  },
+  {
+    "item_code": "ITM-015",
+    "name": "Komputer Kasir (Lenovo cpu asus)",
+    "quantity": 1,
+    "brand_id": 9,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Lenovo",
+    "manufacture_year": 2014
+  },
+  {
+    "item_code": "ITM-016",
+    "name": "Komputer acer, CPU Samsung",
+    "quantity": 1,
+    "brand_id": 7,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Acer",
+    "manufacture_year": 2018
+  },
+  {
+    "item_code": "ITM-017",
+    "name": "Korden",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2020
+  },
+  {
+    "item_code": "ITM-018",
+    "name": "Kursi Hijau Besi Panjang",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2020
+  },
+  {
+    "item_code": "ITM-019",
+    "name": "Kursi Hijau Besi Panjang",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2020
+  },
+  {
+    "item_code": "ITM-020",
+    "name": "Kursi Hijau Besi Pendek",
+    "quantity": 2,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2020
+  },
+  {
+    "item_code": "ITM-021",
+    "name": "Kursi Hitam Silfer/cat biru (isi 4)",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2020
+  },
+  {
+    "item_code": "ITM-022",
+    "name": "Kursi Hitam Silfer/cat biru(isi 4)",
+    "quantity": 8,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2020
+  },
+  {
+    "item_code": "ITM-023",
+    "name": "Kursi Roda",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2020
+  },
+  {
+    "item_code": "ITM-024",
+    "name": "Kursi Roda 1",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2020
+  },
+  {
+    "item_code": "ITM-025",
+    "name": "Kursi Roda Pasien (hitam)",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2020
+  },
+  {
+    "item_code": "ITM-026",
+    "name": "Kursi Stenlis Biru (Isi 4)",
+    "quantity": 2,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2018
+  },
+  {
+    "item_code": "ITM-027",
+    "name": "Lemari Farmasi Kaca",
+    "quantity": 4,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2018
+  },
+  {
+    "item_code": "ITM-028",
+    "name": "Lemari Farmasi kayu",
+    "quantity": 2,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2010
+  },
+  {
+    "item_code": "ITM-029",
+    "name": "Lemari Kayu (putij) 5 rak",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2020
+  },
+  {
+    "item_code": "ITM-030",
+    "name": "Lemari medical Stelizer (Stenlis)",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2019
+  },
+  {
+    "item_code": "ITM-031",
+    "name": "Lemari Pasien (Biru)",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2020
+  },
+  {
+    "item_code": "ITM-032",
+    "name": "Lemari Triblok Hijau",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2018
+  },
+  {
+    "item_code": "ITM-033",
+    "name": "Meja Kasir",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2018
+  },
+  {
+    "item_code": "ITM-034",
+    "name": "Meja kayu (Coklat)",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2018
+  },
+  {
+    "item_code": "ITM-035",
+    "name": "Meja Pendaftaran",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2018
+  },
+  {
+    "item_code": "ITM-036",
+    "name": "Meja Putih Hijau (Triblok)",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2018
+  },
+  {
+    "item_code": "ITM-037",
+    "name": "Meja Stenlis (Sorok 3)",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2018
+  },
+  {
+    "item_code": "ITM-038",
+    "name": "Meja Triblok (ada Kaca)",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2018
+  },
+  {
+    "item_code": "ITM-039",
+    "name": "Microscop",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2020
+  },
+  {
+    "item_code": "ITM-040",
+    "name": "Printer Etiket",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2020
+  },
+  {
+    "item_code": "ITM-041",
+    "name": "Rak 6 Tingkat Stenlis",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2018
+  },
+  {
+    "item_code": "ITM-042",
+    "name": "Rak Almunium",
+    "quantity": 2,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2018
+  },
+  {
+    "item_code": "ITM-043",
+    "name": "Rak Kayu Dorong",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2018
+  },
+  {
+    "item_code": "ITM-044",
+    "name": "Ranjang Pasien (Stenlis)",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2018
+  },
+  {
+    "item_code": "ITM-045",
+    "name": "Ranjang Pasien (Stenlis)",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2018
+  },
+  {
+    "item_code": "ITM-046",
+    "name": "Standing Hanger",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2020
+  },
+  {
+    "item_code": "ITM-047",
+    "name": "TV Cocoa Besar",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2018
+  },
+  {
+    "item_code": "ITM-048",
+    "name": "Wastafel Injeksi",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2020
+  },
+  {
+    "item_code": "ITM-049",
+    "name": "Termometer Kafar",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2023
+  },
+  {
+    "item_code": "ITM-050",
+    "name": "Komputer Imunisasi",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2023
+  },
+  {
+    "item_code": "ITM-051",
+    "name": "Infrant Warmer",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2023
+  },
+  {
+    "item_code": "ITM-052",
+    "name": "Apar Lantai 1",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2023
+  },
+  {
+    "item_code": "ITM-053",
+    "name": "Kipas Angin Miyako depan Obgyn",
+    "quantity": 1,
+    "brand_id": 10,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Miyako",
+    "manufacture_year": 2023
+  },
+  {
+    "item_code": "ITM-054",
+    "name": "Kerangjang UGD",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2023
+  },
+  {
+    "item_code": "ITM-055",
+    "name": "Papan Code Red Lt 1",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2023
+  },
+  {
+    "item_code": "ITM-056",
+    "name": "Kipas Angin Ruang Tunggu Rawat Jalan",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2023
+  },
+  {
+    "item_code": "ITM-057",
+    "name": "Kipas Angin Ruang Tunggu Obgyn",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2023
+  },
+  {
+    "item_code": "ITM-058",
+    "name": "Finger Print BPJS",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2023
+  },
+  {
+    "item_code": "ITM-059",
+    "name": "Monitor Antrian Online",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2023
+  },
+  {
+    "item_code": "ITM-060",
+    "name": "CPU Antrian Online",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2023
+  },
+  {
+    "item_code": "ITM-061",
+    "name": "Printer Antrian",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2023
+  },
+  {
+    "item_code": "ITM-062",
+    "name": "Box Sampling Lab",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2023
+  },
+  {
+    "item_code": "ITM-063",
+    "name": "Alat Lab Pengecekan Obgyn",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2024
+  },
+  {
+    "item_code": "ITM-064",
+    "name": "Bak Mandi Bayi",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2024
+  },
+  {
+    "item_code": "ITM-065",
+    "name": "Balon Yoga",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2024
+  },
+  {
+    "item_code": "ITM-066",
+    "name": "Gym Ball",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2024
+  },
+  {
+    "item_code": "ITM-067",
+    "name": "Montesersori Poli Anak",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2024
+  },
+  {
+    "item_code": "ITM-068",
+    "name": "Set Impant Kit",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2024
+  },
+  {
+    "item_code": "ITM-069",
+    "name": "PC Mini",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2024
+  },
+  {
+    "item_code": "ITM-070",
+    "name": "AC Polytron Obgyn",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2024
+  },
+  {
+    "item_code": "ITM-071",
+    "name": "AC Polytron matahari",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2024
+  },
+  {
+    "item_code": "ITM-072",
+    "name": "Termometer Anak",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2024
+  },
+  {
+    "item_code": "ITM-073",
+    "name": "Termometer Dewasa",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2024
+  },
+  {
+    "item_code": "ITM-074",
+    "name": "Bantal Anak",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2024
+  },
+  {
+    "item_code": "ITM-075",
+    "name": "Termometer Kulkas Lab",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2024
+  },
+  {
+    "item_code": "ITM-076",
+    "name": "Genset",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2024
+  },
+  {
+    "item_code": "ITM-077",
+    "name": "Speaker Ambulan",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2025
+  },
+  {
+    "item_code": "ITM-078",
+    "name": "Alat Penangkap Nyamuk",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2025
+  },
+  {
+    "item_code": "ITM-079",
+    "name": "Alat Scan Uang",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2025
+  },
+  {
+    "item_code": "ITM-080",
+    "name": "Aklirik A4",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2025
+  },
+  {
+    "item_code": "ITM-081",
+    "name": "Aklirik A4",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2025
+  },
+  {
+    "item_code": "ITM-082",
+    "name": "Printer EPSON L3210 Print Scan Copy",
+    "quantity": 1,
+    "brand_id": 11,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Epson",
+    "manufacture_year": 2025
+  },
+  {
+    "item_code": "ITM-083",
+    "name": "Printer KIB",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2023
+  },
+  {
+    "item_code": "ITM-084",
+    "name": "Scan Barcode KIB",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2023
+  },
+  {
+    "item_code": "ITM-085",
+    "name": "HP Xiaomi",
+    "quantity": 1,
+    "brand_id": 8,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "HP",
+    "manufacture_year": 2023
+  },
+  {
+    "item_code": "ITM-086",
+    "name": "Omron Nebulizer",
+    "quantity": 1,
+    "brand_id": 12,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Omron",
+    "manufacture_year": 2023
+  },
+  {
+    "item_code": "ITM-087",
+    "name": "Spirometri",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2024
+  },
+  {
+    "item_code": "ITM-088",
+    "name": "Monitor",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2024
+  },
+  {
+    "item_code": "ITM-089",
+    "name": "Headlamp UGD",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2024
+  },
+  {
+    "item_code": "ITM-090",
+    "name": "Regulator Oksigen UGD",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2025
+  },
+  {
+    "item_code": "ITM-091",
+    "name": "ECG Edan Se-300",
+    "quantity": 1,
+    "brand_id": 5,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Edan",
+    "manufacture_year": 2018
+  },
+  {
+    "item_code": "ITM-092",
+    "name": "Tensimeter UGD",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2024
+  },
+  {
+    "item_code": "ITM-093",
+    "name": "Tabung Oksigen/Putih Hijau Keil",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2018
+  },
+  {
+    "item_code": "ITM-094",
+    "name": "Tabung Oksigen Putih besar",
+    "quantity": 4,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2017
+  },
+  {
+    "item_code": "ITM-095",
+    "name": "Lemari Emergency (Stenlis)",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2018
+  },
+  {
+    "item_code": "ITM-096",
+    "name": "Troli Tindakan (Stenlis)",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2019
+  },
+  {
+    "item_code": "ITM-097",
+    "name": "Troli Tindakan (Stenlis)",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2019
+  },
+  {
+    "item_code": "ITM-098",
+    "name": "Stan Infus",
+    "quantity": 4,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2020
+  },
+  {
+    "item_code": "ITM-099",
+    "name": "Komputer ASUS cpu LG",
+    "quantity": 1,
+    "brand_id": 13,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "LG",
+    "manufacture_year": 2018
+  },
+  {
+    "item_code": "ITM-100",
+    "name": "Komputer LG CPU Samsung",
+    "quantity": 1,
+    "brand_id": 14,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Samsung",
+    "manufacture_year": 2018
+  },
+  {
+    "item_code": "ITM-101",
+    "name": "Ranjang Pasien (Stenlis)",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2018
+  },
+  {
+    "item_code": "ITM-102",
+    "name": "Ranjang Pasien (Stenlis) Dorong",
+    "quantity": 2,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2018
+  },
+  {
+    "item_code": "ITM-103",
+    "name": "Ranjang Pasien (Stenlis) Dorong",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2018
+  },
+  {
+    "item_code": "ITM-104",
+    "name": "Pijakan kaki",
+    "quantity": 4,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2018
+  },
+  {
+    "item_code": "ITM-105",
+    "name": "Meja Kaca Informa",
+    "quantity": 1,
+    "brand_id": 15,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Informa",
+    "manufacture_year": 2018
+  },
+  {
+    "item_code": "ITM-106",
+    "name": "Kursi dokter hitam",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2018
+  },
+  {
+    "item_code": "ITM-107",
+    "name": "Kursi Biru Kotak Pasien",
+    "quantity": 5,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2018
+  },
+  {
+    "item_code": "ITM-108",
+    "name": "AC DAIKIN",
+    "quantity": 2,
+    "brand_id": 16,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Daikin",
+    "manufacture_year": 2018
+  },
+  {
+    "item_code": "ITM-109",
+    "name": "lemari/Troli EKG",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2018
+  },
+  {
+    "item_code": "ITM-110",
+    "name": "Korden",
+    "quantity": 3,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2018
+  },
+  {
+    "item_code": "ITM-111",
+    "name": "ABN Nebulizer",
+    "quantity": 1,
+    "brand_id": 17,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "ABN",
+    "manufacture_year": 2018
+  },
+  {
+    "item_code": "ITM-112",
+    "name": "Alat Penangkap Nyamuk",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2025
+  },
+  {
+    "item_code": "ITM-113",
+    "name": "Shofa Hijau",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2020
+  },
+  {
+    "item_code": "ITM-114",
+    "name": "Server CCTV",
+    "quantity": 3,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2020
+  },
+  {
+    "item_code": "ITM-115",
+    "name": "Monitor CCTV",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2020
+  },
+  {
+    "item_code": "ITM-116",
+    "name": "Lemari medical Stelizer (Stenlis)",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2019
+  },
+  {
+    "item_code": "ITM-117",
+    "name": "Tripod 3110 Kamera HP",
+    "quantity": 1,
+    "brand_id": 8,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "HP",
+    "manufacture_year": 2019
+  },
+  {
+    "item_code": "ITM-118",
+    "name": "Termometer Ruangan",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2019
+  },
+  {
+    "item_code": "ITM-119",
+    "name": "Lemari Narkotik",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2019
+  },
+  {
+    "item_code": "ITM-120",
+    "name": "Lemari Stok Kapsul",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2019
+  },
+  {
+    "item_code": "ITM-121",
+    "name": "Keranjang Plastik Roda Biru Tua",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2019
+  },
+  {
+    "item_code": "ITM-122",
+    "name": "Keranjang Plastik Roda Biru Orange",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2019
+  },
+  {
+    "item_code": "ITM-123",
+    "name": "Keranjang Plastik Biru Muda",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2019
+  },
+  {
+    "item_code": "ITM-124",
+    "name": "Kulkas Mini Aqua",
+    "quantity": 1,
+    "brand_id": 18,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Aqua",
+    "manufacture_year": 2019
+  },
+  {
+    "item_code": "ITM-125",
+    "name": "Kursi Bakso",
+    "quantity": 3,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2019
+  },
+  {
+    "item_code": "ITM-126",
+    "name": "Kursi Bundar",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2019
+  },
+  {
+    "item_code": "ITM-127",
+    "name": "Rak Susun isi 4 untuk resep",
+    "quantity": 2,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2019
+  },
+  {
+    "item_code": "ITM-128",
+    "name": "Speaker Ambulan",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2025
+  },
+  {
+    "item_code": "ITM-129",
+    "name": "Printer EPSON L3210 Print Scan Copy",
+    "quantity": 1,
+    "brand_id": 11,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Epson",
+    "manufacture_year": 2024
+  },
+  {
+    "item_code": "ITM-130",
+    "name": "Telephone Coma X",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2025
+  },
+  {
+    "item_code": "ITM-131",
+    "name": "Telephone Coma X",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2025
+  },
+  {
+    "item_code": "ITM-132",
+    "name": "Telephone Coma X",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2025
+  },
+  {
+    "item_code": "ITM-133",
+    "name": "Telephone Coma X",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2025
+  },
+  {
+    "item_code": "ITM-134",
+    "name": "Telephone Coma X",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2025
+  },
+  {
+    "item_code": "ITM-135",
+    "name": "Telephone Coma X",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2025
+  },
+  {
+    "item_code": "ITM-136",
+    "name": "Telephone Coma X",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2025
+  },
+  {
+    "item_code": "ITM-137",
+    "name": "Sealer Puyer SCI",
+    "quantity": 1,
+    "brand_id": 4,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "SCI",
+    "manufacture_year": 2019
+  },
+  {
+    "item_code": "ITM-138",
+    "name": "Gantungan Baju",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2019
+  },
+  {
+    "item_code": "ITM-139",
+    "name": "Stetoskop ABN Classic",
+    "quantity": 1,
+    "brand_id": 17,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "ABN",
+    "manufacture_year": 2025
+  },
+  {
+    "item_code": "ITM-140",
+    "name": "Set top Box Pioline Orion",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2025
+  },
+  {
+    "item_code": "ITM-141",
+    "name": "Laptop Lenovo Silver",
+    "quantity": 1,
+    "brand_id": 9,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Lenovo",
+    "manufacture_year": 2025
+  },
+  {
+    "item_code": "ITM-142",
+    "name": "Printer Epson",
+    "quantity": 1,
+    "brand_id": 11,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Epson",
+    "manufacture_year": 2025
+  },
+  {
+    "item_code": "ITM-143",
+    "name": "Allengers Mars 4.2 SBM",
+    "quantity": 1,
+    "brand_id": 19,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Allengers",
+    "manufacture_year": 2025
+  },
+  {
+    "item_code": "ITM-144",
+    "name": "Paket Digital Flat Panel Detector",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2025
+  },
+  {
+    "item_code": "ITM-145",
+    "name": "WPS",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2025
+  },
+  {
+    "item_code": "ITM-146",
+    "name": "Appron Timbal",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2025
+  },
+  {
+    "item_code": "ITM-147",
+    "name": "Meja Putih Kayu",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2025
+  },
+  {
+    "item_code": "ITM-148",
+    "name": "Meja Putih Besi",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2025
+  },
+  {
+    "item_code": "ITM-149",
+    "name": "Lemari Pasien Plastik Biru",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2025
+  },
+  {
+    "item_code": "ITM-150",
+    "name": "Ac Daikin(indoor Samsung)",
+    "quantity": 1,
+    "brand_id": 14,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Samsung",
+    "manufacture_year": 2020
+  },
+  {
+    "item_code": "ITM-151",
+    "name": "AC Daikin",
+    "quantity": 1,
+    "brand_id": 16,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Daikin",
+    "manufacture_year": 2020
+  },
+  {
+    "item_code": "ITM-152",
+    "name": "Ac LG 220240v",
+    "quantity": 1,
+    "brand_id": 13,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "LG",
+    "manufacture_year": 2018
+  },
+  {
+    "item_code": "ITM-153",
+    "name": "AC Sharp",
+    "quantity": 1,
+    "brand_id": 2,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Sharp",
+    "manufacture_year": 2018
+  },
+  {
+    "item_code": "ITM-154",
+    "name": "AC Sharp",
+    "quantity": 1,
+    "brand_id": 2,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Sharp",
+    "manufacture_year": 2018
+  },
+  {
+    "item_code": "ITM-155",
+    "name": "Bad Pasien",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2020
+  },
+  {
+    "item_code": "ITM-156",
+    "name": "Bad Pasien",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2020
+  },
+  {
+    "item_code": "ITM-157",
+    "name": "Bad Pasien",
+    "quantity": 2,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2020
+  },
+  {
+    "item_code": "ITM-158",
+    "name": "Bad Pasien",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2020
+  },
+  {
+    "item_code": "ITM-159",
+    "name": "Bad Pasien",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2020
+  },
+  {
+    "item_code": "ITM-160",
+    "name": "Bad Pasien",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2020
+  },
+  {
+    "item_code": "ITM-161",
+    "name": "Bad Pasien",
+    "quantity": 3,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2020
+  },
+  {
+    "item_code": "ITM-162",
+    "name": "Kasur Busa",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2019
+  },
+  {
+    "item_code": "ITM-163",
+    "name": "Kipas Angin Cosmos 16 SBI",
+    "quantity": 1,
+    "brand_id": 20,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Cosmos",
+    "manufacture_year": 2018
+  },
+  {
+    "item_code": "ITM-164",
+    "name": "Kipas Angin Miyako Biru",
+    "quantity": 1,
+    "brand_id": 10,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Miyako",
+    "manufacture_year": 2018
+  },
+  {
+    "item_code": "ITM-165",
+    "name": "Kipas Angin Miyako Biru",
+    "quantity": 1,
+    "brand_id": 10,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Miyako",
+    "manufacture_year": 2018
+  },
+  {
+    "item_code": "ITM-166",
+    "name": "Kipas Angin Politron",
+    "quantity": 1,
+    "brand_id": 21,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Politron",
+    "manufacture_year": 2018
+  },
+  {
+    "item_code": "ITM-167",
+    "name": "Komputer LG, CPU Sami",
+    "quantity": 1,
+    "brand_id": 13,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "LG",
+    "manufacture_year": 2018
+  },
+  {
+    "item_code": "ITM-168",
+    "name": "Kursi Hijau Bunder",
+    "quantity": 2,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2020
+  },
+  {
+    "item_code": "ITM-169",
+    "name": "Kursi Merah",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2020
+  },
+  {
+    "item_code": "ITM-170",
+    "name": "Lemari Kayu (5 Rak)",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2018
+  },
+  {
+    "item_code": "ITM-171",
+    "name": "Lemari besi (Mainan)",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2019
+  },
+  {
+    "item_code": "ITM-172",
+    "name": "Lemari Pasien (Biru)",
+    "quantity": 2,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2020
+  },
+  {
+    "item_code": "ITM-173",
+    "name": "Lemari Pasien (Biru)",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2020
+  },
+  {
+    "item_code": "ITM-174",
+    "name": "Lemari Pasien (Biru)",
+    "quantity": 2,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2020
+  },
+  {
+    "item_code": "ITM-175",
+    "name": "Lemari Pasien (Biru)",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2020
+  },
+  {
+    "item_code": "ITM-176",
+    "name": "Lemari Pasien Putih",
+    "quantity": 3,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2020
+  },
+  {
+    "item_code": "ITM-177",
+    "name": "Lemari Piring ( 2 Pintu)",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2020
+  },
+  {
+    "item_code": "ITM-178",
+    "name": "Meja Makan Kayu",
+    "quantity": 3,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2018
+  },
+  {
+    "item_code": "ITM-179",
+    "name": "Meja Makan Triblok Putih",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2018
+  },
+  {
+    "item_code": "ITM-180",
+    "name": "Meja Makan Triblok Putih",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2018
+  },
+  {
+    "item_code": "ITM-181",
+    "name": "Meja Resepsionis",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2018
+  },
+  {
+    "item_code": "ITM-182",
+    "name": "Paket Kursi Hijau (isi 3)",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2020
+  },
+  {
+    "item_code": "ITM-183",
+    "name": "Shofa Hijau",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2020
+  },
+  {
+    "item_code": "ITM-184",
+    "name": "Shofa Hijau",
+    "quantity": 2,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2020
+  },
+  {
+    "item_code": "ITM-185",
+    "name": "Shofa Hijau",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2020
+  },
+  {
+    "item_code": "ITM-186",
+    "name": "Shofa Hijau",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2020
+  },
+  {
+    "item_code": "ITM-187",
+    "name": "Shofa Hijau",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2020
+  },
+  {
+    "item_code": "ITM-188",
+    "name": "Stan Infus",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2020
+  },
+  {
+    "item_code": "ITM-189",
+    "name": "Stan Infus",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2020
+  },
+  {
+    "item_code": "ITM-190",
+    "name": "Stan Infus",
+    "quantity": 2,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2020
+  },
+  {
+    "item_code": "ITM-191",
+    "name": "Stan Infus",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2020
+  },
+  {
+    "item_code": "ITM-192",
+    "name": "Stan Infus",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2020
+  },
+  {
+    "item_code": "ITM-193",
+    "name": "Stan Infus",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2020
+  },
+  {
+    "item_code": "ITM-194",
+    "name": "Stan Infus",
+    "quantity": 2,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2020
+  },
+  {
+    "item_code": "ITM-195",
+    "name": "Tabung Oksigen Biru",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2018
+  },
+  {
+    "item_code": "ITM-196",
+    "name": "Tabung Oksigen Putih",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2017
+  },
+  {
+    "item_code": "ITM-197",
+    "name": "Tabung Oksigen Putih",
+    "quantity": 3,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2017
+  },
+  {
+    "item_code": "ITM-198",
+    "name": "Tabung Oksigen Putih Kecil",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2018
+  },
+  {
+    "item_code": "ITM-199",
+    "name": "Tipe Ploytron",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2018
+  },
+  {
+    "item_code": "ITM-200",
+    "name": "Troli emergensi (lemari)",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2019
+  },
+  {
+    "item_code": "ITM-201",
+    "name": "Troli Meja makan",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2019
+  },
+  {
+    "item_code": "ITM-202",
+    "name": "Troli Tindakan",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2019
+  },
+  {
+    "item_code": "ITM-203",
+    "name": "Tv Cocoa",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2018
+  },
+  {
+    "item_code": "ITM-204",
+    "name": "Tv Cocoa",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2018
+  },
+  {
+    "item_code": "ITM-205",
+    "name": "Tv Cocoa",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2018
+  },
+  {
+    "item_code": "ITM-206",
+    "name": "Tv LG",
+    "quantity": 1,
+    "brand_id": 13,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "LG",
+    "manufacture_year": 2018
+  },
+  {
+    "item_code": "ITM-207",
+    "name": "Apar Lantai 3",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2023
+  },
+  {
+    "item_code": "ITM-208",
+    "name": "Apar Lantai 2",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2023
+  },
+  {
+    "item_code": "ITM-209",
+    "name": "Tensi Ranap",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2023
+  },
+  {
+    "item_code": "ITM-210",
+    "name": "Papan Code Red Lt 2",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2023
+  },
+  {
+    "item_code": "ITM-211",
+    "name": "Papan Code Red Lt 3",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2023
+  },
+  {
+    "item_code": "ITM-212",
+    "name": "Finger Print BPJS",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2023
+  },
+  {
+    "item_code": "ITM-213",
+    "name": "Tempat Sampah Injak",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2023
+  },
+  {
+    "item_code": "ITM-214",
+    "name": "Tempat Sampah Injak",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2023
+  },
+  {
+    "item_code": "ITM-215",
+    "name": "Tempat Sampah Injak",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2023
+  },
+  {
+    "item_code": "ITM-216",
+    "name": "Tempat Sampah Injak",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2023
+  },
+  {
+    "item_code": "ITM-217",
+    "name": "Tempat Sampah Injak",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2023
+  },
+  {
+    "item_code": "ITM-218",
+    "name": "Tempat Sampah Injak",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2023
+  },
+  {
+    "item_code": "ITM-219",
+    "name": "AC LG Dual Inverter",
+    "quantity": 1,
+    "brand_id": 13,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "LG",
+    "manufacture_year": 2024
+  },
+  {
+    "item_code": "ITM-220",
+    "name": "Kalkulator Ranap",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2024
+  },
+  {
+    "item_code": "ITM-221",
+    "name": "Stetoskop Ranap",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2024
+  },
+  {
+    "item_code": "ITM-222",
+    "name": "Light Pen",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2024
+  },
+  {
+    "item_code": "ITM-223",
+    "name": "TV Cocoa VVIP",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2024
+  },
+  {
+    "item_code": "ITM-224",
+    "name": "Printer Canon Ranap",
+    "quantity": 1,
+    "brand_id": 22,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Canon",
+    "manufacture_year": 2024
+  },
+  {
+    "item_code": "ITM-225",
+    "name": "Troli Ranap",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2024
+  },
+  {
+    "item_code": "ITM-226",
+    "name": "Temometer Ranap",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2024
+  },
+  {
+    "item_code": "ITM-227",
+    "name": "Kulkas Ranap",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2024
+  },
+  {
+    "item_code": "ITM-228",
+    "name": "Sprei (Tf Mandiri)",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2025
+  },
+  {
+    "item_code": "ITM-229",
+    "name": "Alat Penangkap Nyamuk",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2025
+  },
+  {
+    "item_code": "ITM-230",
+    "name": "TV Cocoa 43'",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2025
+  },
+  {
+    "item_code": "ITM-231",
+    "name": "AC Daikin",
+    "quantity": 1,
+    "brand_id": 16,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Daikin",
+    "manufacture_year": 2025
+  },
+  {
+    "item_code": "ITM-232",
+    "name": "Tensimeter Digital",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2025
+  },
+  {
+    "item_code": "ITM-233",
+    "name": "Termometer Sinocare",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2025
+  },
+  {
+    "item_code": "ITM-234",
+    "name": "Mainan Ranap Kuda kudaan",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2025
+  },
+  {
+    "item_code": "ITM-235",
+    "name": "Mainan Ranap Matras",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2025
+  },
+  {
+    "item_code": "ITM-236",
+    "name": "Mainan Ranap Kuda Karet",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2025
+  },
+  {
+    "item_code": "ITM-237",
+    "name": "TV Cocoa 40S30",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2025
+  },
+  {
+    "item_code": "ITM-238",
+    "name": "Perosotan Anak",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2025
+  },
+  {
+    "item_code": "ITM-239",
+    "name": "TV Akari Smart Android 31 Inch Bluetooth AT-32AS2",
+    "quantity": 1,
+    "brand_id": 23,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Akari",
+    "manufacture_year": 2025
+  },
+  {
+    "item_code": "ITM-240",
+    "name": "Dispenser Midea",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2025
+  },
+  {
+    "item_code": "ITM-241",
+    "name": "AC Daikin",
+    "quantity": 1,
+    "brand_id": 16,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Daikin",
+    "manufacture_year": 2020
+  },
+  {
+    "item_code": "ITM-242",
+    "name": "AC Daikin (FTC 15 NV 14)",
+    "quantity": 1,
+    "brand_id": 16,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Daikin",
+    "manufacture_year": 2021
+  },
+  {
+    "item_code": "ITM-243",
+    "name": "AC LG Dual Inverter",
+    "quantity": 1,
+    "brand_id": 13,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "LG",
+    "manufacture_year": 2018
+  },
+  {
+    "item_code": "ITM-244",
+    "name": "Bed Pasien",
+    "quantity": 5,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2020
+  },
+  {
+    "item_code": "ITM-245",
+    "name": "Bed Pasien",
+    "quantity": 3,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2020
+  },
+  {
+    "item_code": "ITM-246",
+    "name": "Bed 2 crank + Matras",
+    "quantity": 5,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2022
+  },
+  {
+    "item_code": "ITM-247",
+    "name": "Bed Side abs",
+    "quantity": 5,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2022
+  },
+  {
+    "item_code": "ITM-248",
+    "name": "Horden",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2020
+  },
+  {
+    "item_code": "ITM-249",
+    "name": "Kipas Angin",
+    "quantity": 2,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2018
+  },
+  {
+    "item_code": "ITM-250",
+    "name": "Kipas Angin Gantung",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2020
+  },
+  {
+    "item_code": "ITM-251",
+    "name": "Kompor Gas",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2018
+  },
+  {
+    "item_code": "ITM-252",
+    "name": "Komputer Admin ACER L166H0L",
+    "quantity": 1,
+    "brand_id": 7,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Acer",
+    "manufacture_year": 2014
+  },
+  {
+    "item_code": "ITM-253",
+    "name": "Komputer IT Dell Power Edge T40",
+    "quantity": 1,
+    "brand_id": 24,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Dell",
+    "manufacture_year": 2020
+  },
+  {
+    "item_code": "ITM-254",
+    "name": "Kulkas LG 2 Pintu",
+    "quantity": 1,
+    "brand_id": 13,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "LG",
+    "manufacture_year": 2010
+  },
+  {
+    "item_code": "ITM-255",
+    "name": "Kursi",
+    "quantity": 24,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2020
+  },
+  {
+    "item_code": "ITM-256",
+    "name": "Kursi",
+    "quantity": 2,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2019
+  },
+  {
+    "item_code": "ITM-257",
+    "name": "Kursi",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2019
+  },
+  {
+    "item_code": "ITM-258",
+    "name": "Kursi Biasa",
+    "quantity": 2,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2020
+  },
+  {
+    "item_code": "ITM-259",
+    "name": "Kursi Duduk Kantor",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2019
+  },
+  {
+    "item_code": "ITM-260",
+    "name": "Kursi Kerja",
+    "quantity": 2,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2021
+  },
+  {
+    "item_code": "ITM-261",
+    "name": "Kursi Kerja",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2021
+  },
+  {
+    "item_code": "ITM-262",
+    "name": "Kursi Kerja",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2021
+  },
+  {
+    "item_code": "ITM-263",
+    "name": "Kursi Kerja Admin",
+    "quantity": 2,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2014
+  },
+  {
+    "item_code": "ITM-264",
+    "name": "Kursi Plastik",
+    "quantity": 6,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2014
+  },
+  {
+    "item_code": "ITM-265",
+    "name": "Kursi Tunggu Kapasitas 4 orang",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2021
+  },
+  {
+    "item_code": "ITM-266",
+    "name": "Lemari Admin",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2019
+  },
+  {
+    "item_code": "ITM-267",
+    "name": "Lemari Gantung Kitchen set",
+    "quantity": 2,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2018
+  },
+  {
+    "item_code": "ITM-268",
+    "name": "Lemari Pasien 1 Pintu",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2018
+  },
+  {
+    "item_code": "ITM-269",
+    "name": "Lemari Pasien 2 Pintu",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2018
+  },
+  {
+    "item_code": "ITM-270",
+    "name": "Lemari Pasien Biru",
+    "quantity": 3,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2020
+  },
+  {
+    "item_code": "ITM-271",
+    "name": "Lemari Plastik Pasien Biru",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2020
+  },
+  {
+    "item_code": "ITM-272",
+    "name": "Lemari Plastik",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2014
+  },
+  {
+    "item_code": "ITM-273",
+    "name": "Lemari Plastik Pasien Biru",
+    "quantity": 2,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2020
+  },
+  {
+    "item_code": "ITM-274",
+    "name": "Lemari Plastik Pasien Biru",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2020
+  },
+  {
+    "item_code": "ITM-275",
+    "name": "Lemari besi pasien satu pintu",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2019
+  },
+  {
+    "item_code": "ITM-276",
+    "name": "Lemari Stenlis",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2014
+  },
+  {
+    "item_code": "ITM-277",
+    "name": "Meja Admin",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2014
+  },
+  {
+    "item_code": "ITM-278",
+    "name": "Meja IT",
+    "quantity": 2,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2018
+  },
+  {
+    "item_code": "ITM-279",
+    "name": "Meja Kerja",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2019
+  },
+  {
+    "item_code": "ITM-280",
+    "name": "Meja Kerja Kaca",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2021
+  },
+  {
+    "item_code": "ITM-281",
+    "name": "Meja kerja Kaca",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2019
+  },
+  {
+    "item_code": "ITM-282",
+    "name": "Meja Makan",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2018
+  },
+  {
+    "item_code": "ITM-283",
+    "name": "Meja Marketing Kaca",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2019
+  },
+  {
+    "item_code": "ITM-284",
+    "name": "Meja Rapat Meeting",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2021
+  },
+  {
+    "item_code": "ITM-285",
+    "name": "Mesin Bleaching dan Kacamata",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2021
+  },
+  {
+    "item_code": "ITM-286",
+    "name": "Printer L210 Epson",
+    "quantity": 1,
+    "brand_id": 11,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Epson",
+    "manufacture_year": 2014
+  },
+  {
+    "item_code": "ITM-287",
+    "name": "Rak Buku",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2021
+  },
+  {
+    "item_code": "ITM-288",
+    "name": "Rice Cooker Miyako",
+    "quantity": 1,
+    "brand_id": 10,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Miyako",
+    "manufacture_year": 2018
+  },
+  {
+    "item_code": "ITM-289",
+    "name": "Stand Lampu",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2021
+  },
+  {
+    "item_code": "ITM-290",
+    "name": "Tangga bed pasien ss",
+    "quantity": 15,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2022
+  },
+  {
+    "item_code": "ITM-291",
+    "name": "Tempat Duduk Pasien Poli Gigi",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2018
+  },
+  {
+    "item_code": "ITM-292",
+    "name": "Termos",
+    "quantity": 9,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2019
+  },
+  {
+    "item_code": "ITM-293",
+    "name": "Tiang infus ss",
+    "quantity": 7,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2022
+  },
+  {
+    "item_code": "ITM-294",
+    "name": "Troli",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2018
+  },
+  {
+    "item_code": "ITM-295",
+    "name": "Hp Klinik",
+    "quantity": 1,
+    "brand_id": 8,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "HP",
+    "manufacture_year": 2023
+  },
+  {
+    "item_code": "ITM-296",
+    "name": "Clip On",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2024
+  },
+  {
+    "item_code": "ITM-297",
+    "name": "Megicom Kirin 3 Liter",
+    "quantity": 1,
+    "brand_id": 25,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Kirin",
+    "manufacture_year": 2025
+  },
+  {
+    "item_code": "ITM-298",
+    "name": "Sendok Pantry",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2025
+  },
+  {
+    "item_code": "ITM-299",
+    "name": "Piring Pantry",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2025
+  },
+  {
+    "item_code": "ITM-300",
+    "name": "Microphone marketing",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2025
+  },
+  {
+    "item_code": "ITM-301",
+    "name": "Piring Makan Stainles 3 Sekat",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2025
+  },
+  {
+    "item_code": "ITM-302",
+    "name": "Kerangjang Pantry",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2025
+  },
+  {
+    "item_code": "ITM-303",
+    "name": "Food Tray",
+    "quantity": 6,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2025
+  },
+  {
+    "item_code": "ITM-304",
+    "name": "Sendok Pantry",
+    "quantity": 12,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2025
+  },
+  {
+    "item_code": "ITM-305",
+    "name": "Dental Unit CX-8000",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2017
+  },
+  {
+    "item_code": "ITM-306",
+    "name": "AC Daikin",
+    "quantity": 1,
+    "brand_id": 16,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Daikin",
+    "manufacture_year": 2025
+  },
+  {
+    "item_code": "ITM-307",
+    "name": "Lemari Sterilisasi",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2025
+  },
+  {
+    "item_code": "ITM-308",
+    "name": "Patung Gigi",
+    "quantity": 2,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2025
+  },
+  {
+    "item_code": "ITM-309",
+    "name": "Sendok Pantry",
+    "quantity": 12,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2025
+  },
+  {
+    "item_code": "ITM-310",
+    "name": "Food Tray",
+    "quantity": 6,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2025
+  },
+  {
+    "item_code": "ITM-311",
+    "name": "Meja makan putih",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2025
+  },
+  {
+    "item_code": "ITM-312",
+    "name": "Tv Cocoa",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2018
+  },
+  {
+    "item_code": "ITM-313",
+    "name": "Ac LG 220240v",
+    "quantity": 1,
+    "brand_id": 13,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "LG",
+    "manufacture_year": 2018
+  },
+  {
+    "item_code": "ITM-314",
+    "name": "Krisbow Scubber mesin bhufing",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2020
+  },
+  {
+    "item_code": "ITM-315",
+    "name": "Lemari Kayu 3 tingkat",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2010
+  },
+  {
+    "item_code": "ITM-316",
+    "name": "Lemari Kayu 5 tingkat",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2010
+  },
+  {
+    "item_code": "ITM-317",
+    "name": "Lemari Kayu Ijo 7 tingkat",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2010
+  },
+  {
+    "item_code": "ITM-318",
+    "name": "Lemari Kayu Putih 4 tingkat",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2010
+  },
+  {
+    "item_code": "ITM-319",
+    "name": "Lemari Olimpik (ada Kaca)",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2010
+  },
+  {
+    "item_code": "ITM-320",
+    "name": "Lemari Pasien (Biru)",
+    "quantity": 2,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2020
+  },
+  {
+    "item_code": "ITM-321",
+    "name": "Lemari Plastik",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2020
+  },
+  {
+    "item_code": "ITM-322",
+    "name": "Meja Kayu",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2010
+  },
+  {
+    "item_code": "ITM-323",
+    "name": "Goldenmaxs(Semprotan Air Biru)",
+    "quantity": 1,
+    "brand_id": 26,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Goldenmaxs",
+    "manufacture_year": 2020
+  },
+  {
+    "item_code": "ITM-324",
+    "name": "Mesin Cuci LG 220c",
+    "quantity": 1,
+    "brand_id": 13,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "LG",
+    "manufacture_year": 2018
+  },
+  {
+    "item_code": "ITM-325",
+    "name": "Shofa Hijau",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2020
+  },
+  {
+    "item_code": "ITM-326",
+    "name": "Toren 200 Liter",
+    "quantity": 1,
+    "brand_id": 3,
+    "category_id": 1,
+    "type_id": 1,
+    "manufacturer": "Unknown",
+    "manufacture_year": 2018
+  }
+]

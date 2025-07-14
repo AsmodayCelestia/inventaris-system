@@ -1,0 +1,13 @@
+[
+  { "number": "Lantai 1", "unit_id": 1 },
+  { "number": "Lantai 2", "unit_id": 1 },
+  { "number": "Lantai 3", "unit_id": 1 },
+  { "number": "Lantai 4", "unit_id": 1 },
+  { "number": "Lantai 5", "unit_id": 1 },
+
+  { "number": "Lantai 1", "unit_id": 2 },
+
+  { "number": "Lantai 1", "unit_id": 3 },
+
+  { "number": "Lantai 1", "unit_id": 4 }
+]

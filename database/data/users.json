@@ -1,0 +1,14 @@
+[
+  {
+    "name": "Admin Sistem",
+    "email": "admin@darwis.com",
+    "password": "admin123",
+    "role": "admin"
+  },
+  {
+    "name": "Petugas Lapangan",
+    "email": "petugas@darwis.com",
+    "password": "petugas123",
+    "role": "karyawan"
+  }
+]
