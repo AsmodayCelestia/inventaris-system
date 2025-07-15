@@ -14,7 +14,8 @@ class DatabaseSeeder extends Seeder
             ItemTypeSeeder::class,
             UserSeeder::class,
             LocationSeeder::class,
-            InventoryItemSeeder::class, // ← hapus baris ini kalau belum pakai
+            InventoryItemSeeder::class,
+            InventorySeeder::class, 
         ]);
     }
 }

@@ -40,3 +40,5 @@ class InventoryItem extends Model
     }
 
 }
+
+
