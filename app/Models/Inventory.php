@@ -4,11 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Carbon\Carbon; // Pastikan Carbon di-import
+use Carbon\Carbon;
+use Spatie\Activitylog\Traits\LogsActivity; // Import trait LogsActivity
+use Spatie\Activitylog\LogOptions; // Import LogOptions untuk konfigurasi log
 
 class Inventory extends Model
 {
-    use HasFactory;
+    use HasFactory, LogsActivity;
 
     // Kolom-kolom yang bisa diisi secara mass-assignment
     protected $fillable = [
@@ -100,5 +102,16 @@ class Inventory extends Model
             ],
             default => null, // Tipe frekuensi tidak dikenal
         };
+    }
+    /**
+     * Konfigurasi untuk Activity Log.
+     * Menentukan kolom mana yang akan dilacak perubahannya.
+     */
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logFillable() // Melacak perubahan pada semua kolom yang ada di $fillable
+            ->logOnlyDirty() // Hanya mencatat perubahan jika ada kolom yang benar-benar berubah
+            ->dontSubmitEmptyLogs(); // Tidak mencatat log jika tidak ada perubahan yang terdeteksi
     }
 }

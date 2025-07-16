@@ -7,12 +7,16 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Eloquent\Casts\Attribute;
-use App\Models\InventoryMaintenance; // Sudah tidak perlu diuse jika hanya digunakan dalam method
+// use App\Models\InventoryMaintenance; // Baris ini bisa dihapus jika tidak digunakan langsung di sini
+
+use Spatie\Activitylog\Traits\LogsActivity; // Import trait LogsActivity
+use Spatie\Activitylog\LogOptions; // Import LogOptions untuk konfigurasi log
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, LogsActivity; // <--- TAMBAHKAN LogsActivity DI SINI
 
+    // Kolom yang bisa diisi mass-assignment
     protected $fillable = [
         'name',
         'email',
@@ -21,11 +25,13 @@ class User extends Authenticatable
         'role',
     ];
 
+    // Kolom yang disembunyikan saat serialisasi (dan tidak akan dilog oleh Spatie)
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
+    // Tipe cast
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
@@ -54,8 +60,9 @@ class User extends Authenticatable
         return $this->hasMany(Room::class, 'pj_lokasi_id');
     }
 
-    // ... (accessor dan mutator password & role)
-
+    /**
+     * ACCESSOR/MUTATOR: Otomatis hash password saat di-set
+     */
     protected function password(): Attribute
     {
         return Attribute::make(
@@ -63,8 +70,35 @@ class User extends Authenticatable
         );
     }
 
+    /**
+     * ACCESSOR: Role selalu huruf kecil
+     */
     public function getRoleAttribute($value)
     {
         return strtolower($value);
     }
+
+    /**
+     * Konfigurasi untuk Activity Log.
+     * Menentukan kolom mana yang akan dilacak perubahannya.
+     */
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logFillable() // Melacak perubahan pada semua kolom yang ada di $fillable
+            ->logOnlyDirty() // Hanya mencatat perubahan jika ada kolom yang benar-benar berubah
+            ->dontSubmitEmptyLogs(); // Tidak mencatat log jika tidak ada perubahan yang terdeteksi
+    }
+
+    /**
+     * Validasi bisa ditempatkan di FormRequest atau Service layer,
+     * tapi bisa ditaruh di sini untuk dokumentasi:
+     *
+     * [
+     * 'name' => 'required|string|max:255',
+     * 'email' => 'required|email|unique:users,email',
+     * 'password' => 'required|min:6',
+     * 'role' => 'required|in:admin,karyawan'
+     * ]
+     */
 }
