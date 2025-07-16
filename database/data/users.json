@@ -1,14 +1,23 @@
 [
   {
-    "name": "Admin Sistem",
-    "email": "admin@darwis.com",
+    "name": "Heru",
+    "email": "heru@darwis.com",
     "password": "admin123",
+    "divisi": "IT",
     "role": "admin"
   },
   {
+    "name": "Salim",
+    "email": "salim@darwis.com",
+    "password": "petugas123",
+    "divisi": "Umum",
+    "role": "head"
+  },
+    {
     "name": "Petugas Lapangan",
     "email": "petugas@darwis.com",
     "password": "petugas123",
+    "divisi": "Umum",
     "role": "karyawan"
   }
 ]

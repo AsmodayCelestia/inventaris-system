@@ -11,7 +11,7 @@ return new class extends Migration {
             $table->string('name');
             $table->unsignedBigInteger('floor_id');
             $table->foreign('floor_id')->references('id')->on('floors')->onDelete('cascade');
-
+            $table->foreignId('pj_lokasi_id')->nullable()->constrained('users')->onDelete('set null')->after('name');
             $table->timestamps();
         });
     }

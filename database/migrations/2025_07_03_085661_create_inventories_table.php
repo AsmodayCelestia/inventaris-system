@@ -5,7 +5,11 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
-    public function up(): void {
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
         Schema::create('inventories', function (Blueprint $table) {
             $table->id();
             $table->string('inventory_number')->unique();
@@ -16,22 +20,35 @@ return new class extends Migration {
             $table->decimal('estimated_depreciation', 15, 2)->nullable();
             $table->enum('status', ['Ada', 'Rusak', 'Perbaikan', 'Hilang', 'Dipinjam', '-'])->default('Ada');
 
+            // Lokasi
             $table->foreignId('unit_id')->constrained('location_units')->onDelete('cascade');
             $table->foreignId('room_id')->constrained('rooms')->onDelete('cascade');
             
-            $table->foreignId('floor_id')->nullable()->constrained('floors')->onDelete('set null');
-
-
             $table->date('expected_replacement')->nullable();
             $table->date('last_checked_at')->nullable();
 
             $table->foreignId('pj_id')->nullable()->constrained('users')->onDelete('set null');
+
+            // Columns for Maintenance Scheduling
+            $table->enum('maintenance_frequency_type', ['bulan', 'km', 'minggu', 'semester'])->nullable();
+            $table->integer('maintenance_frequency_value')->nullable();
+            $table->date('last_maintenance_at')->nullable();
+            
+            // Split next_due_at into two for flexibility
+            $table->date('next_due_date')->nullable(); // For date-based maintenance
+            $table->integer('next_due_km')->nullable(); // For KM-based maintenance
+
+            $table->integer('last_odometer_reading')->nullable(); // To store the last odometer reading for KM-based items
+
             $table->timestamps();
         });
     }
 
-    public function down(): void {
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
         Schema::dropIfExists('inventories');
     }
 };
-// done

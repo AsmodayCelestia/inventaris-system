@@ -20,6 +20,8 @@ return new class extends Migration {
             $table->string('photo_3')->nullable();
 
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
+            $table->integer('odometer_reading')->nullable(); // Hanya diisi jika itemnya bertipe KM
+
             $table->timestamps();
         });
     }

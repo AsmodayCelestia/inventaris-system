@@ -9,7 +9,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 1,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -24,7 +23,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 4,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -39,7 +37,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 3,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -54,7 +51,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 38,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -69,7 +65,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 7,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -84,7 +79,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 49,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -99,7 +93,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 45,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -114,7 +107,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 39,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -129,7 +121,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 38,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -144,7 +135,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 38,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -159,7 +149,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 38,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -174,7 +163,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 43,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -189,7 +177,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 7,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -204,7 +191,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 1,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -219,7 +205,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 7,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -234,7 +219,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 39,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -249,7 +233,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 20,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -264,7 +247,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 16,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -279,7 +261,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 38,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -294,7 +275,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 16,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -309,7 +289,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 16,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -324,7 +303,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 38,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -339,7 +317,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 3,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -354,7 +331,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 38,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -369,7 +345,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 38,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -384,7 +359,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 16,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -399,7 +373,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 7,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -414,7 +387,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 7,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -429,7 +401,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 16,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -444,7 +415,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 19,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -459,7 +429,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 47,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -474,7 +443,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 38,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -489,7 +457,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 7,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -504,7 +471,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 39,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -519,7 +485,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 15,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -534,7 +499,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 3,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -549,7 +513,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 4,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -564,7 +527,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 6,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -579,7 +541,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 39,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -594,7 +555,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 7,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -609,7 +569,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 49,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -624,7 +583,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 45,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -639,7 +597,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 4,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -654,7 +611,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 4,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -669,7 +625,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 3,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -684,7 +639,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 3,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -699,7 +653,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 16,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -714,7 +667,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 38,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -729,7 +681,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 7,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -744,7 +695,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 6,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -759,7 +709,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 6,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -774,7 +723,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 8,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -789,7 +737,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 6,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -804,7 +751,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 49,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -819,7 +765,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 5,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -834,7 +779,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 15,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -849,7 +793,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 15,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -864,7 +807,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 15,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -879,7 +821,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 15,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -894,7 +835,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 15,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -909,7 +849,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 15,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -924,7 +863,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 39,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -939,7 +877,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 39,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -954,7 +891,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 6,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -969,7 +905,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 6,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -984,7 +919,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 6,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -999,7 +933,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 41,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -1014,7 +947,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 6,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -1029,7 +961,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 3,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -1044,7 +975,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 6,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -1059,7 +989,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 40,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -1074,7 +1003,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 15,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -1089,7 +1017,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 15,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -1104,7 +1031,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 41,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -1119,7 +1045,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 39,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -1134,7 +1059,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 15,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -1149,7 +1073,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 34,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -1164,7 +1087,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 7,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -1179,7 +1101,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 7,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -1194,7 +1115,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 15,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -1209,7 +1129,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 6,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -1224,7 +1143,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 39,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -1239,7 +1157,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 15,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -1254,7 +1171,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 15,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -1269,7 +1185,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 15,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -1284,7 +1199,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 49,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -1299,7 +1213,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 49,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -1314,7 +1227,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 49,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -1329,7 +1241,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 49,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -1344,7 +1255,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 49,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -1359,7 +1269,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 49,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -1374,7 +1283,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 49,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -1389,7 +1297,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 49,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -1404,7 +1311,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 49,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -1419,7 +1325,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 49,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -1434,7 +1339,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 49,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -1449,7 +1353,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 49,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -1464,7 +1367,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 49,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -1479,7 +1381,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 49,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -1494,7 +1395,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 49,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -1509,7 +1409,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 49,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -1524,7 +1423,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 49,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -1539,7 +1437,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 49,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -1554,7 +1451,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 49,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -1569,7 +1465,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 49,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -1584,7 +1479,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 49,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -1599,7 +1493,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 49,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -1614,7 +1507,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 49,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -1629,7 +1521,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 49,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -1644,7 +1535,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 49,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -1659,7 +1549,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 49,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -1674,7 +1563,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 49,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -1689,7 +1577,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 19,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -1704,7 +1591,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 19,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -1719,7 +1605,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 19,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -1734,7 +1619,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 19,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -1749,7 +1633,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 7,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -1764,7 +1647,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 7,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -1779,7 +1661,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 7,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -1794,7 +1675,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 7,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -1809,7 +1689,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 7,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -1824,7 +1703,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 7,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -1839,7 +1717,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 7,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -1854,7 +1731,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 7,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -1869,7 +1745,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 7,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -1884,7 +1759,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 7,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -1899,7 +1773,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 7,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -1914,7 +1787,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 34,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -1929,7 +1801,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 7,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -1944,7 +1815,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 49,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -1959,7 +1829,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 7,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -1974,7 +1843,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 20,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -1989,7 +1857,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 1,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -2004,7 +1871,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 33,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -2019,7 +1885,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 15,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -2034,7 +1899,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 14,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -2049,7 +1913,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 7,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -2064,7 +1927,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 18,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -2079,7 +1941,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 49,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -2094,7 +1955,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 20,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -2109,7 +1969,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 17,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -2124,7 +1983,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 17,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -2139,7 +1997,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 17,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -2154,7 +2011,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 17,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -2169,7 +2025,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 17,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -2184,7 +2039,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 17,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -2199,7 +2053,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 17,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -2214,7 +2067,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 17,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -2229,7 +2081,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 17,
-    "floor_id": 1,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -2244,7 +2095,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 22,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -2259,7 +2109,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 23,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -2274,7 +2123,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 24,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -2289,7 +2137,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 25,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -2304,7 +2151,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 26,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -2319,7 +2165,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 25,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -2334,7 +2179,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 26,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -2349,7 +2193,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 24,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -2364,7 +2207,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 22,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -2379,7 +2221,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 27,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -2394,7 +2235,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 23,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -2409,7 +2249,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 28,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -2424,7 +2263,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 29,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -2439,7 +2277,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 28,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -2454,7 +2291,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 27,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -2469,7 +2305,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 23,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -2484,7 +2319,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 29,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -2499,7 +2333,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 29,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -2514,7 +2347,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 24,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -2529,7 +2361,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 29,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -2544,7 +2375,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 29,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -2559,7 +2389,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 29,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -2574,7 +2403,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 24,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -2589,7 +2417,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 22,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -2604,7 +2431,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 27,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -2619,7 +2445,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 23,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -2634,7 +2459,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 28,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -2649,7 +2473,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 43,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -2664,7 +2487,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 43,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -2679,7 +2501,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 25,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -2694,7 +2515,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 26,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -2709,7 +2529,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 29,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -2724,7 +2543,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 29,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -2739,7 +2557,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 26,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -2754,7 +2571,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 29,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -2769,7 +2585,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 22,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -2784,7 +2599,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 27,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -2799,7 +2613,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 23,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -2814,7 +2627,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 25,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -2829,7 +2641,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 29,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -2844,7 +2655,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 24,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -2859,7 +2669,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 22,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -2874,7 +2683,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 27,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -2889,7 +2697,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 23,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -2904,7 +2711,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 28,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -2919,7 +2725,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 27,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -2934,7 +2739,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 26,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -2949,7 +2753,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 29,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -2964,7 +2767,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 22,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -2979,7 +2781,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 29,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -2994,7 +2795,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 29,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -3009,7 +2809,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 23,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -3024,7 +2823,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 29,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -3039,7 +2837,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 25,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -3054,7 +2851,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 26,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -3069,7 +2865,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 29,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -3084,7 +2879,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 29,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -3099,7 +2893,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 20,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -3114,7 +2907,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 20,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -3129,7 +2921,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 20,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -3144,7 +2935,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 20,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -3159,7 +2949,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 20,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -3174,7 +2963,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 20,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -3189,7 +2977,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 20,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -3204,7 +2991,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 20,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -3219,7 +3005,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 20,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -3234,7 +3019,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 20,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -3249,7 +3033,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 20,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -3264,7 +3047,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 20,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -3279,7 +3061,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 20,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -3294,7 +3075,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 20,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -3309,7 +3089,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 20,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -3324,7 +3103,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 20,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -3339,7 +3117,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 20,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -3354,7 +3131,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 20,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -3369,7 +3145,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 20,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -3384,7 +3159,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 20,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -3399,7 +3173,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 20,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -3414,7 +3187,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 20,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -3429,7 +3201,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 20,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -3444,7 +3215,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 30,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -3459,7 +3229,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 20,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -3474,7 +3243,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 20,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -3489,7 +3257,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 20,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -3504,7 +3271,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 20,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -3519,7 +3285,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 20,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -3534,7 +3299,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 20,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -3549,7 +3313,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 31,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -3564,7 +3327,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 20,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -3579,7 +3341,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 21,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -3594,7 +3355,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 20,
-    "floor_id": 2,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -3609,7 +3369,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 14,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -3624,7 +3383,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 13,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -3639,7 +3397,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 11,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -3654,7 +3411,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 12,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -3669,7 +3425,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 48,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -3684,7 +3439,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 2,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -3699,7 +3453,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 2,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -3714,7 +3467,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 2,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -3729,7 +3481,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 2,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -3744,7 +3495,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 44,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -3759,7 +3509,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 44,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -3774,7 +3523,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 14,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -3789,7 +3537,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 14,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -3804,7 +3551,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 44,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -3819,7 +3565,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 2,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -3834,7 +3579,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 10,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -3849,7 +3593,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 11,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -3864,7 +3607,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 13,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -3879,7 +3621,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 10,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -3894,7 +3635,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 2,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -3909,7 +3649,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 2,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -3924,7 +3663,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 10,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -3939,7 +3677,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 14,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -3954,7 +3691,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 14,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -3969,7 +3705,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 9,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -3984,7 +3719,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 14,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -3999,7 +3733,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 10,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -4014,7 +3747,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 12,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -4029,7 +3761,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 12,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -4044,7 +3775,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 12,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -4059,7 +3789,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 32,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -4074,7 +3803,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 2,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -4089,7 +3817,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 48,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -4104,7 +3831,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 40,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -4119,7 +3845,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 48,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -4134,7 +3859,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 14,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -4149,7 +3873,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 14,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -4164,7 +3887,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 14,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -4179,7 +3901,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 11,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -4194,7 +3915,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 14,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -4209,7 +3929,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 10,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -4224,7 +3943,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 44,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -4239,7 +3957,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 14,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -4254,7 +3971,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 2,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -4269,7 +3985,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 10,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -4284,7 +3999,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 14,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -4299,7 +4013,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 37,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -4314,7 +4027,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 44,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -4329,7 +4041,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 32,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -4344,7 +4055,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 2,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -4359,7 +4069,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 10,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -4374,7 +4083,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 44,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -4389,7 +4097,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 2,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -4404,7 +4111,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 44,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -4419,7 +4125,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 36,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -4434,7 +4139,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 36,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -4449,7 +4153,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 35,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -4464,7 +4167,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 35,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -4479,7 +4181,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 35,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -4494,7 +4195,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 36,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -4509,7 +4209,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 35,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -4524,7 +4223,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 35,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -4539,7 +4237,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 35,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -4554,7 +4251,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 35,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -4569,7 +4265,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 10,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -4584,7 +4279,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 10,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -4599,7 +4293,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 10,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -4614,7 +4307,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 10,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -4629,7 +4321,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 35,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -4644,13 +4335,12 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 35,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
   },
   {
-    "inventory_number": "20251303311",
+    "inventory_number": "20250103311",
     "inventory_item_id": 311,
     "acquisition_source": "Beli",
     "procurement_date": "2025-01-01",
@@ -4659,7 +4349,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 32,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -4674,7 +4363,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 9,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -4689,7 +4377,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 2,
-    "floor_id": 3,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -4704,7 +4391,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 46,
-    "floor_id": 4,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -4719,7 +4405,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 46,
-    "floor_id": 4,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -4734,7 +4419,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 46,
-    "floor_id": 4,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -4749,7 +4433,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 46,
-    "floor_id": 4,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -4764,7 +4447,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 46,
-    "floor_id": 4,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -4779,7 +4461,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 46,
-    "floor_id": 4,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -4794,7 +4475,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 46,
-    "floor_id": 4,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -4809,7 +4489,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 46,
-    "floor_id": 4,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -4824,7 +4503,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 46,
-    "floor_id": 4,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -4839,7 +4517,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 46,
-    "floor_id": 4,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -4854,7 +4531,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 46,
-    "floor_id": 4,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -4869,7 +4545,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 46,
-    "floor_id": 4,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null
@@ -4884,7 +4559,6 @@
     "status": "Ada",
     "unit_id": 1,
     "room_id": 46,
-    "floor_id": 4,
     "expected_replacement": null,
     "last_checked_at": null,
     "pj_id": null

@@ -7,42 +7,55 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Eloquent\Casts\Attribute;
-use App\Models\InventoryMaintenance;
+use App\Models\InventoryMaintenance; // Sudah tidak perlu diuse jika hanya digunakan dalam method
 
 class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-    // Kolom yang bisa diisi mass-assignment
     protected $fillable = [
         'name',
         'email',
         'password',
+        'divisi',
         'role',
     ];
 
-    // Kolom yang disembunyikan saat serialisasi
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    // Tipe cast
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
 
     /**
-     * RELASI: User memiliki banyak data maintenance (jika dia petugas/pj)
+     * RELASI: User bertanggung jawab atas banyak inventaris (sebagai PJ Barang)
      */
-    public function maintenances()
+    public function responsibleInventories()
     {
-        return $this->hasMany(InventoryMaintenance::class, 'pj_id');
+        return $this->hasMany(Inventory::class, 'pj_id');
     }
 
     /**
-     * ACCESSOR/MUTATOR: Otomatis hash password saat di-set
+     * RELASI: User melakukan banyak record maintenance (sebagai petugas yang mengisi log)
      */
+    public function performedMaintenances()
+    {
+        return $this->hasMany(InventoryMaintenance::class, 'user_id'); // Menunjuk ke user_id di tabel inventory_maintenances
+    }
+
+    /**
+     * RELASI: User dapat menjadi PJ lokasi untuk banyak ruangan
+     */
+    public function responsibleRooms()
+    {
+        return $this->hasMany(Room::class, 'pj_lokasi_id');
+    }
+
+    // ... (accessor dan mutator password & role)
+
     protected function password(): Attribute
     {
         return Attribute::make(
@@ -50,23 +63,8 @@ class User extends Authenticatable
         );
     }
 
-    /**
-     * ACCESSOR: Role selalu huruf kecil
-     */
     public function getRoleAttribute($value)
     {
         return strtolower($value);
     }
-
-    /**
-     * Validasi bisa ditempatkan di FormRequest atau Service layer,
-     * tapi bisa ditaruh di sini untuk dokumentasi:
-     *
-     * [
-     *   'name' => 'required|string|max:255',
-     *   'email' => 'required|email|unique:users,email',
-     *   'password' => 'required|min:6',
-     *   'role' => 'required|in:admin,karyawan'
-     * ]
-     */
 }

@@ -9,7 +9,12 @@ class Room extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'floor_id'];
+    protected $fillable = [
+        'name',
+        'floor_id',
+        'pj_lokasi_id', // Tambahkan ini
+    ];
+
 
     public function floor()
     {
@@ -21,4 +26,8 @@ class Room extends Model
         return $this->hasMany(Inventory::class);
     }
 
+    public function locationPersonInCharge()
+    {
+        return $this->belongsTo(User::class, 'pj_lokasi_id');
+    }
 }
