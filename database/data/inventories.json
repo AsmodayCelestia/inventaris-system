@@ -606,7 +606,7 @@
     "inventory_item_id": 44,
     "acquisition_source": "Beli",
     "procurement_date": "2018-11-01",
-    "purchase_price": 1900000,
+    "purchase_price": 950000,
     "estimated_depreciation": null,
     "status": "Ada",
     "unit_id": 1,
@@ -4340,7 +4340,7 @@
     "pj_id": null
   },
   {
-    "inventory_number": "20250103311",
+    "inventory_number": "20251303311",
     "inventory_item_id": 311,
     "acquisition_source": "Beli",
     "procurement_date": "2025-01-01",
