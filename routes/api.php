@@ -3,8 +3,10 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Controller;
 
 // PUBLIC (no auth)
-Route::post('/login', [Controller::class, 'login']);
-Route::post('/register', [Controller::class, 'register']);
+use App\Http\Controllers\AuthController;
+
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/register', [AuthController::class, 'register']);
 
 // Semua route di bawah ini butuh login dulu (authentication)
 Route::middleware('auth:sanctum')->group(function () {

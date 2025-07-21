@@ -11,10 +11,11 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 
 use Spatie\Activitylog\Traits\LogsActivity; // Import trait LogsActivity
 use Spatie\Activitylog\LogOptions; // Import LogOptions untuk konfigurasi log
+use Laravel\Sanctum\HasApiTokens; // <-- INI YANG HARUS DITAMBAHKAN!
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, LogsActivity; // <--- TAMBAHKAN LogsActivity DI SINI
+    use HasFactory, Notifiable, LogsActivity, HasApiTokens; // <--- Pastikan HasApiTokens ada di sini
 
     // Kolom yang bisa diisi mass-assignment
     protected $fillable = [
