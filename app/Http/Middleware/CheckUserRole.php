@@ -23,7 +23,7 @@ class CheckUserRole
         }
 
         // 2. Cek apakah user yang login memiliki salah satu role yang diizinkan
-        // Asumsi: Model User memiliki kolom 'role' (misal: 'admin', 'karyawan')
+        // Asumsi: Model User memiliki kolom 'role' (misal: 'admin', 'karyawan', 'head')
         if (! in_array($request->user()->role, $roles)) {
             // Jika user tidak memiliki role yang dibutuhkan, kembalikan response 403 Forbidden
             return response()->json(['message' => 'Unauthorized. You do not have the required role.'], 403);
