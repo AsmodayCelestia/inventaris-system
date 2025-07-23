@@ -2,13 +2,10 @@
 
 <template>
     <div class="login-wrapper">
-        <!-- KIRI: Background image (hanya di desktop) -->
-        <div class="left-bg-image" />
-
-        <!-- KANAN: Login Form -->
+        <!-- Login Form akan berada di sisi kanan -->
         <div class="right-login-form">
             <div class="login-box">
-                <div class="card card-outline card-primary shadow-lg">
+                <div class="card card-outline card-warning shadow-lg">
                     <div class="card-header text-center">
                         <a href="#" class="h1"><b>Inventaris</b>APP</a>
                     </div>
@@ -52,7 +49,7 @@
                                 <div class="col-12">
                                     <button
                                         type="submit"
-                                        class="btn btn-primary btn-block"
+                                        class="btn btn-warning btn-block"
                                         :disabled="authStore.loading"
                                     >
                                         <span
@@ -96,31 +93,44 @@ const handleLogin = () => {
 </script>
 
 <style scoped>
-/* Layout wrapper */
+/* Layout wrapper - Full background image */
 .login-wrapper {
-    position: relative;
+    position: relative; /* Penting untuk posisi absolute anak-anak jika ada */
     min-height: 100vh;
-    background: url('/images/login-bg.jpg') no-repeat center center;
+    background: url('/images/login-bg.jpg') no-repeat center center; /* Ganti dengan nama file gambar kamu */
     background-size: cover;
-    display: flex;
-    justify-content: flex-end; /* 🢂 ini yang penting */
-    align-items: center;
-    padding: 2rem;
+    display: flex; /* Menggunakan flexbox untuk positioning form */
+    justify-content: flex-end; /* Mendorong konten (form) ke kanan */
+    align-items: center; /* Memusatkan konten secara vertikal */
+    padding: 2rem; /* Padding di sekitar wrapper */
 }
 
+/* KANAN: Login Form */
 .right-login-form {
     background: rgba(255, 255, 255, 0.85); /* semi transparan biar tetap kelihatan gambar */
     border-radius: 12px;
-    max-width: 400px;
-    width: 100%;
-    padding: 1rem;
-    margin-right: 12vw; /* ⬅️ tambah ini untuk dorong ke kiri dikit */
+    max-width: 400px; /* Batasi lebar form */
+    width: 100%; /* Agar responsif */
+    padding: 1.5rem; /* Padding di dalam form */
+    margin-right: 12vw; /* Dorong form ke kiri dari tepi kanan */
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* Tambah shadow */
 }
 
-/* Login box tetap sama */
+/* Sesuaikan untuk mobile: dorong form ke tengah */
+@media (max-width: 767px) {
+    .login-wrapper {
+        justify-content: center; /* Pusatkan form di mobile */
+        padding: 1rem;
+    }
+    .right-login-form {
+        margin-right: 0; /* Hapus margin kanan di mobile */
+        max-width: 360px; /* Sesuaikan lebar form di mobile */
+    }
+}
+
+/* Login box tetap sama (sekarang sudah diatur oleh right-login-form) */
 .login-box {
     width: 100%;
-    max-width: 400px; /* Batasi lebar login box */
 }
 
 /* Toggle password icon */

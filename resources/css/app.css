@@ -1,11 +1,57 @@
-@import 'tailwindcss';
+/* resources/css/app.css */
 
-@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
-@source '../../storage/framework/views/*.php';
-@source '../**/*.blade.php';
-@source '../**/*.js';
+/* Tailwind CSS Directives (Ini yang benar untuk mengimpor Tailwind) */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-@theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+/* ---------------------------------------------------------------------
+   GLOBAL CUSTOM CSS / OVERRIDES ADMINLTE / BASE STYLES
+   ---------------------------------------------------------------------
+   Semua gaya CSS yang kamu tulis di sini akan berlaku secara global
+   di seluruh aplikasi Vue.js kamu.
+*/
+
+body {
+    font-family: 'Source Sans Pro', sans-serif; /* Atur font global */
+    color: #333; /* Warna teks default */
+    line-height: 1.6;
+}
+
+/* Contoh override AdminLTE atau gaya kustom global */
+.card {
+    border-radius: 0.75rem; /* Membuat semua card lebih rounded */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Menambahkan shadow ke semua card */
+}
+
+.btn-primary {
+    background-color: #d07932 !important; /* Contoh override warna primary AdminLTE */
+    border-color: #d07932 !important;
+}
+
+/* Custom utility classes (jika tidak menggunakan Tailwind secara langsung) */
+.text-center-flex {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Gaya untuk form group */
+.form-group label {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+/* Gaya untuk input */
+.form-control:focus {
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Gaya untuk pesan error form */
+.form-error-message {
+    color: #dc3545;
+    font-size: 0.875em;
+    margin-top: 0.25rem;
 }

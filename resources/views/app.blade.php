@@ -18,7 +18,7 @@
             height: 100%;
             margin: 0;
             padding: 0;
-            overflow: hidden; //Hindari scrollbar ganda 
+            /* HAPUS BARIS INI: overflow: hidden; */
         }
         #app {
             height: 100%;

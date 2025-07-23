@@ -2,8 +2,8 @@
 
 import { defineStore } from 'pinia';
 import { loginUser } from '../../utils/api'; // Mengimport fungsi loginUser dari utils/api.js
-// Kita akan mengimport router di sini nanti, tapi untuk sekarang biarkan dulu.
-// import router from '../router'; 
+import router from '../router'; 
+
 
 export const useAuthStore = defineStore('auth', {
     // State: data yang akan disimpan secara global
@@ -50,7 +50,7 @@ export const useAuthStore = defineStore('auth', {
                 localStorage.setItem('userEmail', this.userEmail);
 
                 // Nanti kita akan redirect ke dashboard di sini setelah Vue Router siap
-                // Contoh: router.push('/dashboard'); 
+                router.push('/dashboard'); 
 
             } catch (error) {
                 // Tangani error dari API atau jaringan
@@ -74,7 +74,7 @@ export const useAuthStore = defineStore('auth', {
             localStorage.removeItem('userEmail');
 
             // Nanti kita akan redirect ke halaman login di sini setelah Vue Router siap
-            // Contoh: router.push('/login');
+            router.push('/login');
         },
 
         /**
