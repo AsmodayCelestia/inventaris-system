@@ -1,7 +1,7 @@
 // resources/js/router/index.js
 
 import { createRouter, createWebHistory } from 'vue-router';
-import { useAuthStore } from '../stores/counter'; // Mengimport store autentikasi
+import { useCounterStore } from '../stores/counter'; // <-- Mengimport store terbaru (useCounterStore)
 
 // Import komponen-komponen halaman (views)
 // Kita akan membuat komponen-komponen ini di langkah selanjutnya
@@ -38,21 +38,21 @@ const router = createRouter({
 
 // Navigation Guard: Melindungi rute yang memerlukan autentikasi
 router.beforeEach((to, from, next) => {
-    const authStore = useAuthStore(); // Menggunakan store autentikasi
+    const counterStore = useCounterStore(); // <-- Menggunakan nama variabel yang sesuai
 
     // Inisialisasi status autentikasi dari localStorage jika belum terinisialisasi
     // Ini memastikan Pinia store selalu sinkron dengan localStorage saat navigasi
-    if (!authStore.authToken && localStorage.getItem('authToken')) {
-        authStore.initializeAuth();
+    if (!counterStore.authToken && localStorage.getItem('authToken')) {
+        counterStore.initializeAuth();
     }
 
     // Jika rute memerlukan autentikasi (requiresAuth: true) DAN user belum login
-    if (to.meta.requiresAuth && !authStore.isLoggedIn) {
+    if (to.meta.requiresAuth && !counterStore.isLoggedIn) {
         // Redirect ke halaman login
         next({ name: 'Login' });
     }
     // Jika user sudah login dan mencoba mengakses halaman login
-    else if (to.name === 'Login' && authStore.isLoggedIn) {
+    else if (to.name === 'Login' && counterStore.isLoggedIn) {
         // Redirect ke dashboard
         next({ name: 'Dashboard' });
     }

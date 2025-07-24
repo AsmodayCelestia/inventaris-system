@@ -9,8 +9,8 @@ import { createApp } from 'vue';
 import { createPinia } from 'pinia';
 // Import router yang sudah kita konfigurasi
 import router from './router'; 
-// Import store autentikasi
-import { useAuthStore } from './stores/counter';
+// Import store autentikasi (sekarang useCounterStore)
+import { useCounterStore } from './stores/counter'; // <-- Mengimport useCounterStore
 
 // Komponen Vue utama (Root Component)
 const App = {
@@ -18,9 +18,10 @@ const App = {
         <router-view></router-view> <!-- Vue Router akan me-render komponen halaman di sini -->
     `,
     setup() {
-        const authStore = useAuthStore();
+        // Menggunakan counterStore
+        const counterStore = useCounterStore(); // <-- Menggunakan nama variabel yang sesuai
         // Inisialisasi state autentikasi dari localStorage saat aplikasi dimuat
-        authStore.initializeAuth();
+        counterStore.initializeAuth();
         return {};
     }
 };

@@ -1,4 +1,4 @@
-<!-- resources/js/components/Layout/MainLayout.vue -->
+<!-- resources/js/components/Layout.vue -->
 
 <template>
     <div class="wrapper">
@@ -11,11 +11,17 @@
                 <li class="nav-item d-none d-sm-inline-block">
                     <router-link to="/dashboard" class="nav-link">Home</router-link>
                 </li>
-                <!-- Tambahkan link navbar lain di sini -->
+                <!-- Tambahkan link navbar lain di sini jika ada yang universal -->
             </ul>
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="#" @click.prevent="authStore.logout()">
+                    <!-- Tampilkan nama user dan role di navbar (opsional, bisa juga di sidebar saja) -->
+                    <span class="nav-link text-dark">
+                        Halo, <b>{{ counterStore.userEmail }}</b> ({{ counterStore.userRole }})
+                    </span>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" @click.prevent="counterStore.logout()">
                         <i class="fas fa-sign-out-alt"></i> Logout
                     </a>
                 </li>
@@ -37,42 +43,139 @@
                         <img src="https://placehold.co/160x160/cccccc/ffffff?text=User" class="img-circle elevation-2" alt="User Image">
                     </div>
                     <div class="info">
-                        <a href="#" class="d-block">{{ authStore.userEmail }} ({{ authStore.userRole }})</a>
+                        <a href="#" class="d-block">{{ counterStore.userEmail }} ({{ counterStore.userRole }})</a>
                     </div>
                 </div>
 
                 <!-- Sidebar Menu -->
                 <nav class="mt-2">
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                        <!-- Dashboard -->
                         <li class="nav-item">
                             <router-link to="/dashboard" class="nav-link" :class="{ active: $route.path === '/dashboard' }">
                                 <i class="nav-icon fas fa-tachometer-alt"></i>
                                 <p>Dashboard</p>
                             </router-link>
                         </li>
+
+                        <!-- Master Data (Hanya Admin) -->
+                        <li class="nav-item has-treeview" :class="{ 'menu-open': isMasterDataOpen }" v-if="counterStore.isAdmin">
+                            <a href="#" class="nav-link" @click.prevent="toggleMasterData">
+                                <i class="nav-icon fas fa-database"></i>
+                                <p>
+                                    Master Data
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <router-link to="/master-data/barang" class="nav-link" :class="{ active: $route.path === '/master-data/barang' }">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Master Barang</p>
+                                    </router-link>
+                                </li>
+                                <li class="nav-item">
+                                    <router-link to="/master-data/merk" class="nav-link" :class="{ active: $route.path === '/master-data/merk' }">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Merk</p>
+                                    </router-link>
+                                </li>
+                                <li class="nav-item">
+                                    <router-link to="/master-data/kategori" class="nav-link" :class="{ active: $route.path === '/master-data/kategori' }">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Kategori</p>
+                                    </router-link>
+                                </li>
+                                <li class="nav-item">
+                                    <router-link to="/master-data/jenis" class="nav-link" :class="{ active: $route.path === '/master-data/jenis' }">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Jenis</p>
+                                    </router-link>
+                                </li>
+                                <li class="nav-item">
+                                    <router-link to="/master-data/lokasi" class="nav-link" :class="{ active: $route.path === '/master-data/lokasi' }">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Lokasi</p>
+                                    </router-link>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <!-- Data Inventaris -->
                         <li class="nav-item">
-                            <router-link to="/inventories" class="nav-link">
+                            <router-link to="/inventories" class="nav-link" :class="{ active: $route.path.startsWith('/inventories') && $route.path !== '/inventories/detail' }">
                                 <i class="nav-icon fas fa-box"></i>
-                                <p>Inventaris</p>
+                                <p>Data Inventaris</p>
                             </router-link>
                         </li>
-                        <li class="nav-item" v-if="authStore.isAdmin">
-                            <router-link to="/users" class="nav-link">
+
+                        <!-- Maintenance -->
+                        <li class="nav-item has-treeview" :class="{ 'menu-open': isMaintenanceOpen }" v-if="counterStore.isAdmin">
+                            <a href="#" class="nav-link" @click.prevent="toggleMaintenance">
+                                <i class="nav-icon fas fa-tools"></i>
+                                <p>
+                                    Maintenance
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <router-link to="/maintenance/riwayat" class="nav-link" :class="{ active: $route.path === '/maintenance/riwayat' }">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Riwayat Maintenance</p>
+                                    </router-link>
+                                </li>
+                                <!-- Tambah Maintenance akan diakses dari detail inventaris -->
+                            </ul>
+                        </li>
+
+                        <!-- QR Code -->
+                        <li class="nav-item has-treeview" :class="{ 'menu-open': isQrCodeOpen }" v-if="counterStore.isAdmin">
+                            <a href="#" class="nav-link" @click.prevent="toggleQrCode">
+                                <i class="nav-icon fas fa-qrcode"></i>
+                                <p>
+                                    QR Code
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <router-link to="/qr-code/generate" class="nav-link" :class="{ active: $route.path === '/qr-code/generate' }">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Generate & Cetak</p>
+                                    </router-link>
+                                </li>
+                                <li class="nav-item">
+                                    <router-link to="/qr-code/scan" class="nav-link" :class="{ active: $route.path === '/qr-code/scan' }">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Scan QR</p>
+                                    </router-link>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <!-- Manajemen User (Hanya Admin) -->
+                        <li class="nav-item" v-if="counterStore.isAdmin">
+                            <router-link to="/users" class="nav-link" :class="{ active: $route.path === '/users' }">
                                 <i class="nav-icon fas fa-users-cog"></i>
                                 <p>Manajemen User</p>
                             </router-link>
                         </li>
-                        <li class="nav-item">
-                            <router-link to="/qr-scanner" class="nav-link">
-                                <i class="nav-icon fas fa-qrcode"></i>
-                                <p>Scan QR</p>
+
+                        <!-- Laporan (Hanya Admin) -->
+                        <li class="nav-item" v-if="counterStore.isAdmin">
+                            <router-link to="/laporan" class="nav-link" :class="{ active: $route.path === '/laporan' }">
+                                <i class="nav-icon fas fa-file-alt"></i>
+                                <p>Laporan</p>
                             </router-link>
                         </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
+
+                        <!-- Pengaturan (Hanya Admin) -->
+                        <li class="nav-item" v-if="counterStore.isAdmin">
+                            <router-link to="/pengaturan" class="nav-link" :class="{ active: $route.path === '/pengaturan' }">
                                 <i class="nav-icon fas fa-cogs"></i>
                                 <p>Pengaturan</p>
-                            </a>
+                            </router-link>
                         </li>
                     </ul>
                 </nav>
@@ -93,16 +196,41 @@
             <div class="float-right d-none d-sm-inline">
                 Versi 1.0
             </div>
-            <strong>Hak Cipta &copy; 2023-2024 <a href="#">Inventaris APP</a>.</strong> Semua hak dilindungi undang-undang.
+            <strong>Hak Cipta &copy; {{ new Date().getFullYear() }} <a href="#">Inventaris APP</a>.</strong> Semua hak dilindungi undang-undang.
         </footer>
     </div>
 </template>
 
 <script setup>
-import { onMounted } from 'vue';
-import { useAuthStore } from '../stores/counter'; // Mengimport store autentikasi
+import { onMounted, ref, watch } from 'vue';
+import { useCounterStore } from '../stores/counter'; // <-- PATH SUDAH DIPERBAIKI DAN MENGGUNAKAN counter.js
+import { useRoute } from 'vue-router'; // Import useRoute untuk akses $route
 
-const authStore = useAuthStore(); // Menggunakan store autentikasi
+const counterStore = useCounterStore(); // <-- Menggunakan nama variabel yang sesuai
+const route = useRoute(); // Dapatkan instance route
+
+// State untuk mengontrol buka/tutup sub-menu
+const isMasterDataOpen = ref(false);
+const isMaintenanceOpen = ref(false);
+const isQrCodeOpen = ref(false);
+
+// Fungsi untuk toggle sub-menu
+const toggleMasterData = () => { isMasterDataOpen.value = !isMasterDataOpen.value; };
+const toggleMaintenance = () => { isMaintenanceOpen.value = !isMaintenanceOpen.value; };
+const toggleQrCode = () => { isQrCodeOpen.value = !isQrCodeOpen.value; };
+
+// Watcher untuk menutup sub-menu jika route berubah dan tidak lagi di dalam sub-menu tersebut
+watch(route, (newRoute) => {
+    if (!newRoute.path.startsWith('/master-data')) {
+        isMasterDataOpen.value = false;
+    }
+    if (!newRoute.path.startsWith('/maintenance')) {
+        isMaintenanceOpen.value = false;
+    }
+    if (!newRoute.path.startsWith('/qr-code')) {
+        isQrCodeOpen.value = false;
+    }
+}, { immediate: true }); // immediate: true agar dijalankan saat komponen pertama kali dimuat
 
 onMounted(() => {
     // AdminLTE JS secara otomatis menginisialisasi dirinya sendiri
@@ -120,6 +248,11 @@ onMounted(() => {
 <style scoped>
 /* Gaya khusus untuk komponen ini (jika diperlukan) */
 .main-sidebar .nav-link.active {
+    background-color: rgba(255, 255, 255, .1);
+    color: #fff;
+}
+/* Gaya untuk sub-menu yang aktif */
+.nav-item.has-treeview.menu-open > .nav-link {
     background-color: rgba(255, 255, 255, .1);
     color: #fff;
 }

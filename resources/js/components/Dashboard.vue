@@ -1,8 +1,8 @@
 <!-- resources/js/components/Dashboard.vue -->
 
 <template>
-    <!-- Kita akan menggunakan MainLayout di sini -->
-    <MainLayout>
+    <!-- Kita akan menggunakan Layout.vue di sini -->
+    <Layout>
         <!-- Content Header (Page header) -->
         <div class="content-header">
             <div class="container-fluid">
@@ -28,10 +28,10 @@
                     <div class="col-lg-12">
                         <div class="card">
                             <div class="card-header border-0">
-                                <h3 class="card-title">Selamat Datang, {{ authStore.userEmail }}!</h3>
+                                <h3 class="card-title">Selamat Datang, {{ counterStore.userEmail }}!</h3>
                             </div>
                             <div class="card-body">
-                                <p>Anda login sebagai <strong>{{ authStore.userRole }}</strong>.</p>
+                                <p>Anda login sebagai <strong>{{ counterStore.userRole }}</strong>.</p>
                                 <p>Ini adalah halaman dashboard AdminLTE 3 Anda.</p>
                                 <p>Anda bisa mulai menambahkan widget, grafik, dan fitur lainnya di sini.</p>
                                 <div class="d-flex justify-content-between align-items-center border-bottom mb-3">
@@ -62,14 +62,14 @@
                 </div>
             </div>
         </div>
-    </MainLayout>
+    </Layout>
 </template>
 
 <script setup>
-import MainLayout from './Layout.vue'; // Mengimport komponen layout utama
-import { useAuthStore } from '../stores/counter'; // Mengimport store autentikasi
+import Layout from './Layout.vue'; // Path disesuaikan ke Layout.vue
+import { useCounterStore } from '../stores/counter'; // <-- Mengimport store terbaru (counter.js)
 
-const authStore = useAuthStore(); // Menggunakan store autentikasi
+const counterStore = useCounterStore(); // <-- Menggunakan nama variabel yang sesuai
 </script>
 
 <style scoped>
