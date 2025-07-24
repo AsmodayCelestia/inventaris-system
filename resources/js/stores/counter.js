@@ -29,6 +29,8 @@ export const useCounterStore = defineStore('inventoryApp', {
     inventories: [], // Daftar semua item inventaris
     selectedInventoryDetail: null, // Detail inventaris yang sedang dilihat
     inventoryStatusStats: {}, // Statistik jumlah barang berdasarkan status (dashboard)
+    inventoryLoading: false, // <-- TAMBAHKAN INI untuk status loading inventaris
+    inventoryError: null,    // <-- TAMBAHKAN INI untuk error inventaris
 
     // --- State Maintenance ---
     maintenanceHistory: [], // Riwayat maintenance keseluruhan
@@ -82,7 +84,7 @@ export const useCounterStore = defineStore('inventoryApp', {
         this.userEmail = email;
 
         // Redirect ke dashboard setelah login berhasil
-        router.push('/dashboard'); // <-- TAMBAHKAN INI!
+        router.push('/dashboard'); 
 
         return true; // Beri sinyal sukses
       } catch (error) {
@@ -107,7 +109,7 @@ export const useCounterStore = defineStore('inventoryApp', {
       this.usersList = [];
       
       // Redirect ke halaman login setelah logout
-      router.push('/login'); // <-- TAMBAHKAN INI!
+      router.push('/login'); 
     },
 
     // --- Aksi Master Data ---
@@ -199,13 +201,18 @@ export const useCounterStore = defineStore('inventoryApp', {
 
     // --- Aksi Data Inventaris ---
     async fetchInventories(filters = {}) {
+      this.inventoryLoading = true; // <-- Set loading true
+      this.inventoryError = null;    // <-- Reset error
       try {
         // Bangun query params dari filters
         const queryParams = new URLSearchParams(filters).toString();
         const response = await axios.get(`${API_BASE_URL}/inventories?${queryParams}`, this.authHeader);
         this.inventories = response.data;
       } catch (error) {
+        this.inventoryError = error.response?.data?.message || error.message || 'Failed to fetch inventories.'; // <-- Set error
         console.error('Failed to fetch inventories:', error);
+      } finally {
+        this.inventoryLoading = false; // <-- Set loading false
       }
     },
     async fetchInventoryDetail(id) {

@@ -7,6 +7,7 @@ import { useCounterStore } from '../stores/counter'; // <-- Mengimport store ter
 // Kita akan membuat komponen-komponen ini di langkah selanjutnya
 import Login from '../components/Login.vue'; 
 import Dashboard from '../components/Dashboard.vue'; 
+import InventoryList from '../components/InventoryList.vue'
 
 // Definisikan rute-rute aplikasi Vue
 const routes = [
@@ -21,6 +22,12 @@ const routes = [
         name: 'Dashboard',
         component: Dashboard,
         meta: { requiresAuth: true } // Memerlukan autentikasi
+    },
+    {
+        path: '/inventories',
+        name: 'InventoryList',
+        component: InventoryList,
+        meta: { requiresAuth: true }
     },
     // Catch-all route untuk mengarahkan ke halaman login jika URL tidak ditemukan dan belum login
     // Ini penting agar jika user mengetik URL yang tidak ada, dia diarahkan ke login
