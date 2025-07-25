@@ -11,13 +11,11 @@
                 <li class="nav-item d-none d-sm-inline-block">
                     <router-link to="/dashboard" class="nav-link">Home</router-link>
                 </li>
-                <!-- Tambahkan link navbar lain di sini jika ada yang universal -->
             </ul>
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <!-- Tampilkan nama user dan role di navbar (opsional, bisa juga di sidebar saja) -->
                     <span class="nav-link text-dark">
-                        Halo, <b>{{ counterStore.userEmail }}</b> ({{ counterStore.userRole }})
+                        Halo, <b>{{ counterStore.userName }}</b> ({{ counterStore.userRole }})
                     </span>
                 </li>
                 <li class="nav-item">
@@ -43,7 +41,7 @@
                         <img src="https://placehold.co/160x160/cccccc/ffffff?text=User" class="img-circle elevation-2" alt="User Image">
                     </div>
                     <div class="info">
-                        <a href="#" class="d-block">{{ counterStore.userEmail }} ({{ counterStore.userRole }})</a>
+                        <a href="#" class="d-block">{{ counterStore.userName }} ({{ counterStore.userRole }})</a>
                     </div>
                 </div>
 
@@ -59,8 +57,9 @@
                         </li>
 
                         <!-- Master Data (Hanya Admin) -->
+                        <!-- Menu ini hanya akan aktif jika path dimulai dengan /master-data TAPI BUKAN /master-data/barang -->
                         <li class="nav-item has-treeview" :class="{ 'menu-open': isMasterDataOpen }" v-if="counterStore.isAdmin">
-                            <a href="#" class="nav-link" @click.prevent="toggleMasterData">
+                            <a href="#" class="nav-link" @click.prevent="toggleMasterData" :class="{ active: $route.path.startsWith('/master-data') && !$route.path.startsWith('/master-data/barang') }">
                                 <i class="nav-icon fas fa-database"></i>
                                 <p>
                                     Master Data
@@ -68,12 +67,7 @@
                                 </p>
                             </a>
                             <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <router-link to="/master-data/barang" class="nav-link" :class="{ active: $route.path === '/master-data/barang' }">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Master Barang</p>
-                                    </router-link>
-                                </li>
+                                <!-- Link Master Barang dihapus dari sini, sekarang ada di tab Data Inventaris -->
                                 <li class="nav-item">
                                     <router-link to="/master-data/merk" class="nav-link" :class="{ active: $route.path === '/master-data/merk' }">
                                         <i class="far fa-circle nav-icon"></i>
@@ -101,17 +95,18 @@
                             </ul>
                         </li>
 
-                        <!-- Data Inventaris -->
-                        <li class="nav-item">
-                            <router-link to="/inventories" class="nav-link" :class="{ active: $route.path.startsWith('/inventories') && $route.path !== '/inventories/detail' }">
+                        <!-- Data Inventaris (Admin & Head & Karyawan) -->
+                        <!-- Link ini akan aktif jika path dimulai dengan /inventories ATAU /master-data/barang -->
+                        <li class="nav-item" v-if="counterStore.isAdmin || counterStore.isHead || counterStore.isKaryawan">
+                            <router-link to="/inventories" class="nav-link" :class="{ active: $route.path.startsWith('/inventories') || $route.path.startsWith('/master-data/barang') }">
                                 <i class="nav-icon fas fa-box"></i>
                                 <p>Data Inventaris</p>
                             </router-link>
                         </li>
 
-                        <!-- Maintenance -->
-                        <li class="nav-item has-treeview" :class="{ 'menu-open': isMaintenanceOpen }" v-if="counterStore.isAdmin">
-                            <a href="#" class="nav-link" @click.prevent="toggleMaintenance">
+                        <!-- Maintenance (Admin & Head) -->
+                        <li class="nav-item has-treeview" :class="{ 'menu-open': isMaintenanceOpen }" v-if="counterStore.isAdmin || counterStore.isHead">
+                            <a href="#" class="nav-link" @click.prevent="toggleMaintenance" :class="{ active: $route.path.startsWith('/maintenance') }">
                                 <i class="nav-icon fas fa-tools"></i>
                                 <p>
                                     Maintenance
@@ -125,13 +120,12 @@
                                         <p>Riwayat Maintenance</p>
                                     </router-link>
                                 </li>
-                                <!-- Tambah Maintenance akan diakses dari detail inventaris -->
                             </ul>
                         </li>
 
-                        <!-- QR Code -->
-                        <li class="nav-item has-treeview" :class="{ 'menu-open': isQrCodeOpen }" v-if="counterStore.isAdmin">
-                            <a href="#" class="nav-link" @click.prevent="toggleQrCode">
+                        <!-- QR Code (Admin & Head) -->
+                        <li class="nav-item has-treeview" :class="{ 'menu-open': isQrCodeOpen }" v-if="counterStore.isAdmin || counterStore.isHead">
+                            <a href="#" class="nav-link" @click.prevent="toggleQrCode" :class="{ active: $route.path.startsWith('/qr-code') }">
                                 <i class="nav-icon fas fa-qrcode"></i>
                                 <p>
                                     QR Code
@@ -186,7 +180,6 @@
 
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
-            <!-- Slot untuk konten halaman yang akan di-render oleh router -->
             <slot></slot>
         </div>
         <!-- /.content-wrapper -->
@@ -203,40 +196,31 @@
 
 <script setup>
 import { onMounted, ref, watch } from 'vue';
-import { useCounterStore } from '../stores/counter'; // <-- PATH SUDAH DIPERBAIKI DAN MENGGUNAKAN counter.js
-import { useRoute } from 'vue-router'; // Import useRoute untuk akses $route
+import { useCounterStore } from '../stores/counter';
+import { useRoute } from 'vue-router';
 
-const counterStore = useCounterStore(); // <-- Menggunakan nama variabel yang sesuai
-const route = useRoute(); // Dapatkan instance route
+const counterStore = useCounterStore();
+const route = useRoute();
 
-// State untuk mengontrol buka/tutup sub-menu
 const isMasterDataOpen = ref(false);
 const isMaintenanceOpen = ref(false);
 const isQrCodeOpen = ref(false);
 
-// Fungsi untuk toggle sub-menu
 const toggleMasterData = () => { isMasterDataOpen.value = !isMasterDataOpen.value; };
 const toggleMaintenance = () => { isMaintenanceOpen.value = !isMaintenanceOpen.value; };
 const toggleQrCode = () => { isQrCodeOpen.value = !isQrCodeOpen.value; };
 
-// Watcher untuk menutup sub-menu jika route berubah dan tidak lagi di dalam sub-menu tersebut
+// Watch route changes to open/close sidebar menus
 watch(route, (newRoute) => {
-    if (!newRoute.path.startsWith('/master-data')) {
-        isMasterDataOpen.value = false;
-    }
-    if (!newRoute.path.startsWith('/maintenance')) {
-        isMaintenanceOpen.value = false;
-    }
-    if (!newRoute.path.startsWith('/qr-code')) {
-        isQrCodeOpen.value = false;
-    }
+    // Master Data menu hanya terbuka jika path dimulai dengan /master-data TAPI BUKAN /master-data/barang
+    isMasterDataOpen.value = newRoute.path.startsWith('/master-data') && !newRoute.path.startsWith('/master-data/barang');
+    isMaintenanceOpen.value = newRoute.path.startsWith('/maintenance');
+    isQrCodeOpen.value = newRoute.path.startsWith('/qr-code');
 }, { immediate: true }); // immediate: true agar dijalankan saat komponen pertama kali dimuat
 
 onMounted(() => {
-    // AdminLTE JS secara otomatis menginisialisasi dirinya sendiri
-    // setelah DOM siap dan script-nya dimuat.
-    // Kita hanya perlu memastikan elemen-elemennya ada di DOM.
-    // Jika ada masalah dengan pushmenu, pastikan jQuery dan Bootstrap dimuat dengan benar.
+    // Pastikan AdminLTE JavaScript diinisialisasi jika diperlukan
+    // Ini biasanya ditangani oleh AdminLTE itu sendiri jika di-load dengan benar
     if (window.$ && window.$.fn.pushMenu) {
         // console.log('AdminLTE JS components should be active.');
     } else {

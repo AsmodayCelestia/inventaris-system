@@ -1,72 +1,87 @@
 // resources/js/router/index.js
 
 import { createRouter, createWebHistory } from 'vue-router';
-import { useCounterStore } from '../stores/counter'; // <-- Mengimport store terbaru (useCounterStore)
+import { useCounterStore } from '../stores/counter';
 
 // Import komponen-komponen halaman (views)
-// Kita akan membuat komponen-komponen ini di langkah selanjutnya
-import Login from '../components/Login.vue'; 
-import Dashboard from '../components/Dashboard.vue'; 
-import InventoryList from '../components/InventoryList.vue'
+import Login from '../components/Login.vue';
+import Dashboard from '../components/Dashboard.vue';
+import InventoryList from '../components/InventoryList.vue'; // Ini sekarang handle Inventaris & Master Barang
+import InventoryItemForm from '../components/InventoryItemForm.vue'; // <-- KOMPONEN FORM MASTER BARANG YANG BARU
 
-// Definisikan rute-rute aplikasi Vue
 const routes = [
     {
-        path: '/login', // URL path untuk halaman login
+        path: '/login',
         name: 'Login',
         component: Login,
-        meta: { requiresAuth: false } // Tidak memerlukan autentikasi
+        meta: { requiresAuth: false }
     },
     {
-        path: '/dashboard', // URL path untuk halaman dashboard
+        path: '/dashboard',
         name: 'Dashboard',
         component: Dashboard,
-        meta: { requiresAuth: true } // Memerlukan autentikasi
+        meta: { requiresAuth: true }
     },
     {
         path: '/inventories',
         name: 'InventoryList',
         component: InventoryList,
-        meta: { requiresAuth: true }
+        meta: { requiresAuth: true, roles: ['admin', 'head', 'karyawan'] } // Semua bisa lihat daftar
     },
-    // Catch-all route untuk mengarahkan ke halaman login jika URL tidak ditemukan dan belum login
-    // Ini penting agar jika user mengetik URL yang tidak ada, dia diarahkan ke login
+    // --- ROUTES UNTUK FORM MASTER BARANG (CRUD InventoryItem) ---
+    // Link ini akan dipanggil dari dalam InventoryList.vue (tab Master Barang)
     {
-        path: '/:catchAll(.*)', // Menangkap semua path yang tidak cocok
-        redirect: '/login', // Mengarahkan ke halaman login
+        path: '/master-data/barang/create', // Tetap pakai path ini agar konsisten dengan sidebar jika ada
+        name: 'InventoryItemCreate', // Nama route yang lebih spesifik
+        component: InventoryItemForm,
+        meta: { requiresAuth: true, roles: ['admin'] } // Hanya Admin yang bisa akses ini
+    },
+    {
+        path: '/master-data/barang/edit/:id', // Tetap pakai path ini
+        name: 'InventoryItemEdit', // Nama route yang lebih spesifik
+        component: InventoryItemForm,
+        props: true,
+        meta: { requiresAuth: true, roles: ['admin'] } // Hanya Admin yang bisa akses ini
+    },
+    // --- END ROUTES UNTUK FORM MASTER BARANG ---
+    {
+        path: '/:catchAll(.*)',
+        redirect: '/login',
     }
 ];
 
-// Buat instance router
 const router = createRouter({
-    history: createWebHistory(), // Menggunakan HTML5 History API (URL bersih tanpa hash #)
-    routes, // Daftar rute yang sudah didefinisikan
+    history: createWebHistory(),
+    routes,
 });
 
-// Navigation Guard: Melindungi rute yang memerlukan autentikasi
 router.beforeEach((to, from, next) => {
-    const counterStore = useCounterStore(); // <-- Menggunakan nama variabel yang sesuai
+    const counterStore = useCounterStore();
 
-    // Inisialisasi status autentikasi dari localStorage jika belum terinisialisasi
-    // Ini memastikan Pinia store selalu sinkron dengan localStorage saat navigasi
-    if (!counterStore.authToken && localStorage.getItem('authToken')) {
+    // Inisialisasi autentikasi jika token ada di localStorage tapi store belum terinisialisasi
+    // Ini penting agar userRole sudah terisi sebelum navigation guard berjalan
+    if (!counterStore.isLoggedIn && localStorage.getItem('Authorization')) {
         counterStore.initializeAuth();
     }
 
-    // Jika rute memerlukan autentikasi (requiresAuth: true) DAN user belum login
-    if (to.meta.requiresAuth && !counterStore.isLoggedIn) {
-        // Redirect ke halaman login
+    const requiredAuth = to.meta.requiresAuth;
+    const requiredRoles = to.meta.roles;
+    const isLoggedIn = counterStore.isLoggedIn;
+    const userRole = counterStore.userRole;
+
+    if (requiredAuth && !isLoggedIn) {
+        // Jika rute memerlukan autentikasi tapi user belum login
         next({ name: 'Login' });
-    }
-    // Jika user sudah login dan mencoba mengakses halaman login
-    else if (to.name === 'Login' && counterStore.isLoggedIn) {
-        // Redirect ke dashboard
+    } else if (to.name === 'Login' && isLoggedIn) {
+        // Jika user sudah login dan mencoba mengakses halaman login, redirect ke dashboard
         next({ name: 'Dashboard' });
-    }
-    // Lanjutkan navigasi
-    else {
+    } else if (requiredRoles && (!userRole || !requiredRoles.includes(userRole))) {
+        // Jika rute memerlukan role tertentu dan user tidak memiliki role tersebut
+        console.warn(`Akses ditolak: User dengan role '${userRole}' mencoba mengakses rute yang memerlukan role '${requiredRoles.join(', ')}'`);
+        next({ name: 'Dashboard' }); // Redirect ke dashboard atau halaman unauthorized
+    } else {
         next();
     }
 });
 
-export default router; // Mengekspor instance router agar bisa digunakan di app.js dan stores
+export default router;

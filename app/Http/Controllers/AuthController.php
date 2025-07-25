@@ -4,60 +4,82 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Auth; // Hanya ini yang kita butuhkan untuk Auth::attempt
+use Illuminate\Validation\ValidationException; // Untuk menangkap error validasi
 
 class AuthController extends Controller
 {
     public function register(Request $request)
     {
-        $request->validate([
-            'name'     => 'required|string',
-            'email'    => 'required|email|unique:users',
-            'password' => 'required|string|min:6',
-            'divisi'   => 'required|string',
-            'role'     => 'required|in:admin,karyawan,head',
-        ]);
+        try {
+            $request->validate([
+                'name'     => 'required|string|max:255',
+                'email'    => 'required|email|unique:users',
+                'password' => 'required|string|min:6|confirmed', // 'confirmed' akan mencari password_confirmation
+                'divisi'   => 'required|string|max:255',
+                'role'     => 'required|in:admin,karyawan,head', // Pastikan 'head' juga ada di sini
+            ]);
 
-        $user = User::create([
-            'name'     => $request->name,
-            'email'    => $request->email,
-            'password' => $request->password,
-            'divisi'   => $request ->divisi,
-            'role'     => $request->role,
-        ]);
+            // Password akan di-hash otomatis oleh mutator di model User
+            $user = User::create($validatedData); // Menggunakan $validatedData setelah validate
 
-        return response()->json(['message' => 'User registered', 'id' => $user->id], 201);
+            return response()->json(['message' => 'User berhasil didaftarkan.', 'id' => $user->id], 201);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'message' => 'Validasi gagal.',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Terjadi kesalahan saat mendaftarkan user: ' . $e->getMessage()], 500);
+        }
     }
 
     public function login(Request $request)
     {
-        $request->validate([
-            'email'    => 'required|email',
-            'password' => 'required',
-        ]);
+        try {
+            $request->validate([
+                'email'    => 'required|email',
+                'password' => 'required',
+            ]);
 
-        $user = User::where('email', $request->email)->first();
+            $credentials = $request->only('email', 'password');
 
-        if (!$user) {
-            return response()->json(['message' => 'User not found'], 404);
+            // Cukup gunakan Auth::attempt. Ini akan mencari user dan memverifikasi password.
+            if (!Auth::attempt($credentials)) {
+                return response()->json(['message' => 'Kredensial tidak valid.'], 401);
+            }
+
+            $user = Auth::user(); // Dapatkan user yang berhasil login
+            $token = $user->createToken('auth_token')->plainTextToken;
+
+            return response()->json([
+                'message' => 'Login berhasil.', // Tambahkan pesan sukses
+                'Authorization' => 'Bearer ' . $token,
+                'role'          => $user->role,
+                'email'         => $user->email,
+                'id'            => $user->id,    // <-- Tambahkan ID
+                'name'          => $user->name,  // <-- Tambahkan Nama
+                'divisi'        => $user->divisi, // <-- Tambahkan Divisi
+            ]);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'message' => 'Validasi gagal.',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Terjadi kesalahan saat login: ' . $e->getMessage()], 500);
         }
+    }
 
-        if (!Hash::check($request->password, $user->password)) {
-            return response()->json(['message' => 'Password mismatch'], 401);
+    public function logout(Request $request)
+    {
+        try {
+            // Hapus token yang sedang digunakan oleh user ini
+            $request->user()->currentAccessToken()->delete(); 
+
+            return response()->json(['message' => 'Logout berhasil.']);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Terjadi kesalahan saat logout: ' . $e->getMessage()], 500);
         }
-
-        if (!Auth::attempt($request->only('email', 'password'))) {
-            return response()->json(['message' => 'Invalid email/password'], 401);
-        }
-
-        $user = Auth::user();
-        $token = $user->createToken('auth_token')->plainTextToken;
-
-        return response()->json([
-            'Authorization' => 'Bearer ' . $token,
-            'role'          => $user->role,
-            'email'         => $user->email,
-        ]);
     }
 }
