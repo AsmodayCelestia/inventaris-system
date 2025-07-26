@@ -8,6 +8,9 @@ import Login from '../components/Login.vue';
 import Dashboard from '../components/Dashboard.vue';
 import InventoryList from '../components/InventoryList.vue'; // Ini sekarang handle Inventaris & Master Barang
 import InventoryItemForm from '../components/InventoryItemForm.vue'; // <-- KOMPONEN FORM MASTER BARANG YANG BARU
+import InventoryDetail from '../components/InventoryDetail.vue';
+import InventoryCreate from '../components/InventoryCreate.vue';
+import InventoryEdit from '../components/InventoryEdit.vue';
 
 const routes = [
     {
@@ -28,8 +31,25 @@ const routes = [
         component: InventoryList,
         meta: { requiresAuth: true, roles: ['admin', 'head', 'karyawan'] } // Semua bisa lihat daftar
     },
-    // --- ROUTES UNTUK FORM MASTER BARANG (CRUD InventoryItem) ---
-    // Link ini akan dipanggil dari dalam InventoryList.vue (tab Master Barang)
+  {
+        path: '/inventories/:id', // Rute untuk detail inventaris
+        name: 'inventory-detail',
+        component: InventoryDetail,
+        props: true
+    },
+    {
+        path: '/inventories/create', // Rute untuk tambah inventaris
+        name: 'inventories.create',
+        component: InventoryCreate,
+        meta: { requiresAuth: true, adminOrHead: true }
+    },
+    {
+        path: '/inventories/edit/:id', // Rute untuk edit inventaris
+        name: 'inventories.edit',
+        component: InventoryEdit,
+        props: true,
+        meta: { requiresAuth: true, adminOrHead: true }
+    },
     {
         path: '/master-data/barang/create', // Tetap pakai path ini agar konsisten dengan sidebar jika ada
         name: 'InventoryItemCreate', // Nama route yang lebih spesifik

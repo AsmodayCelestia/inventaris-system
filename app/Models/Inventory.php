@@ -34,6 +34,8 @@ class Inventory extends Model
         'next_due_date',
         'next_due_km',
         'last_odometer_reading',
+        'image_path', // TAMBAHKAN BARIS INI
+        'qr_code_path', // TAMBAHKAN BARIS INI
     ];
 
     // Relasi ke model InventoryItem (barang master)

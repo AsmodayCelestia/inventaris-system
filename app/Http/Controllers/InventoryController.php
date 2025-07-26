@@ -2,210 +2,253 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Inventory; // Asumsi kamu punya model Inventory
+use App\Models\Inventory;
 use Illuminate\Http\Request;
-use Illuminate\Validation\ValidationException;
-use Illuminate\Support\Facades\Storage; // Untuk handle upload gambar jika diaktifkan
+use Illuminate\Support\Facades\Storage;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary; // Pastikan ini di-import
+use SimpleSoftwareIO\QrCode\Facades\QrCode; // Pastikan ini di-import
+use Illuminate\Support\Str; // Pastikan ini di-import
 
 class InventoryController extends Controller
 {
     /**
-     * Display a listing of the resource (Daftar semua inventaris).
-     * Dapat diakses oleh semua user yang terautentikasi (Admin, Head, Karyawan/Petugas).
+     * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index()
     {
-        // Eager load relasi yang dibutuhkan untuk tampilan daftar
-        $query = Inventory::with(['item', 'unit', 'room', 'personInCharge']);
-
-        // Contoh filter berdasarkan status
-        if ($request->has('status') && $request->status !== '') {
-            $query->where('status', $request->status);
-        }
-
-        // Contoh pencarian berdasarkan nama atau kode inventaris
-        if ($request->has('searchQuery') && $request->searchQuery !== '') {
-            $search = $request->searchQuery;
-            $query->where(function ($q) use ($search) {
-                $q->where('inventory_number', 'like', '%' . $search . '%')
-                  ->orWhereHas('item', function ($q_item) use ($search) { // Cari di relasi item
-                      $q_item->where('name', 'like', '%' . $search . '%');
-                  });
-            });
-        }
-
-        // Tambahkan filter lain sesuai kebutuhan (locationUnit, floor, room, dll.)
-        if ($request->has('unit_id') && $request->unit_id !== '') {
-            $query->where('unit_id', $request->unit_id);
-        }
-        if ($request->has('room_id') && $request->room_id !== '') {
-            $query->where('room_id', $request->room_id);
-        }
-        // Jika ingin filter berdasarkan floor, harus join ke rooms lalu ke floors
-        // atau pastikan ada relasi di model Room ke Floor
-        // Contoh:
-        // if ($request->has('floor_id') && $request->floor_id !== '') {
-        //     $query->whereHas('room.floor', function ($q_floor) use ($request) {
-        //         $q_floor->where('id', $request->floor_id);
-        //     });
-        // }
-
-
-        $inventories = $query->get(); 
+        $inventories = Inventory::with(['item', 'room', 'unit'])->get();
         return response()->json($inventories);
     }
 
     /**
-     * Store a newly created resource in storage (Menambah inventaris baru).
-     * Hanya dapat diakses oleh Admin atau Head.
+     * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-        try {
-            $validatedData = $request->validate([
-                'inventory_number' => 'required|string|max:255|unique:inventories,inventory_number',
-                'inventory_item_id' => 'required|exists:inventory_items,id', // Relasi ke InventoryItem
-                'acquisition_source' => 'required|string|max:255', 
-                'procurement_date' => 'required|date',
-                'purchase_price' => 'required|numeric|min:0',
-                'estimated_depreciation' => 'required|numeric|min:0',
-                'status' => 'required|string|in:Tersedia,Rusak,Dalam Perbaikan,Hilang,Dipinjam,Tidak Tersedia', 
-                'unit_id' => 'required|exists:location_units,id', // Relasi ke LocationUnit
-                'room_id' => 'required|exists:rooms,id', // Relasi ke Room
-                'expected_replacement' => 'nullable|date|after_or_equal:procurement_date',
-                'last_checked_at' => 'nullable|date',
-                'pj_id' => 'nullable|exists:users,id', // Penanggung jawab (relasi ke User)
-                'maintenance_frequency_type' => 'nullable|string|in:bulan,minggu,semester,km',
-                'maintenance_frequency_value' => 'nullable|numeric|min:0',
-                'last_maintenance_at' => 'nullable|date',
-                'next_due_date' => 'nullable|date',
-                'next_due_km' => 'nullable|numeric',
-                // 'image' => 'nullable|image|max:2048', // Jika ada upload gambar
-            ]);
+        // 1. Validasi Input
+        $validatedData = $request->validate([
+            'inventory_number' => 'required|string|unique:inventories',
+            'inventory_item_id' => 'required|exists:inventory_items,id',
+            'acquisition_source' => 'required|in:Beli,Hibah,Bantuan,-',
+            'procurement_date' => 'required|date',
+            'purchase_price' => 'required|numeric',
+            'estimated_depreciation' => 'nullable|numeric',
+            'status' => 'required|in:Ada,Rusak,Perbaikan,Hilang,Dipinjam,-',
+            'unit_id' => 'required|exists:location_units,id',
+            'room_id' => 'required|exists:rooms,id',
+            'expected_replacement' => 'nullable|date',
+            'last_checked_at' => 'nullable|date',
+            'pj_id' => 'nullable|exists:users,id',
+            'maintenance_frequency_type' => 'nullable|in:bulan,km,minggu,semester',
+            'maintenance_frequency_value' => 'nullable|integer',
+            'last_maintenance_at' => 'nullable|date',
+            'next_due_date' => 'nullable|date',
+            'next_due_km' => 'nullable|integer',
+            'last_odometer_reading' => 'nullable|integer',
+            'description' => 'nullable|string',
+            'image' => 'nullable|image|max:2048', // Validasi untuk file gambar (max 2MB)
+        ]);
 
-            // Handle image upload jika ada
-            // if ($request->hasFile('image')) {
-            //     $imagePath = $request->file('image')->store('inventory_images', 'public');
-            //     $validatedData['image_path'] = $imagePath; // Simpan path gambar di kolom yang sesuai
-            // }
-
-            $inventory = Inventory::create($validatedData);
-            return response()->json($inventory, 201); 
-        } catch (ValidationException $e) {
-            return response()->json([
-                'message' => 'Validasi gagal.',
-                'errors' => $e->errors()
-            ], 422); 
-        } catch (\Exception $e) {
-            return response()->json(['message' => 'Gagal menambah inventaris: ' . $e->getMessage()], 500);
+        // 2. Proses Upload Gambar ke Cloudinary (Jika Ada)
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            try {
+                $uploadedFile = $request->file('image');
+                $result = Cloudinary::upload($uploadedFile->getRealPath(), [
+                    'folder' => 'inventories_images', // Folder di Cloudinary
+                    'public_id' => Str::slug($request->inventory_number . '-' . time()), // Nama file unik
+                ]);
+                $imagePath = $result->getSecurePath(); // Ambil URL aman dari Cloudinary
+            } catch (\Exception $e) {
+                \Log::error('Cloudinary image upload failed: ' . $e->getMessage());
+                return response()->json(['message' => 'Gagal mengunggah gambar: ' . $e->getMessage()], 500);
+            }
         }
+
+        // 3. Buat Entri Inventaris Baru (Simpan data tanpa QR Code dan Image Path dulu)
+        // Gunakan array_diff_key untuk mengecualikan 'image' dari validatedData
+        $inventoryData = array_diff_key($validatedData, array_flip(['image']));
+        $inventory = Inventory::create($inventoryData);
+
+        // 4. Generate & Upload QR Code
+        $qrCodePath = null;
+        try {
+            // URL detail inventaris. Sesuaikan domain aplikasi kamu di .env (APP_URL)!
+            $detailUrl = config('app.url') . '/inventories/' . $inventory->id;
+
+            // Generate QR Code sebagai string base64 atau simpan sebagai file lokal sementara
+            $qrCodeData = QrCode::format('png')
+                                ->size(300)
+                                ->generate($detailUrl);
+
+            // Simpan QR Code secara sementara ke disk lokal
+            $qrCodeFileName = 'qrcodes/inventories/' . $inventory->inventory_number . '-' . Str::random(10) . '.png';
+            Storage::disk('public')->put($qrCodeFileName, $qrCodeData);
+
+            // Upload QR Code ke Cloudinary
+            $resultQr = Cloudinary::upload(storage_path('app/public/' . $qrCodeFileName), [
+                'folder' => 'inventories_qrcodes', // Folder di Cloudinary
+                'public_id' => 'qr-' . Str::slug($inventory->inventory_number), // Nama public_id unik untuk QR
+            ]);
+            $qrCodePath = $resultQr->getSecurePath();
+
+            // Hapus file QR code sementara dari disk lokal
+            Storage::disk('public')->delete($qrCodeFileName);
+
+        } catch (\Exception $e) {
+            \Log::error('Gagal generate atau upload QR Code untuk inventaris ' . $inventory->id . ': ' . $e->getMessage());
+            // Lanjutkan tanpa QR jika tidak fatal, atau kembalikan error jika ini kritis
+        }
+
+        // 5. Update Inventaris dengan Image Path dan QR Code Path
+        $inventory->image_path = $imagePath;
+        $inventory->qr_code_path = $qrCodePath;
+        $inventory->save(); // Simpan perubahan
+
+        return response()->json($inventory->load(['item', 'room', 'unit']), 201); // Load relasi untuk respons
     }
 
     /**
-     * Display the specified resource (Menampilkan detail satu inventaris).
-     * Dapat diakses oleh semua user yang terautentikasi (Admin, Head, Karyawan/Petugas).
+     * Display the specified resource.
      */
-    public function show($id)
+    public function show(Inventory $inventory)
     {
-        // Eager load semua relasi yang relevan untuk detail
-        $inventory = Inventory::with(['item', 'unit', 'room', 'personInCharge', 'maintenances'])->find($id); 
-        if (!$inventory) {
-            return response()->json(['message' => 'Inventaris tidak ditemukan'], 404);
-        }
+        // Pastikan relasi juga dimuat jika diperlukan untuk detail
+        $inventory->load(['item', 'room', 'unit', 'personInCharge', 'maintenances']);
         return response()->json($inventory);
     }
 
     /**
-     * Display the specified resource by QR Code (Menampilkan detail inventaris berdasarkan nomor inventaris/QR Code).
-     * Dapat diakses oleh Petugas/Admin/Head setelah scan.
+     * Update the specified resource in storage.
      */
+    public function update(Request $request, Inventory $inventory)
+    {
+        // 1. Validasi Input
+        $validatedData = $request->validate([
+            'inventory_number' => 'required|string|unique:inventories,inventory_number,' . $inventory->id,
+            'inventory_item_id' => 'required|exists:inventory_items,id',
+            'acquisition_source' => 'required|in:Beli,Hibah,Bantuan,-',
+            'procurement_date' => 'required|date',
+            'purchase_price' => 'required|numeric',
+            'estimated_depreciation' => 'nullable|numeric',
+            'status' => 'required|in:Ada,Rusak,Perbaikan', // 'Ada', 'Rusak', 'Perbaikan', 'Hilang', 'Dipinjam', '-'
+            'unit_id' => 'required|exists:location_units,id',
+            'room_id' => 'required|exists:rooms,id',
+            'expected_replacement' => 'nullable|date',
+            'last_checked_at' => 'nullable|date',
+            'pj_id' => 'nullable|exists:users,id',
+            'maintenance_frequency_type' => 'nullable|in:bulan,km,minggu,semester',
+            'maintenance_frequency_value' => 'nullable|integer',
+            'last_maintenance_at' => 'nullable|date',
+            'next_due_date' => 'nullable|date',
+            'next_due_km' => 'nullable|integer',
+            'last_odometer_reading' => 'nullable|integer',
+            'description' => 'nullable|string',
+            'image' => 'nullable|image|max:2048', // 'nullable' karena gambar bisa tidak diubah
+            'remove_image' => 'nullable|boolean', // Flag dari frontend untuk menghapus gambar
+        ]);
+
+        // 2. Proses Upload Gambar ke Cloudinary (Jika Ada Gambar Baru atau Dihapus)
+        if ($request->hasFile('image')) {
+            try {
+                // Hapus gambar lama di Cloudinary jika ada
+                if ($inventory->image_path) {
+                    $publicId = pathinfo(parse_url($inventory->image_path, PHP_URL_PATH), PATHINFO_FILENAME);
+                    Cloudinary::destroy('inventories_images/' . $publicId); // Hapus dari folder di Cloudinary
+                }
+
+                $uploadedFile = $request->file('image');
+                $result = Cloudinary::upload($uploadedFile->getRealPath(), [
+                    'folder' => 'inventories_images',
+                    'public_id' => Str::slug($request->inventory_number . '-' . time()),
+                ]);
+                $inventory->image_path = $result->getSecurePath();
+            } catch (\Exception $e) {
+                \Log::error('Cloudinary image upload failed during update: ' . $e->getMessage());
+                return response()->json(['message' => 'Gagal mengunggah gambar baru: ' . $e->getMessage()], 500);
+            }
+        } elseif ($request->input('remove_image') && $inventory->image_path) {
+            // Jika ada flag remove_image dan memang ada gambar lama
+            try {
+                $publicId = pathinfo(parse_url($inventory->image_path, PHP_URL_PATH), PATHINFO_FILENAME);
+                Cloudinary::destroy('inventories_images/' . $publicId);
+                $inventory->image_path = null; // Set path ke null di database
+            } catch (\Exception $e) {
+                \Log::error('Cloudinary image deletion failed during update: ' . $e->getMessage());
+                // Lanjutkan update data lainnya meskipun gagal hapus gambar lama
+            }
+        }
+
+        // 3. Regenerate QR Code (Selalu regenerate agar QR code selalu up-to-date)
+        try {
+            // Hapus QR Code lama di Cloudinary jika ada (berdasarkan public_id lama)
+            if ($inventory->qr_code_path) {
+                // Ekstrak public_id dari URL QR Code lama
+                $oldPublicId = 'qr-' . Str::slug($inventory->getOriginal('inventory_number')); // Gunakan inventory_number lama
+                Cloudinary::destroy('inventories_qrcodes/' . $oldPublicId);
+            }
+            
+            $detailUrl = config('app.url') . '/inventories/' . $inventory->id;
+            $qrCodeData = QrCode::format('png')
+                                ->size(300)
+                                ->generate($detailUrl);
+
+            // Simpan QR Code secara sementara ke disk lokal
+            $qrCodeFileName = 'qrcodes/inventories/' . $inventory->inventory_number . '-' . Str::random(10) . '.png';
+            Storage::disk('public')->put($qrCodeFileName, $qrCodeData);
+
+            // Upload QR Code ke Cloudinary
+            $resultQr = Cloudinary::upload(storage_path('app/public/' . $qrCodeFileName), [
+                'folder' => 'inventories_qrcodes', // Folder di Cloudinary
+                'public_id' => 'qr-' . Str::slug($request->inventory_number), // Nama public_id unik untuk QR
+            ]);
+            $qrCodePath = $resultQr->getSecurePath();
+
+            // Hapus file QR code sementara dari disk lokal
+            Storage::disk('public')->delete($qrCodeFileName);
+
+        } catch (\Exception $e) {
+            \Log::error('Gagal regenerate atau upload QR Code untuk inventaris ' . $inventory->id . ': ' . $e->getMessage());
+        }
+
+        // 4. Update data inventaris (kecuali file 'image' dan 'remove_image')
+        $inventoryData = array_diff_key($validatedData, array_flip(['image', 'remove_image']));
+        $inventory->fill($inventoryData);
+        $inventory->save();
+
+        return response()->json($inventory->load(['item', 'room', 'unit']));
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(Inventory $inventory)
+    {
+        // Hapus gambar dan QR Code dari Cloudinary saat inventaris dihapus
+        try {
+            if ($inventory->image_path) {
+                $publicId = pathinfo(parse_url($inventory->image_path, PHP_URL_PATH), PATHINFO_FILENAME);
+                Cloudinary::destroy('inventories_images/' . $publicId);
+            }
+            if ($inventory->qr_code_path) {
+                $publicIdQr = pathinfo(parse_url($inventory->qr_code_path, PHP_URL_PATH), PATHINFO_FILENAME);
+                Cloudinary::destroy('inventories_qrcodes/' . $publicIdQr);
+            }
+        } catch (\Exception $e) {
+            \Log::error('Failed to delete Cloudinary assets for inventory ' . $inventory->id . ': ' . $e->getMessage());
+            // Lanjutkan menghapus record meskipun gagal menghapus aset di Cloudinary
+        }
+
+        $inventory->delete();
+        return response()->json(['message' => 'Inventaris berhasil dihapus.']);
+    }
+
+    // Tambahkan metode showByQrCode jika belum ada
     public function showByQrCode($inventoryNumber)
     {
-        // Eager load semua relasi yang relevan untuk detail QR
-        $inventory = Inventory::with(['item', 'unit', 'room', 'personInCharge', 'maintenances'])
-                              ->where('inventory_number', $inventoryNumber) // Sesuaikan dengan kolom no_inventaris
-                              ->first();
-        if (!$inventory) {
-            return response()->json(['message' => 'Inventaris dengan QR Code ini tidak ditemukan'], 404);
-        }
+        $inventory = Inventory::with(['item', 'room', 'unit', 'personInCharge', 'maintenances'])
+                                ->where('inventory_number', $inventoryNumber)
+                                ->firstOrFail();
         return response()->json($inventory);
-    }
-
-    /**
-     * Update the specified resource in storage (Memperbarui inventaris).
-     * Hanya dapat diakses oleh Admin atau Head.
-     */
-    public function update(Request $request, $id)
-    {
-        $inventory = Inventory::find($id);
-        if (!$inventory) {
-            return response()->json(['message' => 'Inventaris tidak ditemukan'], 404);
-        }
-
-        try {
-            $validatedData = $request->validate([
-                'inventory_number' => 'required|string|max:255|unique:inventories,inventory_number,' . $id,
-                'inventory_item_id' => 'required|exists:inventory_items,id',
-                'acquisition_source' => 'required|string|max:255', 
-                'procurement_date' => 'required|date',
-                'purchase_price' => 'required|numeric|min:0',
-                'estimated_depreciation' => 'required|numeric|min:0',
-                'status' => 'required|string|in:Tersedia,Rusak,Dalam Perbaikan,Hilang,Dipinjam,Tidak Tersedia',
-                'unit_id' => 'required|exists:location_units,id',
-                'room_id' => 'required|exists:rooms,id',
-                'expected_replacement' => 'nullable|date|after_or_equal:procurement_date',
-                'last_checked_at' => 'nullable|date',
-                'pj_id' => 'nullable|exists:users,id',
-                'maintenance_frequency_type' => 'nullable|string|in:bulan,minggu,semester,km',
-                'maintenance_frequency_value' => 'nullable|numeric|min:0',
-                'last_maintenance_at' => 'nullable|date',
-                'next_due_date' => 'nullable|date',
-                'next_due_km' => 'nullable|numeric',
-                // 'image' => 'nullable|image|max:2048', // Jika ada upload gambar
-            ]);
-
-            // Handle image upload jika ada
-            // if ($request->hasFile('image')) {
-            //     // Hapus gambar lama jika ada
-            //     // if ($inventory->image_path) {
-            //     //     Storage::disk('public')->delete($inventory->image_path);
-            //     // }
-            //     $imagePath = $request->file('image')->store('inventory_images', 'public');
-            //     $validatedData['image_path'] = $imagePath;
-            // }
-
-            $inventory->update($validatedData);
-            return response()->json($inventory);
-        } catch (ValidationException $e) {
-            return response()->json([
-                'message' => 'Validasi gagal.',
-                'errors' => $e->errors()
-            ], 422);
-        } catch (\Exception $e) {
-            return response()->json(['message' => 'Gagal memperbarui inventaris: ' . $e->getMessage()], 500);
-        }
-    }
-
-    /**
-     * Remove the specified resource from storage (Menghapus inventaris).
-     * Hanya dapat diakses oleh Admin atau Head.
-     */
-    public function destroy($id)
-    {
-        $inventory = Inventory::find($id);
-        if (!$inventory) {
-            return response()->json(['message' => 'Inventaris tidak ditemukan'], 404);
-        }
-
-        try {
-            // Hapus gambar terkait jika ada
-            // if ($inventory->image_path) {
-            //     Storage::disk('public')->delete($inventory->image_path);
-            // }
-            $inventory->delete();
-            return response()->json(['message' => 'Inventaris berhasil dihapus'], 200);
-        } catch (\Exception $e) {
-            return response()->json(['message' => 'Gagal menghapus inventaris: ' . $e->getMessage()], 500);
-        }
     }
 }

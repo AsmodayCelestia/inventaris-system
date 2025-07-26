@@ -20,6 +20,10 @@ return new class extends Migration {
             $table->decimal('estimated_depreciation', 15, 2)->nullable();
             $table->enum('status', ['Ada', 'Rusak', 'Perbaikan', 'Hilang', 'Dipinjam', '-'])->default('Ada');
 
+            // Tambahkan kolom image_path dan qr_code_path di sini
+            $table->string('image_path')->nullable(); // Path gambar inventaris
+            $table->string('qr_code_path')->nullable(); // Path QR Code inventaris
+
             // Lokasi
             $table->foreignId('unit_id')->constrained('location_units')->onDelete('cascade');
             $table->foreignId('room_id')->constrained('rooms')->onDelete('cascade');
