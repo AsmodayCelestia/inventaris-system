@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5c6c4369cea858b6e5e4e98cf06a58a2",
+    "content-hash": "5b90cefea4804e71bceaed47d8863d26",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -191,35 +191,37 @@
         },
         {
             "name": "cloudinary-labs/cloudinary-laravel",
-            "version": "3.0.1",
+            "version": "2.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cloudinary-community/cloudinary-laravel.git",
-                "reference": "dd039fc3a930e165de793133463acfb396fa56fc"
+                "reference": "ed74eec3b2453ae307e2dda7e8c5cf9556f4daa3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cloudinary-community/cloudinary-laravel/zipball/dd039fc3a930e165de793133463acfb396fa56fc",
-                "reference": "dd039fc3a930e165de793133463acfb396fa56fc",
+                "url": "https://api.github.com/repos/cloudinary-community/cloudinary-laravel/zipball/ed74eec3b2453ae307e2dda7e8c5cf9556f4daa3",
+                "reference": "ed74eec3b2453ae307e2dda7e8c5cf9556f4daa3",
                 "shasum": ""
             },
             "require": {
-                "cloudinary/cloudinary_php": "^3.0",
+                "cloudinary/cloudinary_php": "^2.0",
                 "ext-json": "*",
-                "illuminate/support": "^11.0|^12.0",
-                "php": "^8.2"
+                "illuminate/support": "^10.0|^11.0|^12.0",
+                "php": "^8.1"
             },
             "require-dev": {
                 "laravel/pint": "^1.20",
-                "mockery/mockery": "^1.6",
+                "mockery/mockery": "^1.1",
                 "orchestra/testbench": "^8.0|^9.0|^10.0",
                 "pestphp/pest": "^2.35|^3.0",
-                "phpspec/prophecy-phpunit": "^2.3",
-                "sempro/phpunit-pretty-print": "^1.2"
+                "sempro/phpunit-pretty-print": "^1.0"
             },
             "type": "library",
             "extra": {
                 "laravel": {
+                    "aliases": {
+                        "Cloudinary": "CloudinaryLabs\\CloudinaryLaravel\\Facades\\Cloudinary"
+                    },
                     "providers": [
                         "CloudinaryLabs\\CloudinaryLaravel\\CloudinaryServiceProvider"
                     ]
@@ -227,7 +229,7 @@
             },
             "autoload": {
                 "files": [
-                    "src/helpers.php"
+                    "src/Support/helpers.php"
                 ],
                 "psr-4": {
                     "CloudinaryLabs\\CloudinaryLaravel\\": "src/"
@@ -239,8 +241,9 @@
             ],
             "authors": [
                 {
-                    "name": "Josh Manders",
-                    "homepage": "https://github.com/joshmanders"
+                    "name": "Prosper Otemuyiwa",
+                    "email": "prosperotemuyiwa@gmail.com",
+                    "homepage": "https://github.com/unicodeveloper"
                 }
             ],
             "description": "A Laravel Cloudinary Package",
@@ -255,42 +258,43 @@
             ],
             "support": {
                 "issues": "https://github.com/cloudinary-community/cloudinary-laravel/issues",
-                "source": "https://github.com/cloudinary-community/cloudinary-laravel/tree/3.0.1"
+                "source": "https://github.com/cloudinary-community/cloudinary-laravel/tree/2.3.0"
             },
-            "time": "2025-04-22T13:11:27+00:00"
+            "time": "2025-03-06T20:51:20+00:00"
         },
         {
             "name": "cloudinary/cloudinary_php",
-            "version": "3.1.1",
+            "version": "2.14.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cloudinary/cloudinary_php.git",
-                "reference": "5b7d5480ba91d1df19ebb0041b23d85a228845ba"
+                "reference": "5967558bbf5d88e851ebd554559e850ac45b9236"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cloudinary/cloudinary_php/zipball/5b7d5480ba91d1df19ebb0041b23d85a228845ba",
-                "reference": "5b7d5480ba91d1df19ebb0041b23d85a228845ba",
+                "url": "https://api.github.com/repos/cloudinary/cloudinary_php/zipball/5967558bbf5d88e851ebd554559e850ac45b9236",
+                "reference": "5967558bbf5d88e851ebd554559e850ac45b9236",
                 "shasum": ""
             },
             "require": {
-                "cloudinary/transformation-builder-sdk": "^2",
+                "cloudinary/transformation-builder-sdk": "^1",
                 "ext-json": "*",
-                "guzzlehttp/guzzle": "^7.4.5",
+                "guzzlehttp/guzzle": "^6.5.8|^7.4.5",
                 "guzzlehttp/promises": "^1.5.3|^2.0",
-                "guzzlehttp/psr7": "^2.7",
-                "monolog/monolog": "^2|^3",
-                "php": ">=8.0.0",
-                "psr/log": "^2|^3"
+                "guzzlehttp/psr7": "^1.9.1|^2.5",
+                "monolog/monolog": "^1|^2|^3",
+                "php": ">=5.6.0",
+                "psr/log": "^1|^2|^3"
             },
             "require-dev": {
+                "consolidation/robo": "~1",
                 "ext-dom": "*",
                 "ext-libxml": "*",
                 "ext-zip": "*",
                 "friendsofphp/php-cs-fixer": "*",
                 "phpmd/phpmd": "*",
-                "squizlabs/php_codesniffer": "*",
-                "symfony/phpunit-bridge": "^7.2"
+                "squizlabs/php_codesniffer": "3.*",
+                "symfony/phpunit-bridge": "^5.2"
             },
             "type": "library",
             "autoload": {
@@ -320,36 +324,37 @@
             "support": {
                 "email": "info@cloudinary.com",
                 "issues": "https://github.com/cloudinary/cloudinary_php/issues",
-                "source": "https://github.com/cloudinary/cloudinary_php/tree/3.1.1"
+                "source": "https://github.com/cloudinary/cloudinary_php/tree/2.14.0"
             },
-            "time": "2025-06-17T17:17:38+00:00"
+            "time": "2024-05-07T15:14:12+00:00"
         },
         {
             "name": "cloudinary/transformation-builder-sdk",
-            "version": "2.1.2",
+            "version": "1.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cloudinary/php-transformation-builder-sdk.git",
-                "reference": "6ff4a84f14dbc5197563db63b6abbbe77a68d7e7"
+                "reference": "8c225472e96291a7af23ddf8947bdf31baac403e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cloudinary/php-transformation-builder-sdk/zipball/6ff4a84f14dbc5197563db63b6abbbe77a68d7e7",
-                "reference": "6ff4a84f14dbc5197563db63b6abbbe77a68d7e7",
+                "url": "https://api.github.com/repos/cloudinary/php-transformation-builder-sdk/zipball/8c225472e96291a7af23ddf8947bdf31baac403e",
+                "reference": "8c225472e96291a7af23ddf8947bdf31baac403e",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
-                "php": ">=8.0.0"
+                "php": ">=5.6.0"
             },
             "require-dev": {
+                "consolidation/robo": "~1",
                 "ext-dom": "*",
                 "ext-libxml": "*",
                 "ext-zip": "*",
                 "friendsofphp/php-cs-fixer": "*",
                 "phpmd/phpmd": "*",
-                "squizlabs/php_codesniffer": "*",
-                "symfony/phpunit-bridge": "^7.2"
+                "squizlabs/php_codesniffer": "3.*",
+                "symfony/phpunit-bridge": "^5.2"
             },
             "type": "library",
             "autoload": {
@@ -379,9 +384,9 @@
             "support": {
                 "email": "info@cloudinary.com",
                 "issues": "https://github.com/cloudinary/php-transformation-builder-sdk/issues",
-                "source": "https://github.com/cloudinary/php-transformation-builder-sdk/tree/2.1.2"
+                "source": "https://github.com/cloudinary/php-transformation-builder-sdk/tree/1.5.0"
             },
-            "time": "2025-02-03T11:14:03+00:00"
+            "time": "2024-05-27T12:26:00+00:00"
         },
         {
             "name": "dasprid/enum",
@@ -1354,16 +1359,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v12.20.0",
+            "version": "v12.21.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "1b9a00f8caf5503c92aa436279172beae1a484ff"
+                "reference": "ac8c4e73bf1b5387b709f7736d41427e6af1c93b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/1b9a00f8caf5503c92aa436279172beae1a484ff",
-                "reference": "1b9a00f8caf5503c92aa436279172beae1a484ff",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/ac8c4e73bf1b5387b709f7736d41427e6af1c93b",
+                "reference": "ac8c4e73bf1b5387b709f7736d41427e6af1c93b",
                 "shasum": ""
             },
             "require": {
@@ -1565,7 +1570,7 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
-            "time": "2025-07-08T15:02:21+00:00"
+            "time": "2025-07-22T15:41:55+00:00"
         },
         {
             "name": "laravel/prompts",
@@ -1819,16 +1824,16 @@
         },
         {
             "name": "league/commonmark",
-            "version": "2.7.0",
+            "version": "2.7.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/commonmark.git",
-                "reference": "6fbb36d44824ed4091adbcf4c7d4a3923cdb3405"
+                "reference": "10732241927d3971d28e7ea7b5712721fa2296ca"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/commonmark/zipball/6fbb36d44824ed4091adbcf4c7d4a3923cdb3405",
-                "reference": "6fbb36d44824ed4091adbcf4c7d4a3923cdb3405",
+                "url": "https://api.github.com/repos/thephpleague/commonmark/zipball/10732241927d3971d28e7ea7b5712721fa2296ca",
+                "reference": "10732241927d3971d28e7ea7b5712721fa2296ca",
                 "shasum": ""
             },
             "require": {
@@ -1857,7 +1862,7 @@
                 "symfony/process": "^5.4 | ^6.0 | ^7.0",
                 "symfony/yaml": "^2.3 | ^3.0 | ^4.0 | ^5.0 | ^6.0 | ^7.0",
                 "unleashedtech/php-coding-standard": "^3.1.1",
-                "vimeo/psalm": "^4.24.0 || ^5.0.0"
+                "vimeo/psalm": "^4.24.0 || ^5.0.0 || ^6.0.0"
             },
             "suggest": {
                 "symfony/yaml": "v2.3+ required if using the Front Matter extension"
@@ -1922,7 +1927,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-05-05T12:20:28+00:00"
+            "time": "2025-07-20T12:47:49+00:00"
         },
         {
             "name": "league/config",

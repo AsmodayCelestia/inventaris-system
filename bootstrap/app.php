@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+// Hapus baris ini jika ada: use Illuminate\Support\Facades\Facade;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -16,13 +17,13 @@ return Application::configure(basePath: dirname(__DIR__))
             'role' => \App\Http\Middleware\CheckUserRole::class,
             'auth:sanctum' => \Laravel\Sanctum\Http\Middleware\AuthenticateWithApiTokens::class,
         ]);
-
-        // Pastikan middleware CORS sudah ada di sini jika diperlukan
         $middleware->api(prepend: [
             \Illuminate\Http\Middleware\HandleCors::class,
         ]);
     })
-    // PASTIKAN TIDAK ADA ->withProviders([...]) atau ->withFacades([...]) DI SINI
+    ->withProviders([
+        SimpleSoftwareIO\QrCode\QrCodeServiceProvider::class,
+    ])
     ->withExceptions(function (Exceptions $exceptions): void {
         //
     })->create();

@@ -303,27 +303,28 @@ const fetchInventoryData = async () => {
 };
 
 const submitForm = async () => {
-    errors.value = {};
+    errors.value = {}; // reset error state
     try {
         const formData = new FormData();
-        for (const key in form.value) {
-            if (key === 'current_image_url') continue;
 
-            if (key === 'image' && form.value[key] instanceof File) {
-                formData.append(key, form.value[key]);
-            } else if (key === 'remove_image') { // <-- UBAH LOGIKA INI
-                formData.append(key, form.value[key] ? 1 : 0); // <-- KIRIM 1 ATAU 0
-            } else if (form.value[key] !== null && form.value[key] !== '') {
-                formData.append(key, form.value[key]);
+        Object.entries(form.value).forEach(([key, value]) => {
+            if (key === 'current_image_url') return;
+
+            if (key === 'image' && value instanceof File) {
+                formData.append('image', value);
+            } else if (key === 'remove_image') {
+                formData.append('remove_image', value ? '1' : '0');
+            } else if (value !== null && value !== '') {
+                formData.append(key, value);
             }
-        }
+        });
+
         formData.append('_method', 'PUT');
 
-        // Ganti axios.post menjadi window.axios.post
-        await window.axios.post(`/api/inventories/${inventoryId}`, formData, {
+        const response = await window.axios.post(`/api/inventories/${inventoryId}`, formData, {
             headers: {
-                'Content-Type': 'multipart/form-data'
-            }
+                'Content-Type': 'multipart/form-data',
+            },
         });
 
         alert('Inventaris berhasil diperbarui!');
@@ -334,10 +335,11 @@ const submitForm = async () => {
             errors.value = error.response.data.errors;
         } else {
             console.error('Gagal memperbarui inventaris:', error);
-            alert('Terjadi kesalahan saat memperbarui inventaris. Silakan coba lagi.');
+            alert('Terjadi kesalahan saat memperbarui inventaris.');
         }
     }
 };
+
 
 onMounted(() => {
     fetchInventoryData();
