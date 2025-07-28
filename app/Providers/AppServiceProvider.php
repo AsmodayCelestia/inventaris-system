@@ -18,6 +18,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Kalau request dari ngrok, jangan pakai hot reload
+        if (request()->getHost() && str_contains(request()->getHost(), 'ngrok-free.app')) {
+            config(['app.asset_url' => env('ASSET_URL')]); // Pakai ASSET_URL dari .env
+            config(['vite.hot_file' => null]); // Matikan Vite HMR agar Blade load build file
+        }
     }
 }

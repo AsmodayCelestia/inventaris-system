@@ -4,8 +4,10 @@ import { defineStore } from 'pinia';
 import axios from 'axios';
 import router from '../router';
 
-const API_BASE_URL = 'http://127.0.0.1:8000/api'; // Pastikan URL API kamu benar
-// const API_BASE_URL = 'https://e1fb794d13df.ngrok-free.app/api'; // Ganti dengan URL ngrok kamu yang sebenarnya
+// const API_BASE_URL = 'http://127.0.0.1:8000/api'; // Pastikan URL API kamu benar
+// const API_BASE_URL = 'https://8833c3532634.ngrok-free.app/api'; // Ganti dengan URL ngrok kamu yang sebenarnya
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 
 export const useCounterStore = defineStore('inventoryApp', {
   state: () => ({
