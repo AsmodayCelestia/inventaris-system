@@ -9,6 +9,7 @@ use Illuminate\Validation\ValidationException; // Untuk menangkap error validasi
 
 class AuthController extends Controller
 {
+    // try
     public function register(Request $request)
     {
         try {
