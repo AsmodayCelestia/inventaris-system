@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Floor; // Asumsi kamu punya model Floor
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
 class FloorController extends Controller
@@ -18,6 +19,12 @@ class FloorController extends Controller
         $floors = Floor::with('unit')->get(); 
         return response()->json($floors);
     }
+    public function indexByUnit($unitId)
+    {
+        $floors = Floor::where('unit_id', $unitId)->get();
+        return response()->json($floors);
+    }
+
 
     /**
      * Store a newly created resource in storage (Menambah lantai baru).
@@ -27,8 +34,15 @@ class FloorController extends Controller
     {
         try {
             $validatedData = $request->validate([
-                'name' => 'required|string|max:255|unique:floors,name', 
-                'unit_id' => 'required|exists:location_units,id', // <-- DIHILANGKAN KOMENTAR DAN DIJADIKAN REQUIRED
+                'number' => [
+                    'required',
+                    'string',
+                    'max:255',
+                    Rule::unique('floors')->where(function ($query) use ($request) {
+                        return $query->where('unit_id', $request->unit_id);
+                    }),
+                ],
+                'unit_id' => 'required|exists:location_units,id',
             ]);
 
             $floor = Floor::create($validatedData);
@@ -42,6 +56,7 @@ class FloorController extends Controller
             return response()->json(['message' => 'Gagal menambah lantai: ' . $e->getMessage()], 500);
         }
     }
+
 
     /**
      * Display the specified resource (Menampilkan detail satu lantai).
@@ -69,8 +84,15 @@ class FloorController extends Controller
 
         try {
             $validatedData = $request->validate([
-                'name' => 'required|string|max:255|unique:floors,name,' . $id, 
-                'unit_id' => 'required|exists:location_units,id', // <-- DIHILANGKAN KOMENTAR DAN DIJADIKAN REQUIRED
+                'number' => [
+                    'required',
+                    'string',
+                    'max:255',
+                    Rule::unique('floors')->where(function ($query) use ($request) {
+                        return $query->where('unit_id', $request->unit_id);
+                    })->ignore($id),
+                ],
+                'unit_id' => 'required|exists:location_units,id',
             ]);
 
             $floor->update($validatedData);
@@ -84,6 +106,7 @@ class FloorController extends Controller
             return response()->json(['message' => 'Gagal memperbarui lantai: ' . $e->getMessage()], 500);
         }
     }
+
 
     /**
      * Remove the specified resource from storage (Menghapus lantai).

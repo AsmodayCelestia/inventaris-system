@@ -1,5 +1,4 @@
 <template>
-    <Layout>
         <div class="content-header">
             <div class="container-fluid">
                 <div class="row mb-2">
@@ -213,142 +212,134 @@
                 </div>
             </div>
         </div>
-    </Layout>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import Layout from './Layout.vue';
-import { useCounterStore } from '../stores/counter';
 import { useRouter, useRoute } from 'vue-router';
-// HAPUS BARIS INI: import axios from 'axios'; // <--- HAPUS INI
-
-const counterStore = useCounterStore();
+import { useCounterStore } from '../stores/counter';
+defineProps(['id']);
 const router = useRouter();
 const route = useRoute();
+const counterStore = useCounterStore();
 
 const inventoryId = route.params.id;
 
 const form = ref({
-    inventory_number: '',
-    inventory_item_id: '',
-    acquisition_source: '',
-    procurement_date: '',
-    purchase_price: '',
-    estimated_depreciation: '',
-    status: '',
-    unit_id: '',
-    room_id: '',
-    expected_replacement: '',
-    last_checked_at: '',
-    pj_id: '',
-    maintenance_frequency_type: '',
-    maintenance_frequency_value: '',
-    last_maintenance_at: '',
-    next_due_date: '',
-    next_due_km: '',
-    last_odometer_reading: '',
-    description: '',
-    image: null, // Untuk file gambar baru
-    current_image_url: null, // Untuk menampilkan gambar yang sudah ada
-    remove_image: false, // Flag untuk menghapus gambar yang ada
+  inventory_number: '',
+  inventory_item_id: '',
+  acquisition_source: '',
+  procurement_date: '',
+  purchase_price: '',
+  estimated_depreciation: '',
+  status: '',
+  unit_id: '',
+  room_id: '',
+  expected_replacement: '',
+  last_checked_at: '',
+  pj_id: '',
+  maintenance_frequency_type: '',
+  maintenance_frequency_value: '',
+  last_maintenance_at: '',
+  next_due_date: '',
+  next_due_km: '',
+  last_odometer_reading: '',
+  description: '',
+  image: null,
+  current_image_url: null,
+  remove_image: false,
 });
 
-const loading = ref(true);
-const fetchError = ref(null);
 const errors = ref({});
-
+const loading = ref(false);
+const fetchError = ref(null);
 const imageName = ref('');
 const imageUrlPreview = ref(null);
 
 const handleImageUpload = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-        form.value.image = file;
-        imageName.value = file.name;
-        imageUrlPreview.value = URL.createObjectURL(file);
-        form.value.remove_image = false; // Jika upload gambar baru, batalkan hapus gambar lama
-    } else {
-        form.value.image = null;
-        imageName.value = '';
-        imageUrlPreview.value = null;
-    }
+  const file = event.target.files[0];
+  if (file) {
+    form.value.image = file;
+    imageName.value = file.name;
+    imageUrlPreview.value = URL.createObjectURL(file);
+    form.value.remove_image = false;
+  } else {
+    form.value.image = null;
+    imageName.value = '';
+    imageUrlPreview.value = null;
+  }
 };
 
 const fetchInventoryData = async () => {
-    loading.value = true;
-    fetchError.value = null;
-    try {
-        // Ganti axios.get menjadi window.axios.get
-        const response = await window.axios.get(`/api/inventories/${inventoryId}`);
-        const data = response.data;
-
-        for (const key in form.value) {
-            if (data[key] !== undefined && key !== 'image' && key !== 'current_image_url' && key !== 'remove_image') {
-                if (['procurement_date', 'expected_replacement', 'last_checked_at', 'last_maintenance_at', 'next_due_date'].includes(key) && data[key]) {
-                    form.value[key] = data[key].split('T')[0];
-                } else {
-                    form.value[key] = data[key];
-                }
-            }
-        }
-        form.value.current_image_url = data.image_path || null;
-
-    } catch (error) {
-        console.error('Failed to fetch inventory data:', error);
-        fetchError.value = error.message || 'Gagal memuat data inventaris.';
-    } finally {
-        loading.value = false;
+  loading.value = true;
+  fetchError.value = null;
+  try {
+    const res = await window.axios.get(`/inventories/${inventoryId}`);
+    const data = res.data;
+    console.log('✅ INVENTORY ID:', inventoryId);
+    console.log('✅ RESPONSE DATA:', data);
+    for (const key in form.value) {
+      if (['image', 'current_image_url', 'remove_image'].includes(key)) continue;
+      if (data[key] !== undefined) {
+        form.value[key] = ['procurement_date', 'expected_replacement', 'last_checked_at', 'last_maintenance_at', 'next_due_date'].includes(key) && data[key]
+          ? data[key].split('T')[0]
+          : data[key];
+      }
     }
+
+    form.value.current_image_url = data.image_path || null;
+  } catch (error) {
+    console.error('Failed to fetch inventory data:', error);
+    fetchError.value = error.message || 'Gagal memuat data inventaris.';
+  } finally {
+    loading.value = false;
+  }
 };
 
 const submitForm = async () => {
-    errors.value = {}; // reset error state
-    try {
-        const formData = new FormData();
+  errors.value = {};
+  try {
+    const formData = new FormData();
 
-        Object.entries(form.value).forEach(([key, value]) => {
-            if (key === 'current_image_url') return;
+    Object.entries(form.value).forEach(([key, value]) => {
+      if (key === 'current_image_url') return;
 
-            if (key === 'image' && value instanceof File) {
-                formData.append('image', value);
-            } else if (key === 'remove_image') {
-                formData.append('remove_image', value ? '1' : '0');
-            } else if (value !== null && value !== '') {
-                formData.append(key, value);
-            }
-        });
+      if (key === 'image' && value instanceof File) {
+        formData.append('image', value);
+      } else if (key === 'remove_image') {
+        formData.append('remove_image', value ? '1' : '0');
+      } else if (value !== null && value !== '') {
+        formData.append(key, value);
+      }
+    });
 
-        formData.append('_method', 'PUT');
+    formData.append('_method', 'PUT');
 
-        const response = await window.axios.post(`/api/inventories/${inventoryId}`, formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            },
-        });
+    await window.axios.post(`/inventories/${inventoryId}`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
 
-        alert('Inventaris berhasil diperbarui!');
-        router.push('/inventories');
-
-    } catch (error) {
-        if (error.response && error.response.status === 422) {
-            errors.value = error.response.data.errors;
-        } else {
-            console.error('Gagal memperbarui inventaris:', error);
-            alert('Terjadi kesalahan saat memperbarui inventaris.');
-        }
+    alert('Inventaris berhasil diperbarui!');
+    router.push('/inventories');
+  } catch (error) {
+    if (error.response?.status === 422) {
+      errors.value = error.response.data.errors;
+    } else {
+      console.error('Gagal memperbarui inventaris:', error);
+      alert('Terjadi kesalahan saat memperbarui inventaris.');
     }
+  }
 };
 
-
 onMounted(() => {
-    fetchInventoryData();
-    counterStore.fetchInventoryItems();
-    counterStore.fetchLocationUnits();
-    counterStore.fetchRooms();
-    counterStore.fetchUsersList();
+  fetchInventoryData();
+  counterStore.fetchInventoryItems();
+  counterStore.fetchLocationUnits();
+  counterStore.fetchRooms();
+  counterStore.fetchUsersList();
 });
 </script>
+
 
 <style scoped>
 .custom-file-input:lang(en)~.custom-file-label::after {

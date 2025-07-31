@@ -361,6 +361,7 @@ export const useCounterStore = defineStore('inventoryApp', {
       try {
         const url = unitId ? `${API_BASE_URL}/units/${unitId}/floors` : `${API_BASE_URL}/floors`;
         const response = await axios.get(url);
+        
         this.floors = response.data;
       } catch (error) {
         console.error('Failed to fetch floors:', error);
@@ -368,15 +369,16 @@ export const useCounterStore = defineStore('inventoryApp', {
       }
     },
     async createFloor(floorData) {
-        try {
-            const response = await axios.post(`${API_BASE_URL}/floors`, floorData);
-            this.fetchFloors();
-            return response.data;
-        } catch (error) {
-            console.error('Failed to create floor:', error);
-            if (error.response && error.response.status === 401) this.logout();
-            throw error;
-        }
+    console.log('Creating floor with:', floorData); // <—— Tambahkan ini
+    try {
+        const response = await axios.post(`${API_BASE_URL}/floors`, floorData);
+        this.fetchFloors();
+        return response.data;
+    } catch (error) {
+        console.error('Failed to create floor:', error);
+        if (error.response && error.response.status === 401) this.logout();
+        throw error;
+    }
     },
     async updateFloor(id, floorData) {
         try {
@@ -400,15 +402,15 @@ export const useCounterStore = defineStore('inventoryApp', {
         }
     },
 
-    async fetchRooms(floorId = null) {
-      try {
-        const url = floorId ? `${API_BASE_URL}/floors/${floorId}/rooms` : `${API_BASE_URL}/rooms`;
-        const response = await axios.get(url);
-        this.rooms = response.data;
-      } catch (error) {
-        console.error('Failed to fetch rooms:', error);
-        if (error.response && error.response.status === 401) this.logout();
-      }
+    async fetchRooms() {
+        try {
+            const response = await axios.get(`${API_BASE_URL}/rooms`);
+            
+            this.rooms = response.data;
+        } catch (error) {
+            console.error('Failed to fetch rooms:', error);
+            if (error.response && error.response.status === 401) this.logout();
+        }
     },
     async createRoom(roomData) {
         try {
@@ -502,6 +504,15 @@ export const useCounterStore = defineStore('inventoryApp', {
             this.inventoryItemLoading = false;
         }
     },
+    async fetchInventoryItemById(id) {
+        try {
+            const response = await axios.get(`${API_BASE_URL}/inventory-items/${id}`);
+            return response.data;
+        } catch (error) {
+            console.error('Failed to fetch inventory item by ID:', error);
+            throw error;
+        }
+    },
     async createInventoryItem(itemData) {
         this.inventoryItemLoading = true;
         this.inventoryItemError = null;
@@ -592,7 +603,10 @@ export const useCounterStore = defineStore('inventoryApp', {
     },
     async fetchInventoryDetail(id) {
       try {
+        console.log(API_BASE_URL);
         const response = await axios.get(`${API_BASE_URL}/inventories/${id}`);
+        const data = response.data;
+        console.log('DATA INVENTORY:', data);
         this.selectedInventoryDetail = response.data;
         return response.data;
       } catch (error) {

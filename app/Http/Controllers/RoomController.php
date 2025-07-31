@@ -15,7 +15,7 @@ class RoomController extends Controller
     public function index()
     {
         // Eager load relasi floor dan locationPersonInCharge
-        $rooms = Room::with(['floor', 'locationPersonInCharge'])->get();
+        $rooms = Room::with(['floor.unit', 'locationPersonInCharge'])->get();
         return response()->json($rooms);
     }
 
@@ -51,7 +51,7 @@ class RoomController extends Controller
     public function show($id)
     {
         // Eager load relasi floor dan locationPersonInCharge
-        $room = Room::with(['floor', 'locationPersonInCharge'])->find($id);
+    $room = Room::with(['floor.unit', 'locationPersonInCharge'])->find($id);
         if (!$room) {
             return response()->json(['message' => 'Ruangan tidak ditemukan'], 404);
         }

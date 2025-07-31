@@ -47,6 +47,7 @@
     <!-- AdminLTE App -->
     <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
 
+    
     <!-- Vite (untuk memuat bundle Vue.js kamu) -->
     @vite('resources/js/app.js')
 </body>

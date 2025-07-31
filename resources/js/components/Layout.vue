@@ -57,52 +57,95 @@
                         </li>
 
                         <!-- Master Data (Hanya Admin) -->
-                        <!-- Menu ini hanya akan aktif jika path dimulai dengan /master-data TAPI BUKAN /master-data/barang -->
-                        <li class="nav-item has-treeview" :class="{ 'menu-open': isMasterDataOpen }" v-if="counterStore.isAdmin">
-                            <a href="#" class="nav-link" @click.prevent="toggleMasterData" :class="{ active: $route.path.startsWith('/master-data') && !$route.path.startsWith('/master-data/barang') }">
-                                <i class="nav-icon fas fa-database"></i>
+                        <!-- Menu ini hanya akan aktif jika path dimulai dengan /master-data TAPI BUKAN /inventories/master-barang -->
+<li class="nav-item has-treeview" :class="{ 'menu-open': isMasterDataOpen }" v-if="counterStore.isAdmin">
+    <a href="#" class="nav-link" @click.prevent="toggleMasterData" :class="{ active: $route.path.startsWith('/master-data') }">
+        <i class="nav-icon fas fa-database"></i>
+        <p>
+            Master Data
+            <i class="right fas fa-angle-left"></i>
+        </p>
+    </a>
+    <ul class="nav nav-treeview">
+        <li class="nav-item">
+            <router-link to="/master-data/brands" class="nav-link" :class="{ active: $route.path === '/master-data/brands' }">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Merk</p>
+            </router-link>
+        </li>
+        <li class="nav-item">
+            <router-link to="/master-data/categories" class="nav-link" :class="{ active: $route.path === '/master-data/categories' }">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Kategori</p>
+            </router-link>
+        </li>
+        <li class="nav-item">
+            <router-link to="/master-data/item-types" class="nav-link" :class="{ active: $route.path === '/master-data/item-types' }">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Jenis</p>
+            </router-link>
+        </li>
+        <li class="nav-item">
+            <router-link to="/master-data/floors" class="nav-link" :class="{ active: $route.path === '/master-data/floors' }">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Lantai</p>
+            </router-link>
+        </li>
+        <li class="nav-item">
+            <router-link to="/master-data/units" class="nav-link" :class="{ active: $route.path === '/master-data/units' }">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Unit Lokasi</p>
+            </router-link>
+        </li>
+        <li class="nav-item">
+            <router-link to="/master-data/rooms" class="nav-link" :class="{ active: $route.path === '/master-data/rooms' }">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Ruang</p>
+            </router-link>
+        </li>
+        <li class="nav-item">
+            <router-link to="/master-data/users" class="nav-link" :class="{ active: $route.path === '/master-data/users' }">
+                <i class="far fa-circle nav-icon"></i>
+                <p>User</p>
+            </router-link>
+        </li>
+    </ul>
+</li>
+
+
+
+                        <!-- Data Inventaris (Admin & Head & Karyawan) -->
+                        <!-- Link ini akan aktif jika path dimulai dengan /inventories ATAU /inventories/master-barang -->
+                        <li class="nav-item has-treeview"
+                            :class="{ 'menu-open': isInventarisOpen }"
+                            v-if="counterStore.isAdmin || counterStore.isHead || counterStore.isKaryawan">
+                            <a href="#" class="nav-link"
+                                @click.prevent="toggleInventaris"
+                                :class="{ active: $route.path.startsWith('/inventories') || $route.path.startsWith('/inventories/master-barang') }">
+                                <i class="nav-icon fas fa-box"></i>
                                 <p>
-                                    Master Data
+                                    Data Inventaris
                                     <i class="right fas fa-angle-left"></i>
                                 </p>
                             </a>
                             <ul class="nav nav-treeview">
-                                <!-- Link Master Barang dihapus dari sini, sekarang ada di tab Data Inventaris -->
                                 <li class="nav-item">
-                                    <router-link to="/master-data/merk" class="nav-link" :class="{ active: $route.path === '/master-data/merk' }">
+                                    <router-link to="/inventories" class="nav-link"
+                                        :class="{ active: $route.path === '/inventories' }">
                                         <i class="far fa-circle nav-icon"></i>
-                                        <p>Merk</p>
+                                        <p>Unit Inventaris</p>
                                     </router-link>
                                 </li>
-                                <li class="nav-item">
-                                    <router-link to="/master-data/kategori" class="nav-link" :class="{ active: $route.path === '/master-data/kategori' }">
+                                <li class="nav-item" v-if="counterStore.isAdmin">
+                                    <router-link to="/inventories/master-barang" class="nav-link"
+                                        :class="{ active: $route.path === '/inventories/master-barang' }">
                                         <i class="far fa-circle nav-icon"></i>
-                                        <p>Kategori</p>
-                                    </router-link>
-                                </li>
-                                <li class="nav-item">
-                                    <router-link to="/master-data/jenis" class="nav-link" :class="{ active: $route.path === '/master-data/jenis' }">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Jenis</p>
-                                    </router-link>
-                                </li>
-                                <li class="nav-item">
-                                    <router-link to="/master-data/lokasi" class="nav-link" :class="{ active: $route.path === '/master-data/lokasi' }">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Lokasi</p>
+                                        <p>Master Barang</p>
                                     </router-link>
                                 </li>
                             </ul>
                         </li>
 
-                        <!-- Data Inventaris (Admin & Head & Karyawan) -->
-                        <!-- Link ini akan aktif jika path dimulai dengan /inventories ATAU /master-data/barang -->
-                        <li class="nav-item" v-if="counterStore.isAdmin || counterStore.isHead || counterStore.isKaryawan">
-                            <router-link to="/inventories" class="nav-link" :class="{ active: $route.path.startsWith('/inventories') || $route.path.startsWith('/master-data/barang') }">
-                                <i class="nav-icon fas fa-box"></i>
-                                <p>Data Inventaris</p>
-                            </router-link>
-                        </li>
 
                         <!-- Maintenance (Admin & Head) -->
                         <li class="nav-item has-treeview" :class="{ 'menu-open': isMaintenanceOpen }" v-if="counterStore.isAdmin || counterStore.isHead">
@@ -178,9 +221,11 @@
             <!-- /.sidebar -->
         </aside>
 
+        <div class="sidebar-overlay" @click="document.body.classList.remove('sidebar-open')"></div>
+
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
-            <slot></slot>
+            <router-view />
         </div>
         <!-- /.content-wrapper -->
 
@@ -195,7 +240,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref, watch } from 'vue';
+import { onMounted, onBeforeUnmount, ref, watch } from 'vue';
 import { useCounterStore } from '../stores/counter';
 import { useRoute } from 'vue-router';
 
@@ -205,29 +250,94 @@ const route = useRoute();
 const isMasterDataOpen = ref(false);
 const isMaintenanceOpen = ref(false);
 const isQrCodeOpen = ref(false);
+const isInventarisOpen = ref(false);
 
+const toggleInventaris = () => { isInventarisOpen.value = !isInventarisOpen.value; };
 const toggleMasterData = () => { isMasterDataOpen.value = !isMasterDataOpen.value; };
 const toggleMaintenance = () => { isMaintenanceOpen.value = !isMaintenanceOpen.value; };
 const toggleQrCode = () => { isQrCodeOpen.value = !isQrCodeOpen.value; };
 
-// Watch route changes to open/close sidebar menus
 watch(route, (newRoute) => {
-    // Master Data menu hanya terbuka jika path dimulai dengan /master-data TAPI BUKAN /master-data/barang
-    isMasterDataOpen.value = newRoute.path.startsWith('/master-data') && !newRoute.path.startsWith('/master-data/barang');
+    isMasterDataOpen.value = newRoute.path.startsWith('/master-data') && !newRoute.path.startsWith('/inventories/master-barang');
     isMaintenanceOpen.value = newRoute.path.startsWith('/maintenance');
     isQrCodeOpen.value = newRoute.path.startsWith('/qr-code');
-}, { immediate: true }); // immediate: true agar dijalankan saat komponen pertama kali dimuat
+    isInventarisOpen.value = newRoute.path.startsWith('/inventories') || newRoute.path.startsWith('/inventories/master-barang');
+
+    // 🩹 FIX: Re-init AdminLTE JS plugins setiap ganti route
+    setTimeout(() => {
+        if (window.$) {
+            try {
+                // Sidebar toggle
+                if (window.$('[data-widget="pushmenu"]').length && window.$.fn.pushMenu) {
+                    window.$('[data-widget="pushmenu"]').pushMenu('collapse');
+                }
+
+                // Sidebar treeview
+                if (window.$('[data-widget="treeview"]').length && window.$.fn.Treeview) {
+                    window.$('[data-widget="treeview"]').Treeview('init');
+                }
+
+                // Optional: tooltip, dropdown, dll
+                window.$('[data-toggle="tooltip"]').tooltip();
+            } catch (err) {
+                console.warn('AdminLTE plugin gagal di-reinit:', err);
+            }
+        }
+    }, 200); // kasih delay kecil biar DOM sudah stabil
+}, { immediate: true });
+
+
+const handleClickOutsideSidebar = (event) => {
+    const sidebar = document.querySelector('.main-sidebar');
+    const hamburger = document.querySelector('[data-widget="pushmenu"]');
+
+    if (
+        sidebar &&
+        !sidebar.contains(event.target) &&
+        (!hamburger || !hamburger.contains(event.target))
+    ) {
+        if (window.innerWidth >= 768) {
+            document.body.classList.add('sidebar-collapse');
+            document.body.classList.remove('sidebar-open');
+        }
+    }
+};
 
 onMounted(() => {
-    // Pastikan AdminLTE JavaScript diinisialisasi jika diperlukan
-    // Ini biasanya ditangani oleh AdminLTE itu sendiri jika di-load dengan benar
-    if (window.$ && window.$.fn.pushMenu) {
-        // console.log('AdminLTE JS components should be active.');
+    document.addEventListener('click', handleClickOutsideSidebar);
+
+    const checkAdminLTEReady = () => {
+        if (typeof window.$ === 'function' && window.$.fn && typeof window.$.fn.pushMenu === 'function') {
+            console.log('✅ AdminLTE aktif.');
+        } else {
+            console.warn('⚠️ jQuery atau Bootstrap tidak ditemukan. Beberapa fitur AdminLTE mungkin tidak berfungsi.');
+        }
+    };
+
+    // Cek jika jQuery dan AdminLTE sudah langsung tersedia
+    if (typeof window.$ !== 'undefined' && window.$.fn && typeof window.$.fn.pushMenu === 'function') {
+        checkAdminLTEReady();
     } else {
-        console.warn('jQuery atau Bootstrap tidak ditemukan. Beberapa fitur AdminLTE mungkin tidak berfungsi.');
+        // Jika belum, tunggu sampai script AdminLTE selesai dimuat dari CDN
+        const adminLteScript = document.querySelector('script[src*="adminlte.min.js"]');
+        if (adminLteScript) {
+            adminLteScript.addEventListener('load', () => {
+                // Tunggu sedikit lagi agar jQuery plugin benar-benar siap
+                setTimeout(checkAdminLTEReady, 100);
+            });
+        } else {
+            console.warn('⚠️ Script AdminLTE belum ditemukan di DOM.');
+        }
     }
 });
+
+
+
+onBeforeUnmount(() => {
+    document.removeEventListener('click', handleClickOutsideSidebar);
+});
 </script>
+
 
 <style scoped>
 /* Gaya khusus untuk komponen ini (jika diperlukan) */
@@ -240,4 +350,15 @@ onMounted(() => {
     background-color: rgba(255, 255, 255, .1);
     color: #fff;
 }
+.sidebar-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 998;
+    background: rgba(0, 0, 0, 0.3);
+    display: none;
+}
+body.sidebar-open .sidebar-overlay {
+    display: block;
+}
+
 </style>

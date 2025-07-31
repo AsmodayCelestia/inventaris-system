@@ -1,7 +1,6 @@
 <!-- resources/js/components/InventoryItemForm.vue -->
 
 <template>
-    <Layout>
         <!-- Content Header (Page header) -->
         <div class="content-header">
             <div class="container-fluid">
@@ -120,7 +119,6 @@
                 </div>
             </div>
         </div>
-    </Layout>
 </template>
 
 <script setup>
@@ -146,52 +144,41 @@ const form = ref({
     manufacturer: '',
     manufacture_year: null,
     isbn: '',
-    image: null, // Untuk file upload
-    current_image_url: null, // Untuk menampilkan gambar yang sudah ada
-    remove_image: false, // Flag untuk menandakan penghapusan gambar
+    image: null,
+    current_image_url: null,
+    remove_image: false,
 });
 
 const errors = ref({});
 
 /**
- * Loads item data when in edit mode.
+ * Load item detail from API for edit mode
  */
 const loadItemData = async () => {
-    if (isEditMode.value) {
-        try {
-            // Find the item in the store's inventoryItems list
-            const item = counterStore.inventoryItems.find(i => i.id == route.params.id);
-            if (item) {
-                form.value.item_code = item.item_code;
-                form.value.name = item.name;
-                form.value.quantity = item.quantity;
-                form.value.brand_id = item.brand_id;
-                form.value.category_id = item.category_id;
-                form.value.type_id = item.type_id;
-                form.value.manufacturer = item.manufacturer;
-                form.value.manufacture_year = item.manufacture_year;
-                form.value.isbn = item.isbn;
-                form.value.current_image_url = item.image_path ? `/storage/${item.image_path}` : null; // Adjust storage path
-            } else {
-                // If item not found in store, attempt to refetch or redirect
-                console.warn('Item not found in store, attempting to refetch or redirect.');
-                router.push('/inventories'); // Redirect to main inventory page
-            }
-        } catch (error) {
-            console.error('Error loading item data:', error);
-            router.push('/inventories'); // Redirect to main inventory page
-        }
+    if (!isEditMode.value) return;
+
+    try {
+        const item = await counterStore.fetchInventoryItemById(route.params.id);
+        form.value.item_code = item.item_code;
+        form.value.name = item.name;
+        form.value.quantity = item.quantity;
+        form.value.brand_id = item.brand_id;
+        form.value.category_id = item.category_id;
+        form.value.type_id = item.type_id;
+        form.value.manufacturer = item.manufacturer;
+        form.value.manufacture_year = item.manufacture_year;
+        form.value.isbn = item.isbn;
+        form.value.current_image_url = item.image_path ? `/storage/${item.image_path}` : null;
+    } catch (error) {
+        console.error('Gagal load item:', error);
+        router.push('/inventories');
     }
 };
 
-/**
- * Handles image file selection.
- * @param {Event} event - The change event from the file input.
- */
 const handleImageUpload = (event) => {
     form.value.image = event.target.files[0];
-    form.value.remove_image = false; // Reset remove_image flag
-    // Show new image preview if a file is selected
+    form.value.remove_image = false;
+
     if (form.value.image) {
         const reader = new FileReader();
         reader.onload = (e) => {
@@ -203,35 +190,26 @@ const handleImageUpload = (event) => {
     }
 };
 
-/**
- * Removes the current image.
- */
 const removeImage = () => {
-    form.value.image = null; // Clear selected file
-    form.value.current_image_url = null; // Clear preview
-    form.value.remove_image = true; // Set flag to tell backend to delete image
-    // Reset file input to allow re-uploading the same file
+    form.value.image = null;
+    form.value.current_image_url = null;
+    form.value.remove_image = true;
     const fileInput = document.getElementById('image');
     if (fileInput) fileInput.value = '';
 };
 
-/**
- * Handles form submission (create or update).
- */
 const handleSubmit = async () => {
-    errors.value = {}; // Reset errors
+    errors.value = {};
     try {
         let payload = { ...form.value };
-        
-        // If remove_image is true, set image_path to null for backend
+
         if (payload.remove_image) {
             payload.image_path = null;
         }
-        
-        // Remove properties that should not be sent to backend or are already handled
+
         delete payload.current_image_url;
         delete payload.remove_image;
-        // If no new file is selected and no removal is requested, don't send 'image' property
+
         if (!payload.image && !form.value.remove_image) {
             delete payload.image;
         }
@@ -241,36 +219,29 @@ const handleSubmit = async () => {
         } else {
             await counterStore.createInventoryItem(payload);
         }
-        router.push('/inventories'); // Redirect to main inventory list after success
+
+        router.push('/inventories');
     } catch (error) {
         if (error.response && error.response.status === 422) {
             errors.value = error.response.data.errors;
         } else {
             console.error('Submission error:', error);
-            // Optional: Show a general error notification
         }
     }
 };
 
-onMounted(() => {
-    // Ensure master data (brands, categories, item types) are fetched for dropdowns
-    counterStore.fetchBrands();
-    counterStore.fetchCategories();
-    counterStore.fetchItemTypes();
-    
-    // If in edit mode, load item data
+onMounted(async () => {
+    await counterStore.fetchBrands();
+    await counterStore.fetchCategories();
+    await counterStore.fetchItemTypes();
+
     if (isEditMode.value) {
-        // Fetch all InventoryItems to ensure the specific item is in the store's list
-        counterStore.fetchInventoryItems().then(() => {
-            loadItemData();
-        });
+        await loadItemData();
     }
 });
 
-// Watch route changes to reset form for new creation or load data for edit
-watch(route, (newRoute) => {
+watch(route, async (newRoute) => {
     if (newRoute.path.endsWith('/master-data/barang/create')) {
-        // Reset form for new creation
         form.value = {
             item_code: '',
             name: '',
@@ -287,10 +258,11 @@ watch(route, (newRoute) => {
         };
         errors.value = {};
     } else if (newRoute.params.id) {
-        loadItemData();
+        await loadItemData();
     }
 });
 </script>
+
 
 <style scoped>
 /* Specific styles for this component (if needed) */

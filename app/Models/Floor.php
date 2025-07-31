@@ -11,7 +11,7 @@ class Floor extends Model
 {
     use HasFactory, LogsActivity;
 
-    protected $fillable = ['name', 'unit_id'];
+    protected $fillable = ['number', 'unit_id'];
 
     public function unit()
     {

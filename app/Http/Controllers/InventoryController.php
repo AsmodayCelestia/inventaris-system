@@ -6,8 +6,10 @@ use App\Models\Inventory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Str;
+
+use Endroid\QrCode\Builder\Builder;
+use Endroid\QrCode\Writer\PngWriter;
 
 class InventoryController extends Controller
 {
@@ -60,16 +62,24 @@ class InventoryController extends Controller
         $inventoryData = array_diff_key($validatedData, array_flip(['image']));
         $inventory = Inventory::create($inventoryData);
 
+        // QR Code generation
         $qrCodePath = null;
         try {
             $detailUrl = config('app.url') . '/inventories/' . $inventory->id;
-            $qrCodeData = QrCode::format('png')->size(300)->generate($detailUrl);
+
+            $qrResult = Builder::create()
+                ->writer(new PngWriter())
+                ->data($detailUrl)
+                ->size(500)
+                ->margin(10)
+                ->build();
+
             $qrCodeFileName = 'qrcodes/inventories/' . $inventory->inventory_number . '-' . Str::random(10) . '.png';
-            Storage::disk('public')->put($qrCodeFileName, $qrCodeData);
+            Storage::disk('public')->put($qrCodeFileName, $qrResult->getString());
 
             $resultQr = Cloudinary::upload(storage_path('app/public/' . $qrCodeFileName), [
                 'folder' => 'inventories_qrcodes',
-                'public_id' => 'qr-' . Str::slug($inventory->inventory_number),
+                'public_id' => 'qr-' . Str::slug($inventory->inventory_number) . '-' . Str::random(8),
             ]);
             $qrCodePath = $resultQr->getSecurePath();
             Storage::disk('public')->delete($qrCodeFileName);
@@ -139,18 +149,30 @@ class InventoryController extends Controller
         $inventory->fill(array_diff_key($validatedData, array_flip(['image', 'remove_image'])));
 
         // QR Code update
-        $qrCodeData = config('app.url') . '/inventories/' . $inventory->id;
-        $qrCodeImage = QrCode::format('png')->size(300)->generate($qrCodeData);
-        $qrTempPath = storage_path('app/public/qr_temp_' . uniqid() . '.png');
-        file_put_contents($qrTempPath, $qrCodeImage);
+        try {
+            $qrCodeData = config('app.url') . '/inventories/' . $inventory->id;
 
-        $uploadedQr = Cloudinary::upload($qrTempPath, [
-            'folder' => 'inventories_qrcodes',
-            'public_id' => 'qr-' . Str::slug($inventory->inventory_number . '-' . time()),
-        ]);
-        $inventory->qr_code_path = $uploadedQr->getSecurePath();
+            $qrResult = Builder::create()
+                ->writer(new PngWriter())
+                ->data($qrCodeData)
+                ->size(300)
+                ->margin(10)
+                ->build();
 
-        unlink($qrTempPath);
+            $qrTempPath = storage_path('app/public/qr_temp_' . uniqid() . '.png');
+            file_put_contents($qrTempPath, $qrResult->getString());
+
+            $uploadedQr = Cloudinary::upload($qrTempPath, [
+                'folder' => 'inventories_qrcodes',
+                'public_id' => 'qr-' . Str::slug($inventory->inventory_number . '-' . time()),
+            ]);
+            $inventory->qr_code_path = $uploadedQr->getSecurePath();
+
+            unlink($qrTempPath);
+        } catch (\Exception $e) {
+            \Log::error('QR Code update error: ' . $e->getMessage());
+        }
+
         $inventory->save();
 
         return response()->json([

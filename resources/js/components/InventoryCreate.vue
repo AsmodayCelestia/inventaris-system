@@ -1,5 +1,4 @@
 <template>
-    <Layout>
         <div class="content">
             <div class="container-fluid">
                 <div class="card">
@@ -32,7 +31,6 @@
                 </div>
             </div>
         </div>
-        </Layout>
 </template>
 
 <script setup>

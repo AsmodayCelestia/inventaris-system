@@ -1,5 +1,5 @@
 <template>
-    <Layout>
+
         <div class="content-header">
             <div class="container-fluid">
                 <div class="row mb-2">
@@ -122,7 +122,7 @@
                 </div>
             </div>
         </div>
-    </Layout>
+
 </template>
 
 <script setup>
@@ -130,8 +130,8 @@ import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import Layout from './Layout.vue';
 import { useCounterStore } from '../stores/counter';
-import axios from 'axios'; // Pastikan axios di-import
-
+import axios from 'axios';
+defineProps(['id']);
 const route = useRoute();
 const counterStore = useCounterStore();
 
@@ -147,18 +147,13 @@ const fetchInventoryDetail = async () => {
     error.value = null;
     try {
         const inventoryId = route.params.id;
-        // LANGSUNG PANGGIL API, HAPUS LOGIKA SIMULASI/STORE FIND
-        const response = await axios.get(`/api/inventories/${inventoryId}`);
+        const response = await axios.get(`/inventories/${inventoryId}`);
         inventory.value = response.data;
 
-        // HAPUS ATAU KOMENTARI BAGIAN INI KARENA SUDAH TIDAK DIBUTUHKAN
-        // if (inventory.value) {
-        //     inventory.value.image_url = inventory.value.image_path ? `/storage/${inventory.value.image_path}` : null;
-        //     inventory.value.qr_code_url = inventory.value.qr_code_path ? `/storage/${inventory.value.qr_code_path}` : null;
-        // }
+        console.log('✅ Detail inventory loaded:', inventory.value); // Debug tambahan
 
     } catch (e) {
-        console.error('Failed to fetch inventory detail:', e);
+        console.error('❌ Failed to fetch inventory detail:', e);
         error.value = e.message || 'Gagal memuat detail inventaris.';
     } finally {
         loading.value = false;
@@ -171,28 +166,19 @@ const fetchInventoryDetail = async () => {
  * @returns {string} The CSS class for the badge.
  */
 const getStatusBadge = (status) => {
-    switch (status.toLowerCase()) {
-        case 'ada':
-            return 'badge-success';
-        case 'rusak':
-            return 'badge-danger';
-        case 'perbaikan':
-            return 'badge-warning';
-        case 'hilang':
-            return 'badge-dark';
-        case 'dipinjam':
-            return 'badge-info';
-        case 'tidak tersedia':
-            return 'badge-secondary';
-        default:
-            return 'badge-primary';
+    switch (status?.toLowerCase()) {
+        case 'ada': return 'badge-success';
+        case 'rusak': return 'badge-danger';
+        case 'perbaikan': return 'badge-warning';
+        case 'hilang': return 'badge-dark';
+        case 'dipinjam': return 'badge-info';
+        case 'tidak tersedia': return 'badge-secondary';
+        default: return 'badge-primary';
     }
 };
 
 /**
  * Formats a date string into a human-readable format.
- * @param {string} dateString - The date string to format.
- * @returns {string} The formatted date or '-' if null/empty.
  */
 const formatDate = (dateString) => {
     if (!dateString) return '-';
@@ -202,8 +188,6 @@ const formatDate = (dateString) => {
 
 /**
  * Formats a numeric value as Indonesian Rupiah currency.
- * @param {number} value - The numeric value to format.
- * @returns {string} The formatted currency string or '-' if null/undefined.
  */
 const formatCurrency = (value) => {
     if (value === null || value === undefined) return '-';
@@ -219,6 +203,7 @@ onMounted(() => {
     fetchInventoryDetail();
 });
 </script>
+
 
 <style scoped>
 /* Specific styles if needed */

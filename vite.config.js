@@ -1,10 +1,10 @@
-import { defineConfig } from 'vite'; // ← ini WAJIB ADA
-import { loadEnv } from 'vite';
-import laravel from 'laravel-vite-plugin'; // ← WAJIB ADA
+import { defineConfig, loadEnv } from 'vite';
+import laravel from 'laravel-vite-plugin';
 import vue from '@vitejs/plugin-vue';
 
 export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, process.cwd());
+    console.log('🔍 Loaded ENV in Vite config:', env);
 
     return {
         plugins: [
@@ -35,6 +35,8 @@ export default defineConfig(({ mode }) => {
                 protocol: env.VITE_USE_WSS === 'true' ? 'wss' : 'ws',
             },
         },
-        base: env.ASSET_URL ? new URL(env.ASSET_URL).origin + '/' : '/',
+        base: mode === 'production'
+            ? env.ASSET_URL ? new URL(env.ASSET_URL).origin + '/' : '/'
+            : '/',
     };
 });

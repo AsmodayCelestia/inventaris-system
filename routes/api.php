@@ -56,7 +56,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // Maintenance - GET Riwayat oleh semua yang login, POST oleh Petugas/Admin/Head
     Route::get('/maintenance/history', [MaintenanceController::class, 'index']);
     Route::post('/inventories/{inventoryId}/maintenance', [MaintenanceController::class, 'store']);
-
+ 
     // Dashboard - GET Statistik Dashboard oleh semua yang login
     Route::get('/dashboard/stats', [DashboardController::class, 'getStats']);
 
