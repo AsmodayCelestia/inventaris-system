@@ -44,6 +44,8 @@ class InventoryItem extends Model
         return $this->hasMany(Inventory::class);
     }
 
+    
+
     /**
      * Konfigurasi untuk Activity Log.
      * Menentukan kolom mana yang akan dilacak perubahannya.

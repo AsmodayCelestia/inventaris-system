@@ -116,13 +116,13 @@ class InventoryController extends Controller
             'room_id' => 'required|exists:rooms,id',
             'expected_replacement' => 'nullable|date',
             'last_checked_at' => 'nullable|date',
-            'pj_id' => 'nullable|exists:users,id',
-            'maintenance_frequency_type' => 'nullable|in:bulan,km,minggu,semester',
-            'maintenance_frequency_value' => 'nullable|integer',
-            'last_maintenance_at' => 'nullable|date',
-            'next_due_date' => 'nullable|date',
-            'next_due_km' => 'nullable|integer',
-            'last_odometer_reading' => 'nullable|integer',
+            // 'pj_id' => 'nullable|exists:users,id',
+            // 'maintenance_frequency_type' => 'nullable|in:bulan,km,minggu,semester',
+            // 'maintenance_frequency_value' => 'nullable|integer',
+            // 'last_maintenance_at' => 'nullable|date',
+            // 'next_due_date' => 'nullable|date',
+            // 'next_due_km' => 'nullable|integer',
+            // 'last_odometer_reading' => 'nullable|integer',
             'description' => 'nullable|string',
             'image' => 'nullable|image|max:2048',
             'remove_image' => 'nullable|in:0,1',
@@ -149,29 +149,33 @@ class InventoryController extends Controller
         $inventory->fill(array_diff_key($validatedData, array_flip(['image', 'remove_image'])));
 
         // QR Code update
-        try {
-            $qrCodeData = config('app.url') . '/inventories/' . $inventory->id;
+        // Cek apakah qr_code_path kosong, atau data URL QR-nya berubah (opsional)
+        if (!$inventory->qr_code_path) {
+            try {
+                $qrCodeData = config('app.url') . '/inventories/' . $inventory->id;
+                $qrResult = Builder::create()
+                    ->writer(new PngWriter())
+                    ->data($qrCodeData)
+                    ->size(300)
+                    ->margin(10)
+                    ->build();
 
-            $qrResult = Builder::create()
-                ->writer(new PngWriter())
-                ->data($qrCodeData)
-                ->size(300)
-                ->margin(10)
-                ->build();
+                $qrTempPath = storage_path('app/public/qr_temp_' . uniqid() . '.png');
+                file_put_contents($qrTempPath, $qrResult->getString());
 
-            $qrTempPath = storage_path('app/public/qr_temp_' . uniqid() . '.png');
-            file_put_contents($qrTempPath, $qrResult->getString());
 
-            $uploadedQr = Cloudinary::upload($qrTempPath, [
-                'folder' => 'inventories_qrcodes',
-                'public_id' => 'qr-' . Str::slug($inventory->inventory_number . '-' . time()),
-            ]);
-            $inventory->qr_code_path = $uploadedQr->getSecurePath();
+                $uploadedQr = Cloudinary::upload($qrTempPath, [
+                    'folder' => 'inventories_qrcodes',
+                    'public_id' => 'qr-' . Str::slug($inventory->inventory_number),
+                ]);
 
-            unlink($qrTempPath);
-        } catch (\Exception $e) {
-            \Log::error('QR Code update error: ' . $e->getMessage());
+                $inventory->qr_code_path = $uploadedQr->getSecurePath();
+                unlink($qrTempPath);
+            } catch (\Exception $e) {
+                \Log::error('QR code regeneration failed: ' . $e->getMessage());
+            }
         }
+
 
         $inventory->save();
 
@@ -179,6 +183,34 @@ class InventoryController extends Controller
             'message' => 'Inventory updated successfully',
             'data' => $inventory->load(['item', 'room', 'unit']),
         ]);
+    }
+
+    public function updateSchedule(Request $request, Inventory $inventory)
+    {
+        $validated = $request->validate([
+            'pj_id' => 'nullable|exists:users,id', 
+            'maintenance_frequency_type' => 'nullable|in:bulan,km,minggu,semester',
+            'maintenance_frequency_value' => 'nullable|integer',
+            'last_maintenance_at' => 'nullable|date',
+            'next_due_date' => 'nullable|date',
+            'next_due_km' => 'nullable|integer',
+            'last_odometer_reading' => 'nullable|integer',
+        ]);
+
+        $inventory->update($validated);
+
+        return response()->json(['message' => 'Schedule updated successfully.']);
+    }
+
+    public function supervisedByMe()
+    {
+        $user = auth()->user();
+
+        $inventories = Inventory::whereHas('room', function ($query) use ($user) {
+            $query->where('supervisor_id', $user->id);
+        })->get();
+
+        return response()->json($inventories);
     }
 
     public function destroy(Inventory $inventory)

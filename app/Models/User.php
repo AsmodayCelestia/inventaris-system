@@ -7,38 +7,51 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Eloquent\Casts\Attribute;
-// use App\Models\InventoryMaintenance; // Baris ini bisa dihapus jika tidak digunakan langsung di sini
 
-use Spatie\Activitylog\Traits\LogsActivity; // Import trait LogsActivity
-use Spatie\Activitylog\LogOptions; // Import LogOptions untuk konfigurasi log
-use Laravel\Sanctum\HasApiTokens; // <-- INI YANG HARUS DITAMBAHKAN!
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, LogsActivity, HasApiTokens; // <--- Pastikan HasApiTokens ada di sini
+    use HasApiTokens, HasFactory, Notifiable, LogsActivity;
 
-    // Kolom yang bisa diisi mass-assignment
+    /**
+     * Mass assignable attributes.
+     */
     protected $fillable = [
         'name',
         'email',
         'password',
         'divisi',
         'role',
+        'is_room_supervisor',
+        'is_pj_maintenance',
     ];
 
-    // Kolom yang disembunyikan saat serialisasi (dan tidak akan dilog oleh Spatie)
+    /**
+     * Hidden attributes for arrays.
+     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    // Tipe cast
+    /**
+     * Casts for attributes.
+     */
     protected $casts = [
-        'email_verified_at' => 'datetime',
+        'email_verified_at'     => 'datetime',
+        'is_room_supervisor'    => 'boolean',
+        'is_pj_maintenance'     => 'boolean',
     ];
 
+    // ============================
+    //          RELATIONS
+    // ============================
+
     /**
-     * RELASI: User bertanggung jawab atas banyak inventaris (sebagai PJ Barang)
+     * Inventaris yang dia jadi penanggung jawab langsung (pj_id).
      */
     public function responsibleInventories()
     {
@@ -46,15 +59,15 @@ class User extends Authenticatable
     }
 
     /**
-     * RELASI: User melakukan banyak record maintenance (sebagai petugas yang mengisi log)
+     * Maintenance yang dilakukan oleh user ini (user_id di inventory_maintenances).
      */
     public function performedMaintenances()
     {
-        return $this->hasMany(InventoryMaintenance::class, 'user_id'); // Menunjuk ke user_id di tabel inventory_maintenances
+        return $this->hasMany(InventoryMaintenance::class, 'user_id');
     }
 
     /**
-     * RELASI: User dapat menjadi PJ lokasi untuk banyak ruangan
+     * Ruangan yang dia jadi penanggung jawab lokasi (pj_lokasi_id).
      */
     public function responsibleRooms()
     {
@@ -62,44 +75,51 @@ class User extends Authenticatable
     }
 
     /**
-     * ACCESSOR/MUTATOR: Otomatis hash password saat di-set
+     * Inventaris yang berada di ruangan-ruangan yang dia tangani.
+     */
+    public function inventoriesInResponsibleRooms()
+    {
+        return $this->hasManyThrough(
+            Inventory::class,
+            Room::class,
+            'pj_lokasi_id',   // FK di tabel rooms yang mengarah ke user
+            'room_id',        // FK di tabel inventories yang mengarah ke rooms
+            'id',             // PK di user
+            'id'              // PK di rooms
+        );
+    }
+
+    // ============================
+    //     MUTATORS & ACCESSORS
+    // ============================
+
+    /**
+     * Auto hash password saat diset.
      */
     protected function password(): Attribute
     {
         return Attribute::make(
-            set: fn ($value) => Hash::make($value)
+            set: fn($value) => Hash::make($value),
         );
     }
 
     /**
-     * ACCESSOR: Role selalu huruf kecil
+     * Selalu return lowercase untuk role.
      */
     public function getRoleAttribute($value)
     {
         return strtolower($value);
     }
 
-    /**
-     * Konfigurasi untuk Activity Log.
-     * Menentukan kolom mana yang akan dilacak perubahannya.
-     */
+    // ============================
+    //         LOGGING
+    // ============================
+
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-            ->logFillable() // Melacak perubahan pada semua kolom yang ada di $fillable
-            ->logOnlyDirty() // Hanya mencatat perubahan jika ada kolom yang benar-benar berubah
-            ->dontSubmitEmptyLogs(); // Tidak mencatat log jika tidak ada perubahan yang terdeteksi
+            ->logFillable()
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
     }
-
-    /**
-     * Validasi bisa ditempatkan di FormRequest atau Service layer,
-     * tapi bisa ditaruh di sini untuk dokumentasi:
-     *
-     * [
-     * 'name' => 'required|string|max:255',
-     * 'email' => 'required|email|unique:users,email',
-     * 'password' => 'required|min:6',
-     * 'role' => 'required|in:admin,karyawan'
-     * ]
-     */
 }

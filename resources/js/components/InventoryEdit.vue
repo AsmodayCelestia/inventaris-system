@@ -114,7 +114,7 @@
                                     </select>
                                     <div v-if="errors.room_id" class="invalid-feedback">{{ errors.room_id[0] }}</div>
                                 </div>
-
+<!-- 
                                 <div class="form-group">
                                     <label for="expected_replacement">Tanggal Estimasi Penggantian</label>
                                     <input type="date" v-model="form.expected_replacement" class="form-control" :class="{'is-invalid': errors.expected_replacement}">
@@ -178,7 +178,7 @@
                                     <label for="last_odometer_reading">Pembacaan Odometer Terakhir</label>
                                     <input type="number" v-model="form.last_odometer_reading" class="form-control" :class="{'is-invalid': errors.last_odometer_reading}" placeholder="Masukkan pembacaan odometer terakhir">
                                     <div v-if="errors.last_odometer_reading" class="invalid-feedback">{{ errors.last_odometer_reading[0] }}</div>
-                                </div>
+                                </div> -->
 
                                 <div class="form-group">
                                     <label for="description">Keterangan</label>
@@ -236,18 +236,19 @@ const form = ref({
   unit_id: '',
   room_id: '',
   expected_replacement: '',
-  last_checked_at: '',
-  pj_id: '',
-  maintenance_frequency_type: '',
-  maintenance_frequency_value: '',
-  last_maintenance_at: '',
-  next_due_date: '',
-  next_due_km: '',
-  last_odometer_reading: '',
+//   last_checked_at: '',
+//   pj_id: '',
+//   maintenance_frequency_type: '',
+//   maintenance_frequency_value: '',
+//   last_maintenance_at: '',
+//   next_due_date: '',
+//   next_due_km: '',
+//   last_odometer_reading: '',
   description: '',
   image: null,
   current_image_url: null,
   remove_image: false,
+  // tambahin pj ruangan
 });
 
 const errors = ref({});
@@ -332,12 +333,20 @@ const submitForm = async () => {
 };
 
 onMounted(() => {
+  const role = counterStore.userRole;
+  if (!['admin', 'head'].includes(role)) {
+    alert('Anda tidak memiliki akses ke halaman ini.');
+    router.push('/inventories');
+    return;
+  }
+
   fetchInventoryData();
   counterStore.fetchInventoryItems();
   counterStore.fetchLocationUnits();
   counterStore.fetchRooms();
   counterStore.fetchUsersList();
 });
+
 </script>
 
 

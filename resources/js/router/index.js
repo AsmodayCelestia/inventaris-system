@@ -70,23 +70,44 @@ const routes = [
                         path: 'create',
                         name: 'inventories.create',
                         component: InventoryCreate,
-                        meta: { requiresAuth: true, adminOrHead: true }
+                        meta: { requiresAuth: true, roles: ['admin', 'head'] }
                     },
                     {
                         path: 'edit/:id',
                         name: 'inventories.edit',
                         component: InventoryEdit,
                         props: true,
-                        meta: { requiresAuth: true, adminOrHead: true }
+                        meta: { requiresAuth: true, roles: ['admin', 'head'] }
                     },
                     {
                         path: ':id',
                         name: 'inventory-detail',
                         component: InventoryDetail,
-                        props: true
+                        props: true,
+                        meta: { requiresAuth: true } // semua role login boleh akses
                     }
                 ]
             },
+            // MAINTENANCE
+            {
+                path: 'maintenance/create',
+                name: 'MaintenanceCreate',
+                component: () => import('../components/maintenance/MaintenanceCreate.vue'),
+                meta: { requiresAuth: true, roles: ['admin', 'head', 'karyawan'] }
+            },
+            {
+                path: 'maintenance/done',
+                name: 'MaintenanceDone',
+                component: () => import('../components/maintenance/MaintenanceDone.vue'),
+                meta: { requiresAuth: true, roles: ['admin', 'head', 'karyawan'] }
+            },
+            {
+                path: 'maintenance/list',
+                name: 'MaintenanceHistory',
+                component: () => import('../components/maintenance/MaintenanceList.vue'),
+                meta: { requiresAuth: true, roles: ['admin', 'head', 'karyawan'] }
+            },
+
             {
                 path: 'master-data/brands',
                 name: 'BrandList',
@@ -246,10 +267,10 @@ const router = createRouter({
 router.beforeEach(async (to, from, next) => {
     const counterStore = useCounterStore();
 
-    // Inisialisasi autentikasi jika belum login tapi token ada
+    // Inisialisasi autentikasi jika belum login tapi ada token
     if (!counterStore.isLoggedIn && localStorage.getItem('Authorization')) {
         try {
-            await counterStore.initializeAuth();
+            await counterStore.initializeAuth?.(); // Optional chaining untuk aman
         } catch (e) {
             console.error('Gagal inisialisasi auth:', e);
             return next({ name: 'Login' });
@@ -258,7 +279,6 @@ router.beforeEach(async (to, from, next) => {
 
     const { requiresAuth, roles: requiredRoles } = to.meta;
     const isLoggedIn = counterStore.isLoggedIn;
-    const userRole = counterStore.userRole;
 
     if (requiresAuth && !isLoggedIn) {
         return next({ name: 'Login' });
@@ -268,15 +288,27 @@ router.beforeEach(async (to, from, next) => {
         return next({ name: 'Dashboard' });
     }
 
-    if (requiredRoles && (!userRole || !requiredRoles.includes(userRole))) {
-        console.warn(
-            `Akses ditolak: User dengan role '${userRole}' mencoba mengakses '${to.fullPath}' yang memerlukan role [${requiredRoles.join(', ')}]`
-        );
-        return next({ name: 'Dashboard' });
+    // ✅ Ganti validasi role jadi berdasarkan getter
+    if (requiredRoles) {
+        const roleMap = {
+            admin: counterStore.isAdmin,
+            head: counterStore.isHead,
+            karyawan: counterStore.isKaryawan,
+        };
+
+        const hasAccess = requiredRoles.some(role => roleMap[role]);
+
+        if (!hasAccess) {
+            console.warn(
+                `Akses ditolak: User dengan role '${counterStore.userRole}' mencoba mengakses '${to.fullPath}'`
+            );
+            return next({ name: 'Dashboard' });
+        }
     }
 
     return next();
 });
+
 
 
 export default router;

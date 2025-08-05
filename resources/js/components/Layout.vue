@@ -58,59 +58,59 @@
 
                         <!-- Master Data (Hanya Admin) -->
                         <!-- Menu ini hanya akan aktif jika path dimulai dengan /master-data TAPI BUKAN /inventories/master-barang -->
-<li class="nav-item has-treeview" :class="{ 'menu-open': isMasterDataOpen }" v-if="counterStore.isAdmin">
-    <a href="#" class="nav-link" @click.prevent="toggleMasterData" :class="{ active: $route.path.startsWith('/master-data') }">
-        <i class="nav-icon fas fa-database"></i>
-        <p>
-            Master Data
-            <i class="right fas fa-angle-left"></i>
-        </p>
-    </a>
-    <ul class="nav nav-treeview">
-        <li class="nav-item">
-            <router-link to="/master-data/brands" class="nav-link" :class="{ active: $route.path === '/master-data/brands' }">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Merk</p>
-            </router-link>
-        </li>
-        <li class="nav-item">
-            <router-link to="/master-data/categories" class="nav-link" :class="{ active: $route.path === '/master-data/categories' }">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Kategori</p>
-            </router-link>
-        </li>
-        <li class="nav-item">
-            <router-link to="/master-data/item-types" class="nav-link" :class="{ active: $route.path === '/master-data/item-types' }">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Jenis</p>
-            </router-link>
-        </li>
-        <li class="nav-item">
-            <router-link to="/master-data/floors" class="nav-link" :class="{ active: $route.path === '/master-data/floors' }">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Lantai</p>
-            </router-link>
-        </li>
-        <li class="nav-item">
-            <router-link to="/master-data/units" class="nav-link" :class="{ active: $route.path === '/master-data/units' }">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Unit Lokasi</p>
-            </router-link>
-        </li>
-        <li class="nav-item">
-            <router-link to="/master-data/rooms" class="nav-link" :class="{ active: $route.path === '/master-data/rooms' }">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Ruang</p>
-            </router-link>
-        </li>
-        <li class="nav-item">
-            <router-link to="/master-data/users" class="nav-link" :class="{ active: $route.path === '/master-data/users' }">
-                <i class="far fa-circle nav-icon"></i>
-                <p>User</p>
-            </router-link>
-        </li>
-    </ul>
-</li>
+                        <li class="nav-item has-treeview" :class="{ 'menu-open': isMasterDataOpen }" v-if="counterStore.isAdmin">
+                            <a href="#" class="nav-link" @click.prevent="toggleMasterData" :class="{ active: $route.path.startsWith('/master-data') }">
+                                <i class="nav-icon fas fa-database"></i>
+                                <p>
+                                    Master Data
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <router-link to="/master-data/brands" class="nav-link" :class="{ active: $route.path === '/master-data/brands' }">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Merk</p>
+                                    </router-link>
+                                </li>
+                                <li class="nav-item">
+                                    <router-link to="/master-data/categories" class="nav-link" :class="{ active: $route.path === '/master-data/categories' }">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Kategori</p>
+                                    </router-link>
+                                </li>
+                                <li class="nav-item">
+                                    <router-link to="/master-data/item-types" class="nav-link" :class="{ active: $route.path === '/master-data/item-types' }">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Jenis</p>
+                                    </router-link>
+                                </li>
+                                <li class="nav-item">
+                                    <router-link to="/master-data/floors" class="nav-link" :class="{ active: $route.path === '/master-data/floors' }">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Lantai</p>
+                                    </router-link>
+                                </li>
+                                <li class="nav-item">
+                                    <router-link to="/master-data/units" class="nav-link" :class="{ active: $route.path === '/master-data/units' }">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Unit Lokasi</p>
+                                    </router-link>
+                                </li>
+                                <li class="nav-item">
+                                    <router-link to="/master-data/rooms" class="nav-link" :class="{ active: $route.path === '/master-data/rooms' }">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Ruang</p>
+                                    </router-link>
+                                </li>
+                                <li class="nav-item">
+                                    <router-link to="/master-data/users" class="nav-link" :class="{ active: $route.path === '/master-data/users' }">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>User</p>
+                                    </router-link>
+                                </li>
+                            </ul>
+                        </li>
 
 
 
@@ -145,10 +145,10 @@
                                 </li>
                             </ul>
                         </li>
-
-
-                        <!-- Maintenance (Admin & Head) -->
-                        <li class="nav-item has-treeview" :class="{ 'menu-open': isMaintenanceOpen }" v-if="counterStore.isAdmin || counterStore.isHead">
+                        <!-- Maintenance (Admin, Head, Maintenance Role) -->
+<li class="nav-item has-treeview"
+    :class="{ 'menu-open': isMaintenanceOpen }"
+    v-if="counterStore.canAccessMaintenance">
                             <a href="#" class="nav-link" @click.prevent="toggleMaintenance" :class="{ active: $route.path.startsWith('/maintenance') }">
                                 <i class="nav-icon fas fa-tools"></i>
                                 <p>
@@ -158,13 +158,32 @@
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <router-link to="/maintenance/riwayat" class="nav-link" :class="{ active: $route.path === '/maintenance/riwayat' }">
+                                    <router-link to="/maintenance/create" class="nav-link" :class="{ active: $route.path === '/maintenance/create' }">
                                         <i class="far fa-circle nav-icon"></i>
-                                        <p>Riwayat Maintenance</p>
+                                        <p>Tambah Maintenance Baru</p>
+                                    </router-link>
+                                </li>
+                                <li class="nav-item">
+                                    <router-link to="/maintenance/planning" class="nav-link" :class="{ active: $route.path === '/maintenance/planning' }">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Maintenance Direncanakan</p>
+                                    </router-link>
+                                </li>
+                                <li class="nav-item">
+                                    <router-link to="/maintenance/done" class="nav-link" :class="{ active: $route.path === '/maintenance/done' }">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Maintenance Selesai</p>
+                                    </router-link>
+                                </li>
+                                <li class="nav-item">
+                                    <router-link to="/maintenance/list" class="nav-link" :class="{ active: $route.path === '/maintenance/riwayat' }">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Maintenance List</p>
                                     </router-link>
                                 </li>
                             </ul>
                         </li>
+
 
                         <!-- QR Code (Admin & Head) -->
                         <li class="nav-item has-treeview" :class="{ 'menu-open': isQrCodeOpen }" v-if="counterStore.isAdmin || counterStore.isHead">

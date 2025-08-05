@@ -98,6 +98,7 @@ const togglePassword = () => {
 const handleLogin = async () => {
   try {
     await counterStore.login({ email: email.value, password: password.value });
+        router.push('/Dashboard');
   } catch (error) {
     console.error("Login attempt failed in component:", error);
   }

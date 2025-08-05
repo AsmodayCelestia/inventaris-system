@@ -30,10 +30,16 @@ class InventoryMaintenance extends Model
     }
 
     // Optional if you want to track who created the log
-    public function createdBy()
+    public function responsiblePerson()
     {
         return $this->belongsTo(User::class, 'user_id'); 
     }
+
+    public function inventoryMaintenances()
+    {
+        return $this->hasMany(\App\Models\InventoryMaintenance::class, 'user_id');
+    }
+
 
     public function getActivitylogOptions(): LogOptions
     {

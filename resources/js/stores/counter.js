@@ -1,13 +1,11 @@
 // resources/js/stores/counter.js
 
+
 import { defineStore } from 'pinia';
 import axios from 'axios';
 import router from '../router';
 
-// const API_BASE_URL = 'http://127.0.0.1:8000/api'; // Pastikan URL API kamu benar
-// const API_BASE_URL = 'https://8833c3532634.ngrok-free.app/api'; // Ganti dengan URL ngrok kamu yang sebenarnya
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-
 
 export const useCounterStore = defineStore('inventoryApp', {
   state: () => ({
@@ -18,8 +16,13 @@ export const useCounterStore = defineStore('inventoryApp', {
     userId: null,
     userEmail: null,
     userDivisi: null,
-    token: localStorage.getItem('Authorization') || null, // Token awal dari localStorage
-    loginError: null, // Untuk pesan error login
+    token: localStorage.getItem('Authorization') || null,
+    loginError: null,
+
+    // --- Flag Tugas ---
+    isPjMaintenance: false,
+    isRoomSupervisor: false,
+    assignedRooms: [], // e.g. ['IGD01', 'RANAP03']
 
     // --- State Master Data ---
     brands: [],
@@ -33,7 +36,7 @@ export const useCounterStore = defineStore('inventoryApp', {
     inventoryItemLoading: false,
     inventoryItemError: null,
 
-    // --- State Data Inventaris ---
+    // --- State Inventaris ---
     inventories: [],
     selectedInventoryDetail: null,
     inventoryStatusStats: {},
@@ -42,14 +45,15 @@ export const useCounterStore = defineStore('inventoryApp', {
 
     // --- State Maintenance ---
     maintenanceHistory: [],
+    assignedMaintenanceInventoryIds: [],
 
-    // --- State Dashboard & Laporan ---
+    // --- Dashboard & Laporan ---
     totalAssetValue: 0,
     totalDepreciation: 0,
     totalMaintenanceDone: 0,
     totalMaintenancePlanning: 0,
 
-    // --- State untuk Filter/Pencarian (jika ada) ---
+    // --- Filter ---
     filters: {
       locationUnit: null,
       building: null,
@@ -64,58 +68,82 @@ export const useCounterStore = defineStore('inventoryApp', {
 
   getters: {
     isAdmin: (state) => state.userRole === 'admin',
-    isKaryawan: (state) => state.userRole === 'karyawan',
     isHead: (state) => state.userRole === 'head',
-    // authHeader tidak perlu lagi di getter jika kita set global default header
-    // Tapi tetap bisa dipertahankan sebagai fallback atau untuk request spesifik
+    isKaryawan: (state) => state.userRole === 'karyawan',
+
     authHeader: (state) => ({
-      headers: { Authorization: state.token ? `Bearer ${state.token}` : '' },
+      headers: {
+        Authorization: state.token ? `Bearer ${state.token}` : '',
+      },
     }),
+
+    // ✅ Hak akses maintenance (lihat menu & data tugas sendiri)
+    canAccessMaintenance: (state) => {
+        // Admin atau Head otomatis bisa
+        if (state.userRole === 'admin' || state.userRole === 'head') return true;
+
+        // Karyawan yang jadi penanggung jawab maintenance atau supervisor ruang
+        return state.isPjMaintenance || state.isRoomSupervisor;
+    },
+
+    // ✅ Hak edit item berdasarkan penugasan ruang
+    canEditRoom: (state) => (roomCode) =>
+      state.isAdmin || state.isHead || state.assignedRooms.includes(roomCode),
+
+    isAssignedToRoom: (state) => (roomId) =>
+      state.assignedRooms.some((room) => room.id === roomId),
   },
 
   actions: {
     // --- Aksi Autentikasi ---
-    async login(credentials) {
-      this.loginError = null; // Reset error
-      try {
-        const response = await axios.post(`${API_BASE_URL}/login`, credentials);
-        const { Authorization, role, email, name, id, divisi } = response.data;
+async login(payload) {
+  try {
+    const res = await axios.post(`${API_BASE_URL}/login`, {
+      email: payload.email,
+      password: payload.password,
+    });
 
-        localStorage.setItem('Authorization', Authorization);
-        localStorage.setItem('userRole', role); // Simpan role juga di localStorage
-        localStorage.setItem('userName', name);
-        localStorage.setItem('userId', id);
-        localStorage.setItem('userEmail', email);
-        localStorage.setItem('userDivisi', divisi);
+    // Ambil data dari response
+    const token = res.data.Authorization
+    const userId = res.data.id;
+    const userName = res.data.name;
+    const userEmail = res.data.email;
+    const userDivisi = res.data.divisi;
+    const userRole = res.data.role;
+    const isPjMaintenance = res.data.isPjMaintenance || false;
 
+    // Step 2: Simpan ke state dan localStorage
+    this.token = token;
+    this.userId = userId;
+    this.userName = userName;
+    this.userEmail = userEmail;
+    this.userDivisi = userDivisi;
+    this.userRole = userRole;
+    this.isLoggedIn = true;
+    this.isPjMaintenance = isPjMaintenance;
 
-        this.token = Authorization;
-        this.isLoggedIn = true;
-        this.userRole = role;
-        this.userName = name;
-        this.userId = id;
-        this.userEmail = email;
-        this.userDivisi = divisi;
+    localStorage.setItem('Authorization', token);
+    localStorage.setItem('userId', userId);
+    localStorage.setItem('userName', userName);
+    localStorage.setItem('userEmail', userEmail);
+    localStorage.setItem('userDivisi', userDivisi);
+    localStorage.setItem('userRole', userRole);
+    localStorage.setItem('isPjMaintenance', isPjMaintenance);
 
-        // SET AXIOS GLOBAL DEFAULT HEADER SETELAH LOGIN BERHASIL
-        axios.defaults.headers.common['Authorization'] = `Bearer ${Authorization}`;
+    // Step 3: Atur Authorization header global
+    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
-        router.push('/dashboard');
+    // Kalau backend belum kasih info supervisor & assigned_rooms, bisa dilewatin
+    this.isRoomSupervisor = false;
+    this.assignedRooms = [];
+    localStorage.setItem('isRoomSupervisor', false);
+    localStorage.setItem('assignedRooms', JSON.stringify([]));
 
-        return true;
-      } catch (error) {
-        console.error('Login failed:', error.response?.data?.message || error.message);
-        if (error.response && error.response.status === 401) {
-            this.loginError = 'Email atau kata sandi salah.';
-        } else if (error.response && error.response.status === 422) {
-            this.loginError = 'Validasi gagal. Mohon periksa input Anda.';
-        } else {
-            this.loginError = 'Terjadi kesalahan saat login.';
-        }
-        this.logout(); // Pastikan state bersih jika login gagal
-        throw error;
-      }
-    },
+  } catch (error) {
+    console.error('Login gagal:', error);
+    throw error;
+  }
+},
 
     async logout() {
       try {
@@ -131,6 +159,10 @@ export const useCounterStore = defineStore('inventoryApp', {
         localStorage.removeItem('userId');
         localStorage.removeItem('userEmail');
         localStorage.removeItem('userDivisi');
+        localStorage.removeItem('assignedRooms');
+        localStorage.removeItem('isPjMaintenance');
+        localStorage.removeItem('isRoomSupervisor');
+
 
         this.token = null;
         this.isLoggedIn = false;
@@ -144,7 +176,9 @@ export const useCounterStore = defineStore('inventoryApp', {
         this.selectedInventoryDetail = null;
         this.maintenanceHistory = [];
         this.usersList = [];
-
+        this.isPjMaintenance = false;
+        this.isRoomSupervisor = false;
+        this.assignedRooms = [];
         // HAPUS AXIOS GLOBAL DEFAULT HEADER SETELAH LOGOUT
         delete axios.defaults.headers.common['Authorization'];
 
@@ -153,38 +187,51 @@ export const useCounterStore = defineStore('inventoryApp', {
     },
 
     // Fungsi untuk inisialisasi auth saat aplikasi dimuat (dipanggil dari app.js)
-    initializeAuth() {
-      const token = localStorage.getItem('Authorization');
-      const role = localStorage.getItem('userRole');
-      const name = localStorage.getItem('userName');
-      const id = localStorage.getItem('userId');
-      const email = localStorage.getItem('userEmail');
-      const divisi = localStorage.getItem('userDivisi');
+initializeAuth() {
+  const token = localStorage.getItem('Authorization');
+  const role = localStorage.getItem('userRole');
+  const name = localStorage.getItem('userName');
+  const id = localStorage.getItem('userId');
+  const email = localStorage.getItem('userEmail');
+  const divisi = localStorage.getItem('userDivisi');
 
-      if (token && role) {
-        this.isLoggedIn = true;
-        this.token = token;
-        this.userRole = role;
-        this.userName = name;
-        this.userId = id;
-        this.userEmail = email;
-        this.userDivisi = divisi;
-        // SET AXIOS GLOBAL DEFAULT HEADER SAAT INISIALISASI
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        console.log('Auth initialized from localStorage with token and role.');
-      } else {
-        this.isLoggedIn = false;
-        this.userRole = null;
-        this.token = null;
-        this.userName = null;
-        this.userId = null;
-        this.userEmail = null;
-        this.userDivisi = null;
-        // HAPUS AXIOS GLOBAL DEFAULT HEADER JIKA TIDAK ADA TOKEN
-        delete axios.defaults.headers.common['Authorization'];
-        console.log('No valid auth data in localStorage, clearing state.');
-      }
-    },
+  const isPjMaintenance = localStorage.getItem('isPjMaintenance') === 'true';
+  const isRoomSupervisor = localStorage.getItem('isRoomSupervisor') === 'true';
+  const assignedRooms = JSON.parse(localStorage.getItem('assignedRooms') || '[]');
+
+  if (token && role) {
+    this.isLoggedIn = true;
+    this.token = token;
+    this.userRole = role;
+    this.userName = name;
+    this.userId = id;
+    this.userEmail = email;
+    this.userDivisi = divisi;
+
+    this.isPjMaintenance = isPjMaintenance;
+    this.isRoomSupervisor = isRoomSupervisor;
+    this.assignedRooms = assignedRooms;
+
+    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    this.$router.push('/dashboard');
+    console.log('Auth initialized from localStorage with token and role.');
+  } else {
+    this.isLoggedIn = false;
+    this.userRole = null;
+    this.token = null;
+    this.userName = null;
+    this.userId = null;
+    this.userEmail = null;
+    this.userDivisi = null;
+    this.isPjMaintenance = false;
+    this.isRoomSupervisor = false;
+    this.assignedRooms = [];
+
+    delete axios.defaults.headers.common['Authorization'];
+    console.log('No valid auth data in localStorage, clearing state.');
+  }
+},
+
 
     // --- Aksi Master Data (Brands, Categories, ItemTypes, LocationUnits, Floors, Rooms, Users) ---
     async fetchBrands() {
@@ -448,6 +495,8 @@ export const useCounterStore = defineStore('inventoryApp', {
     async fetchUsersList() {
       try {
         const response = await axios.get(`${API_BASE_URL}/users`);
+        console.log(response);
+        
         this.usersList = response.data;
       } catch (error) {
         console.error('Failed to fetch users list:', error);
@@ -486,7 +535,32 @@ export const useCounterStore = defineStore('inventoryApp', {
             throw error;
         }
     },
-
+async setUserSupervisorStatus(id, status = true) {
+    try {
+        const response = await axios.put(`${API_BASE_URL}/users/${id}`, {
+            is_room_supervisor: status
+        });
+        this.fetchUsersList();
+        return response.data;
+    } catch (error) {
+        console.error('Failed to set supervisor status:', error);
+        if (error.response && error.response.status === 401) this.logout();
+        throw error;
+    }
+},
+async setUserMaintenanceStatus(id, status = true) {
+    try {
+        const response = await axios.put(`${API_BASE_URL}/users/${id}`, {
+            is_pj_maintenance: status
+        });
+        this.fetchUsersList();
+        return response.data;
+    } catch (error) {
+        console.error('Failed to set maintenance status:', error);
+        if (error.response && error.response.status === 401) this.logout();
+        throw error;
+    }
+},
     // --- Aksi Inventory Items (Master Barang) ---
     async fetchInventoryItems(filters = {}) {
         this.inventoryItemLoading = true;
@@ -663,6 +737,18 @@ export const useCounterStore = defineStore('inventoryApp', {
         }
     },
 
+    async fetchAssignedRooms() {
+        try {
+            const response = await axios.get(`${API_BASE_URL}/rooms`);
+            const allRooms = response.data;
+            const userId = this.userId;
+
+            this.assignedRooms = allRooms.filter(room => room.pj_lokasi_id === Number(userId));
+        } catch (error) {
+            console.error('Gagal ambil ruangan yang jadi tanggung jawab user:', error);
+        }
+    },
+
     // --- Aksi Maintenance ---
     async fetchMaintenanceHistory(inventoryId = null, filters = {}) {
       try {
@@ -679,27 +765,55 @@ export const useCounterStore = defineStore('inventoryApp', {
       }
     },
     async addMaintenanceRecord(inventoryId, maintenanceData) {
-      try {
-        const formData = new FormData();
-        for (const key in maintenanceData) {
-            if (maintenanceData[key] !== null) {
-                formData.append(key, maintenanceData[key]);
+        try {
+            const formData = new FormData();
+            for (const key in maintenanceData) {
+            const value = maintenanceData[key];
+
+            // Tetap kirim 'pj_id', walau nilainya 0 atau kosong string
+            if (
+                value !== null &&
+                (value !== '' || ['issue_found', 'notes', 'pj_id'].includes(key))
+            ) {
+                formData.append(key, value);
             }
-        }
-        const response = await axios.post(`${API_BASE_URL}/inventories/${inventoryId}/maintenance`, formData, {
+            }
+
+            console.log('Kirim ke:', `${API_BASE_URL}/inventories/${inventoryId}/maintenance`);
+            console.log('Isi FormData:', Object.fromEntries(formData.entries()));
+
+            const response = await axios.post(`${API_BASE_URL}/inventories/${inventoryId}/maintenance`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
+                Authorization: `Bearer ${this.token}`, // Tambahin token kalau endpoint protected
             },
-        });
-        this.fetchInventoryDetail(inventoryId);
-        this.fetchMaintenanceHistory(inventoryId);
-        return response.data;
-      } catch (error) {
-        console.error('Failed to add maintenance record:', error);
-        if (error.response && error.response.status === 401) this.logout();
-        throw error;
-      }
+            });
+
+            this.fetchInventoryDetail(inventoryId);
+            this.fetchMaintenanceHistory(inventoryId);
+            return response.data;
+        } catch (error) {
+            console.error('Failed to add maintenance record:', error);
+            if (error.response && error.response.status === 401) this.logout();
+            throw error;
+        }
     },
+
+    // Tambah di store/counter.js
+async scheduleInventory(inventoryId, scheduleData) {
+  try {
+    const response = await axios.put(`${API_BASE_URL}/inventories/${inventoryId}/schedule`, scheduleData, {
+      headers: {
+        Authorization: `Bearer ${this.token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Failed to schedule inventory:', error);
+    throw error;
+  }
+},
+
     async updateMaintenanceRecord(id, maintenanceData) {
         try {
             const formData = new FormData();

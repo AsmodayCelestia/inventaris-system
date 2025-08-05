@@ -18,7 +18,7 @@ class MaintenanceController extends Controller
      */
     public function index(Request $request)
     {
-        $query = InventoryMaintenance::with(['inventory.item', 'createdBy']); // Eager load relasi
+        $query = InventoryMaintenance::with(['inventory.item', 'responsiblePerson']); // Eager load relasi
 
         if ($request->has('inventory_id') && $request->inventory_id !== '') {
             $query->where('inventory_id', $request->inventory_id);
@@ -40,43 +40,39 @@ class MaintenanceController extends Controller
             $validatedData = $request->validate([
                 'inspection_date' => 'required|date',
                 'issue_found' => 'nullable|string',
-                'solution_taken' => 'nullable|string',
                 'notes' => 'nullable|string',
-                'status' => 'required|string|in:planning,done', // Sesuaikan status
-                'photo_1' => 'nullable|image|max:2048', // Maks 2MB
+                'status' => 'required|string|in:planning,done',
+                'pj_id' => 'required|exists:users,id', // <-- Tambahkan validasi pj_id di sini
+                'photo_1' => 'nullable|image|max:2048',
                 'photo_2' => 'nullable|image|max:2048',
                 'photo_3' => 'nullable|image|max:2048',
             ]);
 
-            // Pastikan inventarisnya ada
             $inventory = Inventory::find($inventoryId);
             if (!$inventory) {
                 return response()->json(['message' => 'Inventaris tidak ditemukan'], 404);
             }
 
-            $validatedData['inventory_id'] = $inventoryId;
-            $validatedData['user_id'] = Auth::id(); // Otomatis mengisi user_id dari user yang login
+            $maintenanceData = [
+                'inventory_id' => $inventoryId,
+                'inspection_date' => $validatedData['inspection_date'],
+                'issue_found' => $validatedData['issue_found'],
+                'notes' => $validatedData['notes'],
+                'status' => $validatedData['status'],
+                'user_id' => $validatedData['pj_id']
+            ];
+
 
             // Handle photo uploads
             for ($i = 1; $i <= 3; $i++) {
                 $photoField = 'photo_' . $i;
                 if ($request->hasFile($photoField)) {
                     $photoPath = $request->file($photoField)->store('maintenance_photos', 'public');
-                    $validatedData[$photoField] = $photoPath;
-                } else {
-                    $validatedData[$photoField] = null; // Pastikan null jika tidak ada foto
+                    $maintenanceData[$photoField] = $photoPath;
                 }
             }
 
-            $maintenance = InventoryMaintenance::create($validatedData);
-
-            // Update last_maintenance_at di tabel Inventory jika statusnya 'done'
-            if ($maintenance->status === 'done') {
-                $inventory->last_maintenance_at = $maintenance->inspection_date;
-                // Jika kamu punya logika untuk next_due_date/km di Inventory, panggil di sini
-                // $inventory->next_due_date = $inventory->calculateNextDue()['value']; // Contoh
-                $inventory->save();
-            }
+            $maintenance = InventoryMaintenance::create($maintenanceData);
 
             return response()->json($maintenance, 201); // 201 Created
         } catch (ValidationException $e) {
@@ -89,13 +85,14 @@ class MaintenanceController extends Controller
         }
     }
 
+
     /**
      * Display the specified resource (Menampilkan detail satu riwayat maintenance).
      * Dapat diakses oleh semua user yang terautentikasi.
      */
     public function show($id)
     {
-        $maintenance = InventoryMaintenance::with(['inventory.item', 'createdBy'])->find($id); // Eager load relasi
+        $maintenance = InventoryMaintenance::with(['inventory.item', 'responsiblePerson'])->find($id); // Eager load relasi
         if (!$maintenance) {
             return response()->json(['message' => 'Riwayat maintenance tidak ditemukan'], 404);
         }

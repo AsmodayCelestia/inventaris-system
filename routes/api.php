@@ -60,6 +60,16 @@ Route::middleware('auth:sanctum')->group(function () {
     // Dashboard - GET Statistik Dashboard oleh semua yang login
     Route::get('/dashboard/stats', [DashboardController::class, 'getStats']);
 
+    Route::get('/me/supervised-inventories', [InventoryController::class, 'supervisedByMe']);
+
+    // Di dalam Route::middleware('auth:sanctum')->group(...)
+    Route::get('/me/assigned-inventories', function () {
+        $user = auth()->user();
+
+        // Misal relasinya: User hasMany Inventories as 'maintenancePj'
+        return $user->assignedMaintenanceInventories()->pluck('id');
+    });
+
     // --- ROUTES KHUSUS ADMIN ATAU HEAD (Memerlukan token Sanctum DAN role 'admin' atau 'head') ---
     Route::middleware('role:admin,head')->group(function () {
         // Data Inventaris (CUD oleh Admin atau Head)
@@ -68,6 +78,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
         // Inventory Items (CUD oleh Admin atau Head)
         Route::apiResource('inventory-items', InventoryItemController::class)->except(['index', 'show']);
+        Route::put('/inventories/{inventory}/schedule', [InventoryController::class, 'updateSchedule']);
 
         // Maintenance (Update/Delete oleh Admin atau Head)
         Route::put('/maintenance/{id}', [MaintenanceController::class, 'update']);
