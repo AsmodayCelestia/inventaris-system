@@ -14,6 +14,7 @@ import InventoryItemForm from '../components/InventoryItemForm.vue';
 import InventoryDetail from '../components/InventoryDetail.vue';
 import InventoryCreate from '../components/InventoryCreate.vue';
 import InventoryEdit from '../components/InventoryEdit.vue';
+
 // Import Master Data Components
 import BrandList from '../components/master-data/BrandList.vue';
 import BrandForm from '../components/master-data/BrandForm.vue';
@@ -88,6 +89,19 @@ const routes = [
                     }
                 ]
             },
+
+{
+    path: '/manage-qrcodes',
+    name: 'ManageQRCode',
+    component: () => import('../components/ManageQRCode.vue'),
+    meta: { requiresAuth: true, roles: ['admin'] }
+},
+{
+    path: '/scan-qrcode',
+    name: 'QRCodeScan',
+    component: () => import('../components/QRCodeScan.vue'),
+    meta: { requiresAuth: true, roles: ['admin', 'head', 'karyawan'] }
+},
             // MAINTENANCE
             {
                 path: 'maintenance/create',
@@ -105,6 +119,19 @@ const routes = [
                 path: 'maintenance/list',
                 name: 'MaintenanceHistory',
                 component: () => import('../components/maintenance/MaintenanceList.vue'),
+                meta: { requiresAuth: true, roles: ['admin', 'head', 'karyawan'] }
+            },
+            {
+                path: 'maintenance/:id',
+                name: 'MaintenanceDetail',
+                component: () => import('../components/maintenance/MaintenanceDetail.vue'),
+                meta: { requiresAuth: true, roles: ['admin', 'head', 'karyawan'] }
+            },
+            {
+                path: 'maintenance/edit/:id',
+                name: 'MaintenanceEdit',
+                component: () => import('../components/maintenance/EditMaintenance.vue'),
+                props: true,
                 meta: { requiresAuth: true, roles: ['admin', 'head', 'karyawan'] }
             },
 

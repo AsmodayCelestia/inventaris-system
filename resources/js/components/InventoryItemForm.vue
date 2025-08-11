@@ -154,6 +154,7 @@ const errors = ref({});
 /**
  * Load item detail from API for edit mode
  */
+
 const loadItemData = async () => {
     if (!isEditMode.value) return;
 

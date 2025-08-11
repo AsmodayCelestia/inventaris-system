@@ -21,9 +21,6 @@ class AuthController extends Controller
                 'role'                  => 'required|in:admin,karyawan,head',
             ]);
 
-            // Hash password secara manual jika belum ada mutator di model User
-            $validatedData['password'] = bcrypt($validatedData['password']);
-
             $user = User::create($validatedData);
 
             return response()->json([

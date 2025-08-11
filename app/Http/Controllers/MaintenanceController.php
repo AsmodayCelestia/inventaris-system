@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Auth; // Untuk mendapatkan user yang sedang login
 use Illuminate\Support\Facades\Storage; // Untuk handle upload foto
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
+use Illuminate\Support\Str;
 
 class MaintenanceController extends Controller
 {
@@ -123,24 +125,31 @@ class MaintenanceController extends Controller
             ]);
 
             // Handle photo uploads (hapus yang lama, simpan yang baru)
-            for ($i = 1; $i <= 3; $i++) {
-                $photoField = 'photo_' . $i;
-                if ($request->hasFile($photoField)) {
-                    // Hapus foto lama jika ada
-                    if ($maintenance->$photoField) {
-                        Storage::disk('public')->delete($maintenance->$photoField);
-                    }
-                    $photoPath = $request->file($photoField)->store('maintenance_photos', 'public');
-                    $validatedData[$photoField] = $photoPath;
-                } 
-                // Jika request tidak memiliki file untuk photoField, tapi ada nilai di request (misal null untuk hapus foto)
-                // else if (array_key_exists($photoField, $request->all())) {
-                //     if ($maintenance->$photoField) {
-                //         Storage::disk('public')->delete($maintenance->$photoField);
-                //     }
-                //     $validatedData[$photoField] = null;
-                // }
-            }
+// hapus foto lama di cloudinary
+for ($i = 1; $i <= 3; $i++) {
+    $photoField = 'photo_' . $i;
+    $removeKey  = 'remove_' . $photoField;
+
+    if ($request->boolean($removeKey) && $maintenance->$photoField) {
+        $publicId = pathinfo(parse_url($maintenance->$photoField, PHP_URL_PATH), PATHINFO_FILENAME);
+        Cloudinary::destroy('maintenance_photos/' . $publicId);
+        $validatedData[$photoField] = null;
+    }
+
+    if ($request->hasFile($photoField)) {
+        // hapus dulu foto lama kalau ada
+        if ($maintenance->$photoField) {
+            $publicId = pathinfo(parse_url($maintenance->$photoField, PHP_URL_PATH), PATHINFO_FILENAME);
+            Cloudinary::destroy('maintenance_photos/' . $publicId);
+        }
+
+        $uploaded = Cloudinary::upload($request->file($photoField)->getRealPath(), [
+            'folder' => 'maintenance_photos',
+            'public_id' => Str::slug('maintenance-' . $id . '-' . $i . '-' . time()),
+        ]);
+        $validatedData[$photoField] = $uploaded->getSecurePath();
+    }
+}
 
             $maintenance->update($validatedData);
 

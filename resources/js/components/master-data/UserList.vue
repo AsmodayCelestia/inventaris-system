@@ -49,7 +49,7 @@ const showForm = ref(false);
 const editingUser = ref(null);
 
 onMounted(() => {
-  counterStore.fetchUsers();
+counterStore.fetchUsersList();
 });
 
 const editUser = (user) => {
@@ -66,6 +66,6 @@ const deleteUser = async (id) => {
 const onSaved = async () => {
   showForm.value = false;
   editingUser.value = null;
-  await counterStore.fetchUsers();
+  await counterStore.fetchUsersList();
 };
 </script>

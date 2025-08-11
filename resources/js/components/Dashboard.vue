@@ -1,5 +1,5 @@
 <template>
-  <Layout>
+
     <div class="container-fluid">
       <!-- 📊 Ringkasan Statistik -->
       <div class="row mb-4">
@@ -133,7 +133,6 @@
         </div>
       </div>
     </div>
-  </Layout>
 </template>
 
 <script setup>

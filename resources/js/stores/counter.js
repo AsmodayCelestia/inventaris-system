@@ -187,49 +187,37 @@ async login(payload) {
     },
 
     // Fungsi untuk inisialisasi auth saat aplikasi dimuat (dipanggil dari app.js)
-initializeAuth() {
+// stores/counter.js
+async initializeAuth() {
   const token = localStorage.getItem('Authorization');
-  const role = localStorage.getItem('userRole');
-  const name = localStorage.getItem('userName');
-  const id = localStorage.getItem('userId');
-  const email = localStorage.getItem('userEmail');
-  const divisi = localStorage.getItem('userDivisi');
-
-  const isPjMaintenance = localStorage.getItem('isPjMaintenance') === 'true';
-  const isRoomSupervisor = localStorage.getItem('isRoomSupervisor') === 'true';
-  const assignedRooms = JSON.parse(localStorage.getItem('assignedRooms') || '[]');
-
-  if (token && role) {
-    this.isLoggedIn = true;
-    this.token = token;
-    this.userRole = role;
-    this.userName = name;
-    this.userId = id;
-    this.userEmail = email;
-    this.userDivisi = divisi;
-
-    this.isPjMaintenance = isPjMaintenance;
-    this.isRoomSupervisor = isRoomSupervisor;
-    this.assignedRooms = assignedRooms;
-
-    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-    this.$router.push('/dashboard');
-    console.log('Auth initialized from localStorage with token and role.');
-  } else {
-    this.isLoggedIn = false;
-    this.userRole = null;
-    this.token = null;
-    this.userName = null;
-    this.userId = null;
-    this.userEmail = null;
-    this.userDivisi = null;
-    this.isPjMaintenance = false;
-    this.isRoomSupervisor = false;
-    this.assignedRooms = [];
-
-    delete axios.defaults.headers.common['Authorization'];
-    console.log('No valid auth data in localStorage, clearing state.');
+  if (!token) {
+    this.clearAuth();               // helper kecil (lihat bawah)
+    return;
   }
+
+  this.token = token;
+  axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
+  // coba validasi token ke backend (opsional tapi recommended)
+  try {
+    const { data } = await axios.get(`${API_BASE_URL}/user`);
+    this.isLoggedIn       = true;
+    this.userRole         = data.role;
+    this.userName         = data.name;
+    this.userId           = data.id;
+    this.userEmail        = data.email;
+    this.userDivisi       = data.divisi;
+    this.isPjMaintenance  = data.isPjMaintenance || false;
+    this.isRoomSupervisor = data.isRoomSupervisor || false;
+    this.assignedRooms    = data.assignedRooms || [];
+  } catch (e) {
+    console.error('Token invalid/expired -> logout');
+    this.logout();
+  }
+},
+
+clearAuth() {
+  this.logout();   // panggil action logout tanpa hit API
 },
 
 
@@ -764,6 +752,17 @@ async setUserMaintenanceStatus(id, status = true) {
         if (error.response && error.response.status === 401) this.logout();
       }
     },
+    async fetchMaintenanceDetail(id) {
+  try {
+    const { data } = await axios.get(`${API_BASE_URL}/maintenance/${id}?with=inventory`);
+    return data;
+  } catch (error) {
+    console.error('Failed to fetch maintenance detail:', error);
+    if (error.response?.status === 401) this.logout();
+    throw error;
+  }
+},
+
     async addMaintenanceRecord(inventoryId, maintenanceData) {
         try {
             const formData = new FormData();
@@ -836,16 +835,20 @@ async scheduleInventory(inventoryId, scheduleData) {
             throw error;
         }
     },
-    async deleteMaintenanceRecord(id) {
-        try {
-            await axios.delete(`${API_BASE_URL}/maintenance/${id}`);
-            // Mungkin perlu refresh data terkait
-        } catch (error) {
-            console.error('Failed to delete maintenance record:', error);
-            if (error.response && error.response.status === 401) this.logout();
-            throw error;
-        }
-    },
+async updateMaintenanceRecord(id, formData) {
+  try {
+    const response = await axios.post(
+      `${API_BASE_URL}/maintenance/${id}`,
+      formData,
+      { headers: { 'Content-Type': 'multipart/form-data' } }
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Failed to update maintenance record:', error);
+    if (error.response?.status === 401) this.logout();
+    throw error;
+  }
+},
 
     // --- Aksi Dashboard & Laporan ---
     async fetchDashboardStats() {

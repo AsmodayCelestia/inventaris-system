@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Illuminate\Support\Str;
+use App\Models\User;
 
 use Endroid\QrCode\Builder\Builder;
 use Endroid\QrCode\Writer\PngWriter;
@@ -100,107 +101,83 @@ class InventoryController extends Controller
         return response()->json($inventory);
     }
 
-    public function update(Request $request, $id)
-    {
-        $inventory = Inventory::findOrFail($id);
+public function update(Request $request, $id)
+{
+    $inventory = Inventory::findOrFail($id);
 
-        $validatedData = $request->validate([
-            'inventory_number' => 'required|string|unique:inventories,inventory_number,' . $id,
-            'inventory_item_id' => 'required|exists:inventory_items,id',
-            'acquisition_source' => 'required|in:Beli,Hibah,Bantuan,-',
-            'procurement_date' => 'required|date',
-            'purchase_price' => 'required|numeric',
-            'estimated_depreciation' => 'nullable|numeric',
-            'status' => 'required|in:Ada,Rusak,Perbaikan,Hilang,Dipinjam,-',
-            'unit_id' => 'required|exists:location_units,id',
-            'room_id' => 'required|exists:rooms,id',
-            'expected_replacement' => 'nullable|date',
-            'last_checked_at' => 'nullable|date',
-            // 'pj_id' => 'nullable|exists:users,id',
-            // 'maintenance_frequency_type' => 'nullable|in:bulan,km,minggu,semester',
-            // 'maintenance_frequency_value' => 'nullable|integer',
-            // 'last_maintenance_at' => 'nullable|date',
-            // 'next_due_date' => 'nullable|date',
-            // 'next_due_km' => 'nullable|integer',
-            // 'last_odometer_reading' => 'nullable|integer',
-            'description' => 'nullable|string',
-            'image' => 'nullable|image|max:2048',
-            'remove_image' => 'nullable|in:0,1',
-        ]);
-
-        if ($request->has('remove_image') && $request->remove_image == '1' && $inventory->image_path) {
-            $publicId = pathinfo(parse_url($inventory->image_path, PHP_URL_PATH), PATHINFO_FILENAME);
-            Cloudinary::destroy('inventories_images/' . $publicId);
-            $inventory->image_path = null;
-        }
-
-        if ($request->hasFile('image')) {
-            if ($inventory->image_path) {
-                $oldPublicId = pathinfo(parse_url($inventory->image_path, PHP_URL_PATH), PATHINFO_FILENAME);
-                Cloudinary::destroy('inventories_images/' . $oldPublicId);
-            }
-
-            $uploadedImage = Cloudinary::upload($request->file('image')->getRealPath(), [
-                'folder' => 'inventories_images'
-            ]);
-            $inventory->image_path = $uploadedImage->getSecurePath();
-        }
-
-        $inventory->fill(array_diff_key($validatedData, array_flip(['image', 'remove_image'])));
-
-        // QR Code update
-        // Cek apakah qr_code_path kosong, atau data URL QR-nya berubah (opsional)
-        if (!$inventory->qr_code_path) {
-            try {
-                $qrCodeData = config('app.url') . '/inventories/' . $inventory->id;
-                $qrResult = Builder::create()
-                    ->writer(new PngWriter())
-                    ->data($qrCodeData)
-                    ->size(300)
-                    ->margin(10)
-                    ->build();
-
-                $qrTempPath = storage_path('app/public/qr_temp_' . uniqid() . '.png');
-                file_put_contents($qrTempPath, $qrResult->getString());
-
-
-                $uploadedQr = Cloudinary::upload($qrTempPath, [
-                    'folder' => 'inventories_qrcodes',
-                    'public_id' => 'qr-' . Str::slug($inventory->inventory_number),
-                ]);
-
-                $inventory->qr_code_path = $uploadedQr->getSecurePath();
-                unlink($qrTempPath);
-            } catch (\Exception $e) {
-                \Log::error('QR code regeneration failed: ' . $e->getMessage());
-            }
-        }
-
-
-        $inventory->save();
-
-        return response()->json([
-            'message' => 'Inventory updated successfully',
-            'data' => $inventory->load(['item', 'room', 'unit']),
-        ]);
+    // Cek apakah user memiliki hak akses untuk edit QR Code
+    if (auth()->user()->role !== 'admin') {
+        return response()->json(['error' => 'Anda tidak memiliki akses untuk mengedit QR Code.'], 403);
     }
 
-    public function updateSchedule(Request $request, Inventory $inventory)
-    {
-        $validated = $request->validate([
-            'pj_id' => 'nullable|exists:users,id', 
-            'maintenance_frequency_type' => 'nullable|in:bulan,km,minggu,semester',
-            'maintenance_frequency_value' => 'nullable|integer',
-            'last_maintenance_at' => 'nullable|date',
-            'next_due_date' => 'nullable|date',
-            'next_due_km' => 'nullable|integer',
-            'last_odometer_reading' => 'nullable|integer',
-        ]);
+    $validatedData = $request->validate([
+        'inventory_number' => 'required|string|unique:inventories,inventory_number,' . $id,
+        'inventory_item_id' => 'required|exists:inventory_items,id',
+        'acquisition_source' => 'required|in:Beli,Hibah,Bantuan,-',
+        'procurement_date' => 'required|date',
+        'purchase_price' => 'required|numeric',
+        'estimated_depreciation' => 'nullable|numeric',
+        'status' => 'required|in:Ada,Rusak,Perbaikan,Hilang,Dipinjam,-',
+        'unit_id' => 'required|exists:location_units,id',
+        'room_id' => 'required|exists:rooms,id',
+        'expected_replacement' => 'nullable|date',
+        'last_checked_at' => 'nullable|date',
+        'description' => 'nullable|string',
+        'image' => 'nullable|image|max:2048',
+        'remove_image' => 'nullable|in:0,1',
+    ]);
 
-        $inventory->update($validated);
-
-        return response()->json(['message' => 'Schedule updated successfully.']);
+    if ($request->has('remove_image') && $request->remove_image == '1' && $inventory->image_path) {
+        $publicId = pathinfo(parse_url($inventory->image_path, PHP_URL_PATH), PATHINFO_FILENAME);
+        Cloudinary::destroy('inventories_images/' . $publicId);
+        $inventory->image_path = null;
     }
+
+    if ($request->hasFile('image')) {
+        if ($inventory->image_path) {
+            $oldPublicId = pathinfo(parse_url($inventory->image_path, PHP_URL_PATH), PATHINFO_FILENAME);
+            Cloudinary::destroy('inventories_images/' . $oldPublicId);
+        }
+
+        $uploadedImage = Cloudinary::upload($request->file('image')->getRealPath(), [
+            'folder' => 'inventories_images'
+        ]);
+        $inventory->image_path = $uploadedImage->getSecurePath();
+    }
+
+    $inventory->fill(array_diff_key($validatedData, array_flip(['image', 'remove_image'])));
+
+    $inventory->save();
+
+    return response()->json([
+        'message' => 'Inventory updated successfully',
+        'data' => $inventory->load(['item', 'room', 'unit']),
+    ]);
+}
+
+public function updateSchedule(Request $request, Inventory $inventory)
+{
+    $validated = $request->validate([
+        'pj_id'                       => 'nullable|exists:users,id',
+        'maintenance_frequency_type'  => 'nullable|in:bulan,km,minggu,semester',
+        'maintenance_frequency_value' => 'nullable|integer',
+        'last_maintenance_at'         => 'nullable|date',
+        'next_due_date'               => 'nullable|date',
+        'next_due_km'                 => 'nullable|integer',
+        'last_odometer_reading'       => 'nullable|integer',
+    ]);
+
+    $inventory->update($validated);
+
+    // ⚡ Auto-flag
+    if ($request->pj_id) {
+        User::where('id', $request->pj_id)
+            ->where('is_pj_maintenance', false)
+            ->update(['is_pj_maintenance' => true]);
+    }
+
+    return response()->json(['message' => 'Schedule updated successfully.']);
+}
 
     public function supervisedByMe()
     {
@@ -238,5 +215,118 @@ class InventoryController extends Controller
             ->where('inventory_number', $inventoryNumber)
             ->firstOrFail();
         return response()->json($inventory);
+    }
+
+    public function createQrCode(Request $request)
+    {
+        // Cek apakah user adalah admin
+        if (auth()->user()->role !== 'admin') {
+            return response()->json(['error' => 'Anda tidak memiliki akses untuk melakukan tindakan ini.'], 403);
+        }
+
+        $inventory = Inventory::findOrFail($request->inventory_id);
+
+        // Cek kalau QR Code udah ada
+        if ($inventory->qr_code_path) {
+            return response()->json(['error' => 'QR Code sudah ada dan tidak dapat diubah.'], 400);
+        }
+
+        try {
+            $qrCodeData = config('app.url') . '/inventories/' . $inventory->id;
+            $qrResult = Builder::create()
+                ->writer(new PngWriter())
+                ->data($qrCodeData)
+                ->size(500)
+                ->margin(10)
+                ->build();
+
+            $qrCodeFileName = 'qrcodes/inventories/' . $inventory->inventory_number . '-' . Str::random(10) . '.png';
+            Storage::disk('public')->put($qrCodeFileName, $qrResult->getString());
+
+            $resultQr = Cloudinary::upload(storage_path('app/public/' . $qrCodeFileName), [
+                'folder' => 'inventories_qrcodes',
+                'public_id' => 'qr-' . Str::slug($inventory->inventory_number) . '-' . Str::random(8),
+            ]);
+            $qrCodePath = $resultQr->getSecurePath();
+            Storage::disk('public')->delete($qrCodeFileName);
+
+            $inventory->qr_code_path = $qrCodePath;
+            $inventory->save();
+
+            return response()->json(['message' => 'QR Code berhasil dibuat.', 'data' => $inventory->load(['item', 'room', 'unit'])]);
+        } catch (\Exception $e) {
+            \Log::error('QR Code error: ' . $e->getMessage());
+            return response()->json(['error' => 'Gagal membuat QR Code.'], 500);
+        }
+    }
+
+    public function updateQrCode(Request $request, $id)
+    {
+        // Cek apakah user adalah admin
+        if (auth()->user()->role !== 'admin') {
+            return response()->json(['error' => 'Anda tidak memiliki akses untuk melakukan tindakan ini.'], 403);
+        }
+
+        $inventory = Inventory::findOrFail($id);
+
+        // Cek kalau QR Code udah ada
+        if (!$inventory->qr_code_path) {
+            return response()->json(['error' => 'QR Code belum ada. Silakan bikin QR Code terlebih dahulu.'], 400);
+        }
+
+        try {
+            $qrCodeData = config('app.url') . '/inventories/' . $inventory->id;
+            $qrResult = Builder::create()
+                ->writer(new PngWriter())
+                ->data($qrCodeData)
+                ->size(500)
+                ->margin(10)
+                ->build();
+
+            $qrCodeFileName = 'qrcodes/inventories/' . $inventory->inventory_number . '-' . Str::random(10) . '.png';
+            Storage::disk('public')->put($qrCodeFileName, $qrResult->getString());
+
+            $resultQr = Cloudinary::upload(storage_path('app/public/' . $qrCodeFileName), [
+                'folder' => 'inventories_qrcodes',
+                'public_id' => 'qr-' . Str::slug($inventory->inventory_number) . '-' . Str::random(8),
+            ]);
+            $qrCodePath = $resultQr->getSecurePath();
+            Storage::disk('public')->delete($qrCodeFileName);
+
+            $inventory->qr_code_path = $qrCodePath;
+            $inventory->save();
+
+            return response()->json(['message' => 'QR Code berhasil diperbarui.', 'data' => $inventory->load(['item', 'room', 'unit'])]);
+        } catch (\Exception $e) {
+            \Log::error('QR Code error: ' . $e->getMessage());
+            return response()->json(['error' => 'Gagal memperbarui QR Code.'], 500);
+        }
+    }
+
+    public function deleteQrCode(Request $request, $id)
+    {
+        // Cek apakah user adalah admin
+        if (auth()->user()->role !== 'admin') {
+            return response()->json(['error' => 'Anda tidak memiliki akses untuk melakukan tindakan ini.'], 403);
+        }
+
+        $inventory = Inventory::findOrFail($id);
+
+        // Cek kalau QR Code ada
+        if (!$inventory->qr_code_path) {
+            return response()->json(['error' => 'QR Code tidak ada.'], 400);
+        }
+
+        try {
+            $publicIdQr = pathinfo(parse_url($inventory->qr_code_path, PHP_URL_PATH), PATHINFO_FILENAME);
+            Cloudinary::destroy('inventories_qrcodes/' . $publicIdQr);
+            $inventory->qr_code_path = null;
+            $inventory->save();
+
+            return response()->json(['message' => 'QR Code berhasil dihapus.']);
+        } catch (\Exception $e) {
+            \Log::error('Failed to delete QR Code: ' . $e->getMessage());
+            return response()->json(['error' => 'Gagal menghapus QR Code.'], 500);
+        }
     }
 }

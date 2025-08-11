@@ -146,9 +146,9 @@
                             </ul>
                         </li>
                         <!-- Maintenance (Admin, Head, Maintenance Role) -->
-<li class="nav-item has-treeview"
-    :class="{ 'menu-open': isMaintenanceOpen }"
-    v-if="counterStore.canAccessMaintenance">
+                        <li class="nav-item has-treeview"
+                            :class="{ 'menu-open': isMaintenanceOpen }"
+                            v-if="counterStore.canAccessMaintenance">
                             <a href="#" class="nav-link" @click.prevent="toggleMaintenance" :class="{ active: $route.path.startsWith('/maintenance') }">
                                 <i class="nav-icon fas fa-tools"></i>
                                 <p>
@@ -186,29 +186,31 @@
 
 
                         <!-- QR Code (Admin & Head) -->
-                        <li class="nav-item has-treeview" :class="{ 'menu-open': isQrCodeOpen }" v-if="counterStore.isAdmin || counterStore.isHead">
-                            <a href="#" class="nav-link" @click.prevent="toggleQrCode" :class="{ active: $route.path.startsWith('/qr-code') }">
-                                <i class="nav-icon fas fa-qrcode"></i>
-                                <p>
-                                    QR Code
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <router-link to="/qr-code/generate" class="nav-link" :class="{ active: $route.path === '/qr-code/generate' }">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Generate & Cetak</p>
-                                    </router-link>
-                                </li>
-                                <li class="nav-item">
-                                    <router-link to="/qr-code/scan" class="nav-link" :class="{ active: $route.path === '/qr-code/scan' }">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Scan QR</p>
-                                    </router-link>
-                                </li>
-                            </ul>
-                        </li>
+    <li class="nav-item has-treeview"
+        :class="{ 'menu-open': isQrCodeOpen }"
+        v-if="counterStore.isAdmin || counterStore.isHead || counterStore.isKaryawan">
+        <a href="#" class="nav-link" @click.prevent="toggleQrCode" :class="{ active: $route.path.startsWith('/qr-code') }">
+            <i class="nav-icon fas fa-qrcode"></i>
+            <p>
+                QR Code
+                <i class="right fas fa-angle-left"></i>
+            </p>
+        </a>
+        <ul class="nav nav-treeview">
+            <li class="nav-item" v-if="counterStore.isAdmin">
+                <router-link to="/manage-qrcodes" class="nav-link" :class="{ active: $route.path === '/qr-code/generate' }">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Generate & Cetak</p>
+                </router-link>
+            </li>
+            <li class="nav-item">
+                <router-link to="/scan-qrcode" class="nav-link" :class="{ active: $route.path === '/qr-code/scan' }">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Scan QR</p>
+                </router-link>
+            </li>
+        </ul>
+    </li>
 
                         <!-- Manajemen User (Hanya Admin) -->
                         <li class="nav-item" v-if="counterStore.isAdmin">

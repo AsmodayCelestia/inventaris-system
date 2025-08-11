@@ -8,8 +8,12 @@
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><router-link to="/dashboard">Home</router-link></li>
-              <li class="breadcrumb-item"><router-link to="/maintenance/planning">Planning</router-link></li>
+              <li class="breadcrumb-item">
+                <router-link to="/dashboard">Home</router-link>
+              </li>
+              <li class="breadcrumb-item">
+                <router-link to="/maintenance/planning">Planning</router-link>
+              </li>
               <li class="breadcrumb-item active">Tambah</li>
             </ol>
           </div>
@@ -84,12 +88,12 @@
 
               <div class="form-group">
                 <label for="issue_found">Permasalahan (opsional)</label>
-                <textarea v-model="form.issue_found" class="form-control" rows="3" placeholder="Deskripsikan masalah yang ditemukan (jika ada)"></textarea>
+                <textarea v-model="form.issue_found" class="form-control" rows="3"></textarea>
               </div>
 
               <div class="form-group">
                 <label for="notes">Catatan Tambahan (opsional)</label>
-                <textarea v-model="form.notes" class="form-control" rows="2" placeholder="Catatan tambahan untuk petugas atau penanggung jawab"></textarea>
+                <textarea v-model="form.notes" class="form-control" rows="2"></textarea>
               </div>
             </div>
 
@@ -97,7 +101,7 @@
               <button type="submit" class="btn btn-primary" :disabled="isSubmitting">
                 {{ isSubmitting ? 'Menyimpan...' : 'Simpan' }}
               </button>
-              <router-link to="/maintenance/planning" class="btn btn-secondary ml-2">Batal</router-link>
+              <router-link to="/maintenance/list" class="btn btn-secondary ml-2">Batal</router-link>
             </div>
           </form>
         </div>
@@ -128,12 +132,11 @@ const form = ref({
   next_due_date: '',
   next_due_km: '',
   last_odometer_reading: '',
-  inspection_date: '',
   issue_found: '',
   notes: '',
 });
 
-// Auto calculate next_due_date
+// Auto-calculate next due date
 watch(
   () => [form.value.maintenance_frequency_type, form.value.maintenance_frequency_value, form.value.last_maintenance_at],
   () => {
@@ -142,7 +145,6 @@ watch(
 
     const last = dayjs(last_maintenance_at);
     let next = '';
-
     if (maintenance_frequency_type === 'bulan') {
       next = last.add(maintenance_frequency_value, 'month');
     } else if (maintenance_frequency_type === 'minggu') {
@@ -150,10 +152,7 @@ watch(
     } else if (maintenance_frequency_type === 'semester') {
       next = last.add(maintenance_frequency_value * 6, 'month');
     }
-
-    if (next) {
-      form.value.next_due_date = next.format('YYYY-MM-DD');
-    }
+    if (next) form.value.next_due_date = next.format('YYYY-MM-DD');
   }
 );
 
@@ -172,7 +171,6 @@ const submitForm = async () => {
   }
 
   isSubmitting.value = true;
-
   try {
     await counterStore.scheduleInventory(inventory_id, {
       maintenance_frequency_type,
@@ -181,6 +179,7 @@ const submitForm = async () => {
       next_due_date: form.value.next_due_date,
       next_due_km: form.value.next_due_km,
       last_odometer_reading: form.value.last_odometer_reading,
+      pj_id: form.value.pj_id,
     });
 
     await counterStore.addMaintenanceRecord(inventory_id, {
@@ -192,14 +191,11 @@ const submitForm = async () => {
     });
 
     alert('Jadwal maintenance berhasil ditambahkan.');
-
-    // Reset form
-    Object.keys(form.value).forEach((key) => (form.value[key] = ''));
-
-    router.push('/maintenance/planning');
-  } catch (error) {
+    Object.keys(form.value).forEach(k => form.value[k] = '');
+    router.push('/maintenance/list');
+  } catch (e) {
     alert('Gagal menyimpan data.');
-    console.error(error);
+    console.error(e);
   } finally {
     isSubmitting.value = false;
   }
@@ -208,7 +204,6 @@ const submitForm = async () => {
 onMounted(async () => {
   await counterStore.fetchInventoryItems();
   inventoryItems.value = counterStore.inventoryItems;
-
   await counterStore.fetchUsersList();
   users.value = counterStore.usersList;
 });

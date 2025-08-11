@@ -63,7 +63,7 @@
                 <tr v-for="item in filteredList" :key="item.id">
                   <td>{{ item.inventory?.item?.name || '-' }}</td>
                   <td>{{ item.inventory?.inventory_number || '-' }}</td>
-                  <td>{{ item.responsible_person.name }}</td>
+<td>{{ item.responsible_person?.name ?? '-' }}</td>
 
                   <td>{{ formatDate(item.inspection_date) }}</td>
                   <td>

@@ -56,6 +56,8 @@ Route::middleware('auth:sanctum')->group(function () {
     // Maintenance - GET Riwayat oleh semua yang login, POST oleh Petugas/Admin/Head
     Route::get('/maintenance/history', [MaintenanceController::class, 'index']);
     Route::post('/inventories/{inventoryId}/maintenance', [MaintenanceController::class, 'store']);
+    Route::get('/maintenance/{id}', [MaintenanceController::class, 'show']);
+    Route::post('/maintenance/{id}', [MaintenanceController::class, 'update']);
  
     // Dashboard - GET Statistik Dashboard oleh semua yang login
     Route::get('/dashboard/stats', [DashboardController::class, 'getStats']);
@@ -100,7 +102,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
         // Manajemen User (CRUD hanya Admin)
         Route::apiResource('users', UserController::class);
-
+            Route::post('/qrcodes', [InventoryController::class, 'createQrCode']);
+    Route::put('/qrcodes/{id}', [InventoryController::class, 'updateQrCode']);
+    Route::delete('/qrcodes/{id}', [InventoryController::class, 'deleteQrCode']);
         // Laporan (Export hanya Admin)
         Route::get('/reports/inventories/pdf', [ReportController::class, 'exportInventoriesPdf']);
         Route::get('/reports/inventories/excel', [ReportController::class, 'exportInventoriesExcel']);

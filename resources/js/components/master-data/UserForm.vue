@@ -5,88 +5,124 @@
       <h5 class="mb-0">{{ editData ? 'Edit Pengguna' : 'Tambah Pengguna' }}</h5>
       <button class="btn btn-sm btn-secondary" @click="$emit('close')">Tutup</button>
     </div>
+
     <div class="card-body">
       <form @submit.prevent="submitForm">
+        <!-- Nama -->
         <div class="form-group">
-          <label>Nama</label>
-          <input type="text" class="form-control" v-model="form.name" required />
+          <label>Nama <span class="text-danger">*</span></label>
+          <input v-model="form.name" type="text" class="form-control" required />
         </div>
 
+        <!-- Email -->
         <div class="form-group">
-          <label>Email</label>
-          <input type="email" class="form-control" v-model="form.email" required />
+          <label>Email <span class="text-danger">*</span></label>
+          <input v-model="form.email" type="email" class="form-control" required />
         </div>
 
+        <!-- Password (hanya saat tambah) -->
         <div class="form-group" v-if="!editData">
-          <label>Password</label>
-          <input type="password" class="form-control" v-model="form.password" required />
+          <label>Password <span class="text-danger">*</span></label>
+          <input v-model="form.password" type="password" class="form-control" required minlength="6" />
         </div>
 
+        <!-- Konfirmasi Password (hanya saat tambah) -->
+        <div class="form-group" v-if="!editData">
+          <label>Konfirmasi Password <span class="text-danger">*</span></label>
+          <input v-model="form.password_confirmation" type="password" class="form-control" required minlength="6" />
+        </div>
+
+        <!-- Role -->
         <div class="form-group">
-          <label>Role</label>
-          <select class="form-control" v-model="form.role" required>
+          <label>Role <span class="text-danger">*</span></label>
+          <select v-model="form.role" class="form-control" required>
             <option value="">-- Pilih Role --</option>
             <option value="admin">Admin</option>
             <option value="head">Kepala Unit</option>
-            <option value="karyawan">Petugas</option>
+            <option value="karyawan">Karyawan</option>
           </select>
         </div>
 
+        <!-- Divisi -->
         <div class="form-group">
           <label>Divisi</label>
-          <input type="text" class="form-control" v-model="form.divisi" />
+          <input v-model="form.divisi" type="text" class="form-control" />
         </div>
 
-        <button type="submit" class="btn btn-success">{{ editData ? 'Update' : 'Simpan' }}</button>
+        <!-- Submit -->
+        <button type="submit" class="btn btn-success">
+          {{ editData ? 'Update' : 'Simpan' }}
+        </button>
       </form>
     </div>
   </div>
 </template>
 
 <script setup>
-import { reactive, watch, onMounted } from 'vue';
+import { reactive, watch } from 'vue';
 import { useCounterStore } from '../../stores/counter';
 
 const emit = defineEmits(['saved', 'close']);
 const counterStore = useCounterStore();
+
 const props = defineProps({
-  editData: Object
+  editData: {
+    type: Object,
+    default: null
+  }
 });
 
 const form = reactive({
   name: '',
   email: '',
   password: '',
+  password_confirmation: '', // wajib saat tambah
   role: '',
   divisi: ''
 });
 
 watch(
   () => props.editData,
-  (newData) => {
-    if (newData) {
-      form.name = newData.name;
-      form.email = newData.email;
+  (val) => {
+    if (val) {
+      form.name     = val.name;
+      form.email    = val.email;
+      form.role     = val.role;
+      form.divisi   = val.divisi;
       form.password = '';
-      form.role = newData.role;
-      form.divisi = newData.divisi;
+      form.password_confirmation = '';
     } else {
-      form.name = '';
-      form.email = '';
-      form.password = '';
-      form.role = '';
-      form.divisi = '';
+      Object.assign(form, {
+        name: '',
+        email: '',
+        password: '',
+        password_confirmation: '',
+        role: '',
+        divisi: ''
+      });
     }
   },
   { immediate: true }
 );
 
 const submitForm = async () => {
-  if (props.editData) {
-    await counterStore.updateUser(props.editData.id, form);
-  } else {
-    await counterStore.createUser(form);
+  try {
+    const payload = { ...form };
+    // saat edit, hapus password jika kosong
+    if (props.editData && !payload.password) {
+      delete payload.password;
+      delete payload.password_confirmation;
+    }
+
+    if (props.editData) {
+      await counterStore.updateUser(props.editData.id, payload);
+    } else {
+      await counterStore.createUser(payload);
+    }
+    emit('saved');
+  } catch (e) {
+    // error sudah ditangkap di store, bisa ditampilkan di sini jika mau
+    console.error(e);
   }
-  emit('saved');
 };
 </script>
