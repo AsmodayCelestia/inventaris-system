@@ -67,6 +67,9 @@
                                     <dt class="col-sm-4">Lokasi:</dt>
                                     <dd class="col-sm-8">{{ inventory.room ? inventory.room.name : '-' }} ({{ inventory.unit ? inventory.unit.name : '-' }})</dd>
 
+                                    <dt class="col-sm-4">Pengawas Ruangan:</dt>
+                                    <dd class="col-sm-8">{{ inventory.room?.location_person_in_charge?.name || '-' }}</dd>
+
                                     <dt class="col-sm-4">Tanggal Estimasi Penggantian:</dt>
                                     <dd class="col-sm-8">{{ formatDate(inventory.expected_replacement) }}</dd>
 

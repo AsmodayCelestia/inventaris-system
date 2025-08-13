@@ -10,6 +10,7 @@ import Dashboard from '../components/Dashboard.vue';
 import InventoryList from '../components/InventoryList.vue'; // Ini sekarang wrapper Layout + <router-view>
 import InventoryUnitList from '../components/InventoryUnitList.vue'; // 🆕 tab: unit inventaris
 import InventoryMasterList from '../components//InventoryMasterList.vue'; // 🆕 tab: master barang
+import InventoryMasterEdit from '../components/InventoryItemEdit.vue'; // 🆕 tab: master barang
 import InventoryItemForm from '../components/InventoryItemForm.vue';
 import InventoryDetail from '../components/InventoryDetail.vue';
 import InventoryCreate from '../components/InventoryCreate.vue';
@@ -66,6 +67,14 @@ const routes = [
                         name: 'InventoryMasterList',
                         component: InventoryMasterList,
                         meta: { requiresAuth: true, roles: ['admin'] }
+                    },
+                    // di dalam array children yang sama dengan inventory routes
+                    {
+                        path: 'master-data/barang/:id/edit',
+                        name: 'inventory-items.edit',
+                        component: InventoryMasterEdit,
+                        props: true,
+                        meta: { requiresAuth: true, roles: ['admin', 'head'] }
                     },
                     {
                         path: 'create',

@@ -13,6 +13,7 @@
             <th>Nama Ruangan</th>
             <th>Lantai</th>
             <th>Unit</th>
+            <th>Pengawas Ruangan</th>
             <th>Aksi</th>
           </tr>
         </thead>
@@ -22,6 +23,7 @@
             <td>{{ room.name }}</td>
             <td>{{ room.floor?.number || '-' }}</td>
             <td>{{ room.floor?.unit?.name || '-' }}</td>
+            <td>{{ room.location_person_in_charge?.name || '-' }}</td>
             <td>
               <button class="btn btn-sm btn-warning" @click="openForm(room)">Edit</button>
               <button class="btn btn-sm btn-danger ml-2" @click="deleteRoom(room.id)">Hapus</button>

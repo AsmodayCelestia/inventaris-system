@@ -64,13 +64,12 @@
                 <td>{{ item.type?.name || '-' }}</td>
                 <td>{{ item.manufacture_year || '-' }}</td>
                 <td>
-                  <router-link
-                    :to="`/master-data/barang/edit/${item.id}`"
-                    class="text-muted mr-2"
-                    v-if="counterStore.isAdmin"
-                  >
-                    <i class="fas fa-edit"></i>
-                  </router-link>
+                <router-link
+                  :to="{ name: 'inventory-items.edit', params: { id: item.id } }"
+                  class="text-muted mr-2"
+                >
+                  <i class="fas fa-edit"></i>
+                </router-link>
                   <a
                     href="#"
                     class="text-muted"

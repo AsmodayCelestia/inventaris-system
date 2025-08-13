@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Room; // Asumsi kamu punya model Room
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
@@ -23,26 +24,24 @@ class RoomController extends Controller
      * Store a newly created resource in storage (Menambah ruangan baru).
      * Hanya dapat diakses oleh Admin.
      */
-    public function store(Request $request)
-    {
-        try {
-            $validatedData = $request->validate([
-                'name' => 'required|string|max:255|unique:rooms,name', 
-                'floor_id' => 'required|exists:floors,id', 
-                'pj_lokasi_id' => 'nullable|exists:users,id', // <-- TAMBAHKAN VALIDASI INI
-            ]);
+public function store(Request $request)
+{
+    $data = $request->validate([
+        'name'           => 'required|string|max:255',
+        'floor_id'       => 'required|exists:floors,id',
+        'pj_lokasi_id'   => 'nullable|exists:users,id',
+    ]);
 
-            $room = Room::create($validatedData);
-            return response()->json($room, 201); 
-        } catch (ValidationException $e) {
-            return response()->json([
-                'message' => 'Validasi gagal.',
-                'errors' => $e->errors()
-            ], 422); 
-        } catch (\Exception $e) {
-            return response()->json(['message' => 'Gagal menambah ruangan: ' . $e->getMessage()], 500);
-        }
+    $room = Room::create($data);
+
+    // set supervisor flag
+    if ($data['pj_lokasi_id']) {
+        User::where('id', $data['pj_lokasi_id'])->update(['is_room_supervisor' => true]);
     }
+
+    return response()->json($room->load('floor.unit', 'locationPersonInCharge'), 201);
+}
+
 
     /**
      * Display the specified resource (Menampilkan detail satu ruangan).
@@ -62,31 +61,30 @@ class RoomController extends Controller
      * Update the specified resource in storage (Memperbarui ruangan).
      * Hanya dapat diakses oleh Admin.
      */
-    public function update(Request $request, $id)
-    {
-        $room = Room::find($id);
-        if (!$room) {
-            return response()->json(['message' => 'Ruangan tidak ditemukan'], 404);
-        }
+public function update(Request $request, Room $room)
+{
+    $data = $request->validate([
+        'name'           => 'sometimes|required|string|max:255',
+        'floor_id'       => 'sometimes|required|exists:floors,id',
+        'pj_lokasi_id'   => 'nullable|exists:users,id',
+    ]);
 
-        try {
-            $validatedData = $request->validate([
-                'name' => 'required|string|max:255|unique:rooms,name,' . $id, 
-                'floor_id' => 'required|exists:floors,id',
-                'pj_lokasi_id' => 'nullable|exists:users,id', // <-- TAMBAHKAN VALIDASI INI
-            ]);
+    $oldPj = $room->pj_lokasi_id;
 
-            $room->update($validatedData);
-            return response()->json($room);
-        } catch (ValidationException $e) {
-            return response()->json([
-                'message' => 'Validasi gagal.',
-                'errors' => $e->errors()
-            ], 422);
-        } catch (\Exception $e) {
-            return response()->json(['message' => 'Gagal memperbarui ruangan: ' . $e->getMessage()], 500);
-        }
+    $room->update($data);
+
+    // hilangkan flag dari pj lama (kalau ada)
+    if ($oldPj && $oldPj != ($data['pj_lokasi_id'] ?? null)) {
+        User::where('id', $oldPj)->update(['is_room_supervisor' => false]);
     }
+
+    // set flag ke pj baru (kalau ada)
+    if ($data['pj_lokasi_id']) {
+        User::where('id', $data['pj_lokasi_id'])->update(['is_room_supervisor' => true]);
+    }
+
+    return response()->json($room->load('floor.unit', 'locationPersonInCharge'));
+}
 
     /**
      * Remove the specified resource from storage (Menghapus ruangan).

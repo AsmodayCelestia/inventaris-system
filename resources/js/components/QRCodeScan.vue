@@ -19,40 +19,41 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted, nextTick } from 'vue';
-import * as Html5Qrcode from 'html5-qrcode';
+import { useRouter } from 'vue-router';
+import { Html5Qrcode } from 'html5-qrcode';
 
-const qrCode = ref(null);
+const router   = useRouter();
+const qrCode   = ref(null);
+let scanner    = null;
+let isRunning  = false;
 
-let html5QrcodeScanner;
+const onScanSuccess = (fullUrl) => {
+  if (!isRunning) return;
+  isRunning = false;
 
-const onScanSuccess = (decodedText, decodedResult) => {
-  qrCode.value = decodedText;
-  html5QrcodeScanner.stop().then(() => {
-    alert('QR Code scanned successfully.');
-    console.log('Scan result:', decodedText);
-  }).catch((err) => {
-    console.error('Failed to stop QR Code scanner:', err);
-  });
+  // ambil path saja: http://localhost:8000/inventories/1 → /inventories/1
+  const path = new URL(fullUrl, window.location.origin).pathname;
+  qrCode.value = path;
+  router.push(path);
 };
 
 onMounted(() => {
   nextTick(() => {
-    html5QrcodeScanner = new Html5Qrcode.Html5Qrcode('qr-reader');
-    html5QrcodeScanner.start({
-      facingMode: "environment" // Menggunakan kamera belakang
-    }, (decodedText, decodedResult) => {
-      onScanSuccess(decodedText, decodedResult);
-    }, (err) => {
-      console.error('Failed to start QR Code scanner:', err);
-    });
+    scanner = new Html5Qrcode('qr-reader');
+    isRunning = true;
+    scanner.start(
+      { facingMode: 'environment' },
+      {},
+      onScanSuccess,
+      () => {}
+    ).catch(console.error);
   });
 });
 
 onUnmounted(() => {
-  if (html5QrcodeScanner) {
-    html5QrcodeScanner.stop().catch((err) => {
-      console.error('Failed to stop QR Code scanner:', err);
-    });
+  if (isRunning && scanner) {
+    scanner.stop().catch(() => {}); // ignore “not running”
+    isRunning = false;
   }
 });
 </script>

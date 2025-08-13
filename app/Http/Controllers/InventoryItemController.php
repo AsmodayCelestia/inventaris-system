@@ -13,6 +13,18 @@ class InventoryItemController extends Controller
      * Display a listing of the resource (Daftar semua master barang).
      * Dapat diakses oleh semua user yang terautentikasi (Admin, Head, Karyawan/Petugas).
      */
+    public function reserveSlot($id)
+    {
+        $item = InventoryItem::findOrFail($id);
+        $item->increment('quantity');
+        return response()->json(['quantity' => $item->quantity]);
+    }
+
+    public function autoIncrementQuantity($id)
+    {
+        InventoryItem::where('id', $id)->increment('quantity');
+    }
+
     public function index(Request $request)
     {
         // Eager load relasi brand, category, dan type untuk tampilan daftar
@@ -73,6 +85,38 @@ class InventoryItemController extends Controller
             return response()->json(['message' => 'Gagal menambah master barang: ' . $e->getMessage()], 500);
         }
     }
+
+/**
+ * HEAD: Naikkan quantity master +1
+ * POST /inventory-items/{id}/increase-quantity
+ */
+public function increaseQuantity($id)
+{
+    $item = InventoryItem::findOrFail($id);
+    $item->increment('quantity');
+    return response()->json(['quantity' => $item->quantity]);
+}
+
+/**
+ * HEAD: Lihat daftar slot kosong
+ * GET /inventory-items/{id}/empty-slots
+ */
+public function getEmptySlots($id)
+{
+    $item = InventoryItem::findOrFail($id);
+
+    // Hitung jumlah unit fisik yang sudah dibuat dari inventory_item ini
+    $totalUnit = \App\Models\Inventory::where('inventory_item_id', $item->id)->count();
+
+    $emptySlots = max(0, $item->quantity - $totalUnit);
+
+    return response()->json([
+        'inventory_item_id' => $item->id,
+        'quantity'          => $item->quantity,
+        'total_unit'        => $totalUnit,
+        'empty_slots'       => $emptySlots,
+    ]);
+}
 
     /**
      * Display the specified resource (Menampilkan detail satu master barang).

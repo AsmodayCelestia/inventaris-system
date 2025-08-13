@@ -8,6 +8,7 @@
         </div>
         <div class="card-body">
           <form @submit.prevent="submitForm">
+            <!-- Nama Ruangan -->
             <div class="form-group">
               <label>Nama Ruangan</label>
               <input
@@ -19,21 +20,34 @@
               />
             </div>
 
+            <!-- Lantai -->
             <div class="form-group mt-3">
               <label>Lantai</label>
               <select v-model="form.floor_id" class="form-control" required>
-                <option value="" disabled selected>Pilih Lantai</option>
+                <option value="" disabled>Pilih Lantai</option>
                 <option v-for="floor in counterStore.floors" :key="floor.id" :value="floor.id">
                   {{ floor.number }} ({{ floor.unit?.name || '-' }})
                 </option>
               </select>
             </div>
 
-            <!-- Tampilkan nama unit otomatis -->
+            <!-- Pengawas Ruangan -->
+            <div class="form-group mt-3">
+              <label>Pengawas Ruangan</label>
+              <select v-model="form.pj_lokasi_id" class="form-control">
+                <option :value="null">-- Tidak Ada --</option>
+                <option v-for="u in counterStore.usersList" :key="u.id" :value="u.id">
+                  {{ u.name }}
+                </option>
+              </select>
+            </div>
+
+            <!-- Nama unit otomatis -->
             <div v-if="selectedUnitName" class="mt-2 text-muted">
               <small>Unit: {{ selectedUnitName }}</small>
             </div>
 
+            <!-- Tombol -->
             <div class="form-group text-right mt-4">
               <button type="submit" class="btn btn-success mr-2">Simpan</button>
               <button type="button" class="btn btn-secondary" @click="$emit('close')">Batal</button>
@@ -49,59 +63,52 @@
 import { reactive, computed, watch, onMounted } from 'vue';
 import { useCounterStore } from '../../stores/counter';
 
-const props = defineProps({ editData: Object });
-const emit = defineEmits(['saved', 'close']);
+const props   = defineProps({ editData: Object });
+const emit    = defineEmits(['saved', 'close']);
 const counterStore = useCounterStore();
 
 const form = reactive({
   id: null,
   name: '',
   floor_id: '',
+  pj_lokasi_id: null,   // tambahan
 });
 
-// Komputasi nama unit berdasarkan floor yang dipilih
 const selectedUnitName = computed(() => {
-  const selectedFloor = counterStore.floors.find(f => f.id === form.floor_id);
-  return selectedFloor?.unit?.name || '-';
+  const f = counterStore.floors.find(f => f.id === form.floor_id);
+  return f?.unit?.name || '-';
 });
 
-// Saat data edit dikirim, isi form-nya
-watch(() => props.editData, (newVal) => {
-  if (newVal) {
-    form.id = newVal.id || null;
-    form.name = newVal.name || '';
-    form.floor_id = newVal.floor_id || '';
+watch(() => props.editData, (val) => {
+  if (val) {
+    form.id             = val.id || null;
+    form.name           = val.name || '';
+    form.floor_id       = val.floor_id || '';
+    form.pj_lokasi_id   = val.pj_lokasi_id || null;
   } else {
-    form.id = null;
-    form.name = '';
-    form.floor_id = '';
+    Object.assign(form, { id: null, name: '', floor_id: '', pj_lokasi_id: null });
   }
 }, { immediate: true });
 
-// Saat disubmit, kirim data ke API via store
 const submitForm = async () => {
   if (!form.floor_id) return;
 
-  if (form.id) {
-    await counterStore.updateRoom(form.id, {
-      name: form.name,
-      floor_id: form.floor_id,
-    });
-  } else {
-    await counterStore.createRoom({
-      name: form.name,
-      floor_id: form.floor_id,
-    });
-  }
+  const payload = {
+    name: form.name,
+    floor_id: form.floor_id,
+    pj_lokasi_id: form.pj_lokasi_id,
+  };
+
+  form.id
+    ? await counterStore.updateRoom(form.id, payload)
+    : await counterStore.createRoom(payload);
 
   emit('saved');
 };
 
-// Fetch floors jika belum ada
 onMounted(() => {
-  if (counterStore.floors.length === 0) {
-    counterStore.fetchFloors();
-  }
+  if (counterStore.floors.length === 0) counterStore.fetchFloors();
+  if (counterStore.usersList.length === 0) counterStore.fetchUsersList();
 });
 </script>
 
