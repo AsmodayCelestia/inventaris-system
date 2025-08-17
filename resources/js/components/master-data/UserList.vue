@@ -3,7 +3,7 @@
   <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
       <h3>Daftar Pengguna</h3>
-      <button class="btn btn-primary" @click="showForm = true">Tambah</button>
+      <button class="btn btn-primary" @click="openForm(null)">Tambah</button>
     </div>
 
     <div class="table-responsive">
@@ -22,9 +22,9 @@
             <td>{{ user.name }}</td>
             <td>{{ user.email }}</td>
             <td>{{ user.role }}</td>
-            <td>{{ user.divisi }}</td>
+            <td>{{ user.division?.name ?? '-' }}</td>
             <td>
-              <button class="btn btn-sm btn-info mr-1" @click="editUser(user)">Edit</button>
+              <button class="btn btn-sm btn-info mr-1" @click="openForm(user)">Edit</button>
               <button class="btn btn-sm btn-danger" @click="deleteUser(user.id)">Hapus</button>
             </td>
           </tr>
@@ -35,7 +35,8 @@
       </table>
     </div>
 
-    <UserForm v-if="showForm" :editData="editingUser" @saved="onSaved" @close="showForm = false" />
+    <!-- Gunakan v-model agar otomatis ter-update -->
+    <UserForm v-if="showForm" v-model="editingUser" @saved="onSaved" @close="showForm = false" />
   </div>
 </template>
 
@@ -45,27 +46,27 @@ import { useCounterStore } from '../../stores/counter';
 import UserForm from './UserForm.vue';
 
 const counterStore = useCounterStore();
-const showForm = ref(false);
+const showForm    = ref(false);
 const editingUser = ref(null);
 
 onMounted(() => {
-counterStore.fetchUsersList();
+  counterStore.fetchUsersList();
 });
 
-const editUser = (user) => {
-  editingUser.value = { ...user };
+function openForm(user) {
+  editingUser.value = user ? { ...user } : null;
   showForm.value = true;
-};
+}
 
-const deleteUser = async (id) => {
+async function deleteUser(id) {
   if (confirm('Yakin ingin menghapus pengguna ini?')) {
     await counterStore.deleteUser(id);
   }
-};
+}
 
-const onSaved = async () => {
+async function onSaved() {
   showForm.value = false;
   editingUser.value = null;
   await counterStore.fetchUsersList();
-};
+}
 </script>

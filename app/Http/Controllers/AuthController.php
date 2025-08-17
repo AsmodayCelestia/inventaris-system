@@ -17,7 +17,7 @@ class AuthController extends Controller
                 'name'                  => 'required|string|max:255',
                 'email'                 => 'required|email|unique:users',
                 'password'              => 'required|string|min:6|confirmed',
-                'divisi'                => 'required|string|max:255',
+                'division_id' => 'required|exists:divisions,id',
                 'role'                  => 'required|in:admin,karyawan,head',
             ]);
 
@@ -63,7 +63,7 @@ public function login(Request $request)
             'id'              => $user->id,
             'name'            => $user->name,
             'email'           => $user->email,
-            'divisi'          => $user->divisi,
+            'divisi'          => $user->division->name,
             'role'            => $user->role,
             'isPjMaintenance' => $isPjMaintenance,
         ]);

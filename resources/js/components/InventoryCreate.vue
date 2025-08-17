@@ -1,104 +1,144 @@
 <template>
-        <div class="content">
-            <div class="container-fluid">
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Form Inventaris Baru</h3>
-                    </div>
-                    <form @submit.prevent="submitForm"> <div class="card-body">
-                            <div class="form-group">
-                                <label for="description">Keterangan</label>
-                                <textarea v-model="form.description" class="form-control" id="description" rows="3"></textarea>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="image">Gambar Inventaris</label>
-                                <div class="custom-file">
-                                    <input type="file" @change="handleImageUpload" class="custom-file-input" id="image">
-                                    <label class="custom-file-label" for="image">{{ imageName || 'Pilih gambar...' }}</label>
-                                </div>
-                                <div v-if="imageUrlPreview" class="mt-2">
-                                    <img :src="imageUrlPreview" alt="Preview Gambar" class="img-thumbnail" style="max-width: 200px;">
-                                </div>
-                            </div>
-
-                            </div>
-                        <div class="card-footer">
-                            <button type="submit" class="btn btn-primary">Simpan</button>
-                            <router-link to="/inventories" class="btn btn-secondary ml-2">Batal</router-link>
-                        </div>
-                    </form>
-                </div>
-            </div>
+  <div class="content">
+    <div class="container-fluid">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Tambah Inventaris Baru</h3>
         </div>
+
+        <!-- Detail Master Barang -->
+        <div class="card-body bg-light">
+          <h5>Menambahkan Inventaris untuk:</h5>
+          <div>
+            <strong>{{ item.name }}</strong><br />
+            <small class="text-muted">
+              Merk: {{ item.brand?.name }} | Kategori: {{ item.category?.name }}<br />
+              Tahun Produksi: {{ item.manufacture_year }}<br />
+              ISBN: {{ item.isbn || '-' }}<br />
+              Stok Master: {{ item.quantity }} unit
+            </small>
+          </div>
+        </div>
+
+        <!-- Form -->
+        <form @submit.prevent="submitForm">
+          <div class="card-body">
+
+            <div class="form-group">
+              <label>Tanggal Perolehan *</label>
+              <input type="date" class="form-control" v-model="form.procurement_date" required />
+            </div>
+
+            <div class="form-group">
+              <label>Sumber Perolehan *</label>
+              <select v-model="form.acquisition_source" class="form-control" required>
+                <option value="Beli">Beli</option>
+                <option value="Hibah">Hibah</option>
+                <option value="Bantuan">Bantuan</option>
+                <option value="-">Lainnya</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Harga Beli *</label>
+              <input type="number" class="form-control" v-model.number="form.purchase_price" required />
+            </div>
+
+            <div class="form-group">
+              <label>Unit / Lokasi *</label>
+              <select v-model="form.unit_id" class="form-control" required>
+                <option v-for="u in units" :key="u.id" :value="u.id">{{ u.name }}</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Ruang *</label>
+              <select v-model="form.room_id" class="form-control" required>
+                <option v-for="r in rooms" :key="r.id" :value="r.id">{{ r.name }}</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Status *</label>
+              <select v-model="form.status" class="form-control" required>
+                <option value="Ada">Ada</option>
+                <option value="Rusak">Rusak</option>
+                <option value="Perbaikan">Perbaikan</option>
+                <option value="Hilang">Hilang</option>
+                <option value="Dipinjam">Dipinjam</option>
+                <option value="-">Lainnya</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Keterangan</label>
+              <textarea v-model="form.description" class="form-control" rows="3"></textarea>
+            </div>
+          </div>
+
+          <div class="card-footer">
+            <button type="submit" class="btn btn-primary" :disabled="loading">
+              <span v-if="loading" class="spinner-border spinner-border-sm" role="status"></span>
+              <span v-else>Simpan</span>
+            </button>
+            <router-link :to="`/master-data/barang/${itemId}/edit`" class="btn btn-secondary ml-2">Batal</router-link>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
-// ... import lainnya seperti Layout, useCounterStore, useRouter
+import { ref, onMounted } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import axios from 'axios';
 
-// Pastikan di `form` ada properti untuk gambar
+const route  = useRoute();
+const router = useRouter();
+const itemId  = route.query.item_id;
+const autoNum = route.query.auto_num;
+
+const loading = ref(false);
+const item    = ref({});
+const units   = ref([]);
+const rooms   = ref([]);
+
 const form = ref({
-    // ... properti form lainnya
-    description: '',
-    image: null, // Ini untuk menyimpan file gambar yang dipilih
+  procurement_date: new Date().toISOString().split('T')[0],
+  acquisition_source: 'Beli',
+  purchase_price: 0,
+  unit_id: '',
+  room_id: '',
+  status: 'Ada',
+  description: '',
 });
 
-const imageName = ref(''); // Untuk menampilkan nama file yang dipilih
-const imageUrlPreview = ref(null); // Untuk preview gambar
+onMounted(async () => {
+  const { data } = await axios.get(`/inventory-items/${itemId}`);
+  item.value = data;
+  units.value  = (await axios.get('/units')).data;
+  rooms.value  = (await axios.get('/rooms')).data;
+});
 
-const handleImageUpload = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-        form.value.image = file; // Simpan objek file ke form
-        imageName.value = file.name; // Tampilkan nama file
-        imageUrlPreview.value = URL.createObjectURL(file); // Buat URL preview
-    } else {
-        form.value.image = null;
-        imageName.value = '';
-        imageUrlPreview.value = null;
-    }
-};
 
 const submitForm = async () => {
-    try {
-        // PERHATIAN PENTING: Untuk mengirim file, gunakan FormData!
-        const formData = new FormData();
-        for (const key in form.value) {
-            if (form.value[key] !== null) { // Pastikan tidak ada nilai null yang dikirim
-                formData.append(key, form.value[key]);
-            }
-        }
+  loading.value = true;
+  try {
+    const formData = new FormData();
+    Object.keys(form.value).forEach(k => formData.append(k, form.value[k]));
 
-        // Contoh pengiriman ke API Laravel (sesuaikan dengan method store/update kamu)
-        // Jika ini untuk create:
-        await axios.post('/api/inventories', formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data' // Penting untuk kirim file
-            }
-        });
+await axios.post(`/inventory-items/${itemId}/inventories`,    formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
 
-        // Jika ini untuk edit, pastikan method-nya PATCH/POST dan sertakan ID:
-        // await axios.post(`/api/inventories/${itemId}`, formData, { // Laravel butuh POST untuk PATCH/PUT dengan file upload
-        //     headers: {
-        //         'Content-Type': 'multipart/form-data',
-        //         'X-HTTP-Method-Override': 'PATCH' // Opsional jika API kamu tidak menerima PATCH langsung dengan FormData
-        //     }
-        // });
-
-        alert('Inventaris berhasil disimpan!');
-        // Redirect atau lakukan sesuatu setelah berhasil
-        // router.push('/inventories');
-
-    } catch (error) {
-        console.error('Gagal menyimpan inventaris:', error);
-        alert('Gagal menyimpan inventaris. Cek konsol untuk detail.');
-    }
+    alert('Inventaris berhasil ditambahkan!');
+    router.push(`/master-data/barang/${itemId}/edit`);
+  } catch (err) {
+    console.error(err);
+    alert('Gagal menambahkan inventaris.');
+  } finally {
+    loading.value = false;
+  }
 };
-
-// ... fungsi lainnya ...
 </script>
-
-<style scoped>
-/* Pastikan ada gaya untuk custom-file jika menggunakan Bootstrap/AdminLTE */
-</style>

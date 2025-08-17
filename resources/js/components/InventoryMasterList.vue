@@ -21,7 +21,7 @@
         <div class="card-header d-flex justify-content-between align-items-center">
           <h3 class="card-title">Daftar Master Barang</h3>
           <router-link
-            to="/master-data/barang/create"
+            :to="{ name: 'InventoryMasterCreate' }"
             class="btn btn-primary btn-sm"
             v-if="counterStore.isAdmin"
           >

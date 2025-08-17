@@ -75,7 +75,7 @@
               class="btn btn-sm btn-primary mb-1"
               @click="createInventory(slot)"
             >
-              Buat Inventaris ({{ genNumber(slot) }})
+                Buat Inventaris 
             </button>
           </div>
         </div>
@@ -154,9 +154,6 @@ const fetchInventories = async () => {
 const invCount   = computed(() => inventories.value.length);
 const emptySlots = computed(() => Math.max(0, form.value.quantity - invCount.value));
 
-const genNumber = slot =>
-  `${form.value.item_code}-${String(invCount.value + slot).padStart(3, '0')}`;
-
 const saveItem = async () => {
   await store.updateInventoryItem(route.params.id, form.value);
   await fetchInventories();
@@ -165,6 +162,6 @@ const saveItem = async () => {
 const createInventory = slot =>
   router.push({
     path: '/inventories/create',
-    query: { item_id: route.params.id, auto_num: genNumber(slot) },
+    query: { item_id: route.params.id  },
   });
 </script>

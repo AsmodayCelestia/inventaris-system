@@ -2,12 +2,12 @@
 <template>
   <div class="card mt-4">
     <div class="card-header d-flex justify-content-between align-items-center">
-      <h5 class="mb-0">{{ editData ? 'Edit Pengguna' : 'Tambah Pengguna' }}</h5>
+      <h5 class="mb-0">{{ isEdit ? 'Edit Pengguna' : 'Tambah Pengguna' }}</h5>
       <button class="btn btn-sm btn-secondary" @click="$emit('close')">Tutup</button>
     </div>
 
     <div class="card-body">
-      <form @submit.prevent="submitForm">
+      <form @submit.prevent="handleSubmit">
         <!-- Nama -->
         <div class="form-group">
           <label>Nama <span class="text-danger">*</span></label>
@@ -21,13 +21,11 @@
         </div>
 
         <!-- Password (hanya saat tambah) -->
-        <div class="form-group" v-if="!editData">
+        <div class="form-group" v-if="!isEdit">
           <label>Password <span class="text-danger">*</span></label>
           <input v-model="form.password" type="password" class="form-control" required minlength="6" />
         </div>
-
-        <!-- Konfirmasi Password (hanya saat tambah) -->
-        <div class="form-group" v-if="!editData">
+        <div class="form-group" v-if="!isEdit">
           <label>Konfirmasi Password <span class="text-danger">*</span></label>
           <input v-model="form.password_confirmation" type="password" class="form-control" required minlength="6" />
         </div>
@@ -46,12 +44,14 @@
         <!-- Divisi -->
         <div class="form-group">
           <label>Divisi</label>
-          <input v-model="form.divisi" type="text" class="form-control" />
+          <select v-model="form.division_id" class="form-control">
+            <option value="">-- Pilih Divisi --</option>
+            <option v-for="d in divisions" :key="d.id" :value="d.id">{{ d.name }}</option>
+          </select>
         </div>
 
-        <!-- Submit -->
         <button type="submit" class="btn btn-success">
-          {{ editData ? 'Update' : 'Simpan' }}
+          {{ isEdit ? 'Update' : 'Simpan' }}
         </button>
       </form>
     </div>
@@ -59,69 +59,63 @@
 </template>
 
 <script setup>
-import { reactive, watch } from 'vue';
+import { reactive, watch, onMounted, computed, ref } from 'vue';
 import { useCounterStore } from '../../stores/counter';
 
-const emit = defineEmits(['saved', 'close']);
+const emit         = defineEmits(['update:modelValue', 'saved', 'close']);
 const counterStore = useCounterStore();
 
 const props = defineProps({
-  editData: {
-    type: Object,
-    default: null
-  }
+  modelValue: { type: Object, default: null }
 });
+
+const divisions = ref([]);
+const isEdit    = computed(() => !!props.modelValue);
 
 const form = reactive({
   name: '',
   email: '',
   password: '',
-  password_confirmation: '', // wajib saat tambah
+  password_confirmation: '',
   role: '',
-  divisi: ''
+  division_id: ''
+});
+
+onMounted(async () => {
+  divisions.value = await counterStore.fetchDivisions();
 });
 
 watch(
-  () => props.editData,
+  () => props.modelValue,
   (val) => {
     if (val) {
-      form.name     = val.name;
-      form.email    = val.email;
-      form.role     = val.role;
-      form.divisi   = val.divisi;
+      form.name        = val.name;
+      form.email       = val.email;
+      form.role        = val.role;
+      form.division_id = val.division_id || '';
       form.password = '';
       form.password_confirmation = '';
     } else {
       Object.assign(form, {
-        name: '',
-        email: '',
-        password: '',
-        password_confirmation: '',
-        role: '',
-        divisi: ''
+        name: '', email: '', password: '', password_confirmation: '', role: '', division_id: ''
       });
     }
   },
   { immediate: true }
 );
 
-const submitForm = async () => {
+const handleSubmit = async () => {
   try {
     const payload = { ...form };
-    // saat edit, hapus password jika kosong
-    if (props.editData && !payload.password) {
+    if (isEdit.value && !payload.password) {
       delete payload.password;
       delete payload.password_confirmation;
     }
-
-    if (props.editData) {
-      await counterStore.updateUser(props.editData.id, payload);
-    } else {
-      await counterStore.createUser(payload);
-    }
+    isEdit.value
+      ? await counterStore.updateUser(props.modelValue.id, payload)
+      : await counterStore.createUser(payload);
     emit('saved');
   } catch (e) {
-    // error sudah ditangkap di store, bisa ditampilkan di sini jika mau
     console.error(e);
   }
 };

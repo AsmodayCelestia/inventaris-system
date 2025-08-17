@@ -66,6 +66,12 @@ const routes = [
                         path: 'master-barang',
                         name: 'InventoryMasterList',
                         component: InventoryMasterList,
+                        meta: { requiresAuth: true, roles: ['admin', 'head'] }
+                    },
+                                        {
+                        path: 'master-barang/create',
+                        name: 'InventoryMasterCreate',
+                        component: InventoryItemForm,
                         meta: { requiresAuth: true, roles: ['admin'] }
                     },
                     // di dalam array children yang sama dengan inventory routes
@@ -87,7 +93,7 @@ const routes = [
                         name: 'inventories.edit',
                         component: InventoryEdit,
                         props: true,
-                        meta: { requiresAuth: true, roles: ['admin', 'head'] }
+                        meta: { requiresAuth: true, roles: ['admin', 'head', 'karyawan'] }
                     },
                     {
                         path: ':id',
@@ -282,6 +288,26 @@ const routes = [
                 props: true,
                 meta: { requiresAuth: true, roles: ['admin'] }
             },
+            /* ---------- DIVISION ---------- */
+            {
+            path: 'master-data/divisions',
+            name: 'DivisionList',
+            component: () => import('../components/master-data/DivisionList.vue'),
+            meta: { requiresAuth: true, roles: ['admin'] }
+            },
+            {
+            path: 'master-data/divisions/create',
+            name: 'DivisionCreate',
+            component: () => import('../components/master-data/DivisionForm.vue'),
+            meta: { requiresAuth: true, roles: ['admin'] }
+            },
+            {
+            path: 'master-data/divisions/edit/:id',
+            name: 'DivisionEdit',
+            component: () => import('../components/master-data/DivisionForm.vue'),
+            props: true,
+            meta: { requiresAuth: true, roles: ['admin'] }
+            },
         ]
     },
     {
@@ -301,51 +327,47 @@ const router = createRouter({
 
 
 router.beforeEach(async (to, from, next) => {
-    const counterStore = useCounterStore();
+  const counterStore = useCounterStore();
 
-    // Inisialisasi autentikasi jika belum login tapi ada token
-    if (!counterStore.isLoggedIn && localStorage.getItem('Authorization')) {
-        try {
-            await counterStore.initializeAuth?.(); // Optional chaining untuk aman
-        } catch (e) {
-            console.error('Gagal inisialisasi auth:', e);
-            return next({ name: 'Login' });
-        }
+  // ➕ FORCE reload state jika role masih null tapi ada token
+  if (!counterStore.authReady && localStorage.getItem('Authorization')) {
+    try {
+      await counterStore.initializeAuth();
+    } catch (e) {
+      console.error('Gagal inisialisasi auth:', e);
+      // Jangan force logout, biarkan user di halaman login
     }
+  }
 
-    const { requiresAuth, roles: requiredRoles } = to.meta;
-    const isLoggedIn = counterStore.isLoggedIn;
+  const { requiresAuth, roles: requiredRoles } = to.meta;
+  const isLoggedIn = counterStore.isLoggedIn;
 
-    if (requiresAuth && !isLoggedIn) {
-        return next({ name: 'Login' });
+  if (requiresAuth && !isLoggedIn) return next({ name: 'Login' });
+  if (to.name === 'Login' && isLoggedIn) return next({ name: 'Dashboard' });
+
+  if (requiredRoles) {
+    const roleMap = {
+      admin: counterStore.isAdmin,
+      head: counterStore.isHead,
+      karyawan: counterStore.isKaryawan,
+    };
+
+    const hasAccess = requiredRoles.some(role => {
+      if (role === 'karyawan') {
+        return roleMap.karyawan && counterStore.userDivisi === 'Keuangan';
+      }
+      return roleMap[role];
+    });
+
+    if (!hasAccess) {
+      console.warn(
+        `Akses ditolak: User ${counterStore.userName} (role: ${counterStore.userRole}, divisi: ${counterStore.userDivisi}) mencoba mengakses '${to.fullPath}'`
+      );
+      return next({ name: 'Dashboard' });
     }
-
-    if (to.name === 'Login' && isLoggedIn) {
-        return next({ name: 'Dashboard' });
-    }
-
-    // ✅ Ganti validasi role jadi berdasarkan getter
-    if (requiredRoles) {
-        const roleMap = {
-            admin: counterStore.isAdmin,
-            head: counterStore.isHead,
-            karyawan: counterStore.isKaryawan,
-        };
-
-        const hasAccess = requiredRoles.some(role => roleMap[role]);
-
-        if (!hasAccess) {
-            console.warn(
-                `Akses ditolak: User dengan role '${counterStore.userRole}' mencoba mengakses '${to.fullPath}'`
-            );
-            return next({ name: 'Dashboard' });
-        }
-    }
-
-    return next();
+  }
+  return next();
 });
-
-
 
 export default router;
 

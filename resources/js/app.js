@@ -4,6 +4,7 @@ import { createApp } from 'vue';
 import { createPinia } from 'pinia';
 import router from './router';
 import axios from 'axios';
+import { useCounterStore } from './stores/counter';
 // import 'admin-lte/plugins/jquery/jquery.min.js';
 // import 'admin-lte/plugins/bootstrap/js/bootstrap.bundle.min.js';
 // import 'admin-lte/dist/js/adminlte.min.js';
@@ -20,7 +21,7 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 const token = localStorage.getItem('Authorization');
 if (token) {
-    window.axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    axios.defaults.withCredentials = true;
     console.log('✅ Axios Authorization header set from localStorage.');
 } else {
     console.log('ℹ️ No Authorization token found in localStorage.');
@@ -34,4 +35,7 @@ const app = createApp(App);
 
 app.use(createPinia());
 app.use(router);
-app.mount('#app');
+const counterStore = useCounterStore();
+counterStore.initializeAuth().finally(() => {
+    app.mount('#app');
+});

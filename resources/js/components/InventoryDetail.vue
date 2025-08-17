@@ -53,11 +53,12 @@
                                     <dt class="col-sm-4">Tanggal Pengadaan:</dt>
                                     <dd class="col-sm-8">{{ formatDate(inventory.procurement_date) }}</dd>
 
-                                    <dt class="col-sm-4">Harga Pembelian:</dt>
-                                    <dd class="col-sm-8">{{ formatCurrency(inventory.purchase_price) }}</dd>
+                                    <!-- Harga hanya tampil jika boleh -->
+                                    <dt v-if="counterStore.canSeePrice" class="col-sm-4">Harga Pembelian:</dt>
+                                    <dd v-if="counterStore.canSeePrice" class="col-sm-8">{{ formatCurrency(inventory.purchase_price) }}</dd>
 
-                                    <dt class="col-sm-4">Estimasi Depresiasi:</dt>
-                                    <dd class="col-sm-8">{{ inventory.estimated_depreciation ? formatCurrency(inventory.estimated_depreciation) : '-' }}</dd>
+                                    <dt v-if="counterStore.canSeePrice" class="col-sm-4">Estimasi Depresiasi:</dt>
+                                    <dd v-if="counterStore.canSeePrice" class="col-sm-8">{{ inventory.estimated_depreciation ? formatCurrency(inventory.estimated_depreciation) : '-' }}</dd>
 
                                     <dt class="col-sm-4">Status:</dt>
                                     <dd class="col-sm-8">
@@ -162,6 +163,7 @@ const fetchInventoryDetail = async () => {
         loading.value = false;
     }
 };
+
 
 /**
  * Returns the appropriate Bootstrap badge class based on item status.

@@ -22,13 +22,13 @@
       <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
           <h3 class="card-title">Daftar Unit Inventaris</h3>
-          <router-link
+          <!-- <router-link
             to="/inventories/create"
             class="btn btn-primary btn-sm"
             v-if="counterStore.isAdmin || counterStore.isHead"
           >
             <i class="fas fa-plus"></i> Tambah Unit Inventaris
-          </router-link>
+          </router-link> -->
         </div>
 
         <div class="card-body">
@@ -72,7 +72,7 @@
                   <router-link
                     :to="`/inventories/edit/${item.id}`"
                     class="text-muted mr-2"
-                    v-if="counterStore.isAdmin || counterStore.isHead"
+                    v-if="counterStore.isAdmin || counterStore.isHead || counterStore.canUpdatePrice"
                   >
                     <i class="fas fa-edit"></i>
                   </router-link>

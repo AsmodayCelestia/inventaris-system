@@ -98,11 +98,12 @@
                                     </router-link>
                                 </li>
                                 <li class="nav-item">
-                                    <router-link to="/master-data/rooms" class="nav-link" :class="{ active: $route.path === '/master-data/rooms' }">
+                                    <router-link to="/master-data/divisions" class="nav-link" :class="{ active: $route.path === '/master-data/divisions' }">
                                         <i class="far fa-circle nav-icon"></i>
-                                        <p>Ruang</p>
+                                        <p>Divisi</p>
                                     </router-link>
                                 </li>
+                                
                                 <li class="nav-item">
                                     <router-link to="/master-data/users" class="nav-link" :class="{ active: $route.path === '/master-data/users' }">
                                         <i class="far fa-circle nav-icon"></i>
@@ -136,7 +137,7 @@
                                         <p>Unit Inventaris</p>
                                     </router-link>
                                 </li>
-                                <li class="nav-item" v-if="counterStore.isAdmin">
+                                <li class="nav-item" v-if="counterStore.isAdmin || counterStore.isHead">
                                     <router-link to="/inventories/master-barang" class="nav-link"
                                         :class="{ active: $route.path === '/inventories/master-barang' }">
                                         <i class="far fa-circle nav-icon"></i>

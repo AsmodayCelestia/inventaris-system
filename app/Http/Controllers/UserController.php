@@ -8,9 +8,29 @@ use Illuminate\Validation\ValidationException;
 
 class UserController extends Controller
 {
+    // app/Http/Controllers/UserController.php
+
+public function me(Request $request)
+{
+    // Pastikan user sudah login (middleware auth:sanctum)
+    $user = $request->user()->load('division'); // eager-load division
+
+    return response()->json([
+        'id'               => $user->id,
+        'name'             => $user->name,
+        'email'            => $user->email,
+        'role'             => $user->role,
+        'divisi'           => $user->division?->name,
+        'isPjMaintenance'  => (bool) $user->is_pj_maintenance,
+        'isRoomSupervisor' => (bool) $user->is_room_supervisor,
+        'assignedRooms'    => [], // tambahkan logic kalau perlu
+    ]);
+}
+
     public function index()
     {
-        $users = User::all();
+        // eager-load relasi division
+        $users = User::with('division')->get();
         return response()->json($users);
     }
 

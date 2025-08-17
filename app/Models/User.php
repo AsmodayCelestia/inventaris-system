@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Eloquent\Casts\Attribute;
-
+use Illuminate\Database\Eloquent\Relations\BelongsTo;   // ← tambahkan
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
 use Laravel\Sanctum\HasApiTokens;
@@ -23,7 +23,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'divisi',
+        'division_id',        // ← ganti dari divisi
         'role',
         'is_room_supervisor',
         'is_pj_maintenance',
@@ -49,6 +49,14 @@ class User extends Authenticatable
     // ============================
     //          RELATIONS
     // ============================
+
+    /**
+     * Relasi ke Division.
+     */
+    public function division(): BelongsTo
+    {
+        return $this->belongsTo(Division::class);
+    }
 
     /**
      * Inventaris yang dia jadi penanggung jawab langsung (pj_id).

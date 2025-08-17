@@ -53,7 +53,7 @@ return [
     */
 
     'url' => env('APP_URL', 'http://localhost'),
-
+    'short_url' => env('SHORT_URL', 'https://qr.darwis.web.id'),
     /*
     |--------------------------------------------------------------------------
     | Application Timezone

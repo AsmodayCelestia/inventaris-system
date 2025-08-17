@@ -14,6 +14,7 @@ use App\Http\Controllers\MaintenanceController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\InventoryItemController;
+use App\Http\Controllers\DivisionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,7 +29,7 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('/logout', [AuthController::class, 'logout']);
-    Route::get('/user', fn (\Illuminate\Http\Request $r) => $r->user());
+    Route::get('/user', [UserController::class, 'me']);
 
     /* ----------  READ-ONLY UNTUK SEMUA USER  ---------- */
     Route::apiResource('brands',         BrandController::class)->only(['index','show']);
@@ -39,6 +40,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('rooms',          RoomController::class)->only(['index','show']);
     Route::apiResource('inventory-items',InventoryItemController::class)->only(['index','show']);
     Route::apiResource('inventories',    InventoryController::class)->only(['index','show']);
+    Route::apiResource('divisions', DivisionController::class)->only(['index','show']);
 
     Route::get('/inventories/qr/{inventoryNumber}', [InventoryController::class,'showByQrCode']);
     Route::get('/maintenance/history', [MaintenanceController::class,'index']);
@@ -52,14 +54,19 @@ Route::middleware('auth:sanctum')->group(function () {
         return auth()->user()->assignedMaintenanceInventories()->pluck('id');
     });
 
+        Route::put('/inventories/{id}', [InventoryController::class, 'update']);
+
+
     /* ----------  ADMIN & HEAD  ---------- */
     Route::middleware('role:admin,head')->group(function () {
-
+    Route::get('/users',        [UserController::class, 'index']);
+    Route::get('/users/{user}', [UserController::class, 'show']);
+    Route::put('/users/{user}', [UserController::class, 'update']);
         // Inventory Items (full CUD)
         Route::apiResource('inventory-items', InventoryItemController::class)->except(['index','show']);
 
         // Inventories (full CUD)
-        Route::apiResource('inventories', InventoryController::class)->except(['index','show']);
+        Route::apiResource('inventories', InventoryController::class)->except(['index','show', 'update']);
 
         // Flow HEAD : quantity → empty-slot → create
         Route::post('/inventory-items/{inventoryItem}/increase-quantity', [InventoryItemController::class,'increaseQuantity']);
@@ -85,8 +92,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource('units',      LocationUnitController::class)->except(['index','show']);
         Route::apiResource('floors',     FloorController::class)->except(['index','show']);
         Route::apiResource('rooms',      RoomController::class)->except(['index','show']);
-
-        Route::apiResource('users', UserController::class);
+        Route::apiResource('divisions', DivisionController::class)->except(['index','show']);
+        Route::apiResource('users', UserController::class)->except(['index', 'show', 'update']);
 
         Route::post('/qrcodes', [InventoryController::class,'createQrCode']);
         Route::put('/qrcodes/{id}', [InventoryController::class,'updateQrCode']);

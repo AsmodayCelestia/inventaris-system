@@ -48,43 +48,44 @@ class InventoryItemController extends Controller
      * Store a newly created resource in storage (Menambah master barang baru).
      * Hanya dapat diakses oleh Admin.
      */
-    public function store(Request $request)
-    {
-        try {
-            $validatedData = $request->validate([
-                'item_code' => 'required|string|max:255|unique:inventory_items,item_code',
-                'name' => 'required|string|max:255',
-                'quantity' => 'required|integer|min:0', // Jumlah stok dari jenis barang ini
-                'brand_id' => 'required|exists:brands,id',
-                'category_id' => 'required|exists:categories,id',
-                'type_id' => 'required|exists:item_types,id',
-                'manufacturer' => 'nullable|string|max:255',
-                'manufacture_year' => 'nullable|integer|min:1900|max:' . date('Y'),
-                'isbn' => 'nullable|string|max:255|unique:inventory_items,isbn', // ISBN opsional dan unik
-                'image' => 'nullable|image|max:2048', // Maks 2MB, field 'image' untuk upload
-            ]);
+public function store(Request $request)
+{
+    try {
+        $validated = $request->validate([
+            'name'     => 'required|string|max:255',
+            'quantity' => 'required|integer|min:0',
+            'brand_id' => 'required|exists:brands,id',
+            'category_id' => 'required|exists:categories,id',
+            'type_id'  => 'required|exists:item_types,id',
+            'manufacture_year' => 'nullable|integer|min:1900|max:' . now()->year,
+            'isbn'     => 'nullable|string|max:255|unique:inventory_items,isbn',
+            'image'    => 'nullable|image|max:2048',
+        ]);
 
-            // Handle image upload jika ada
-            if ($request->hasFile('image')) {
-                $imagePath = $request->file('image')->store('inventory_item_images', 'public');
-                $validatedData['image_path'] = $imagePath; // Simpan path di kolom image_path
-            } else {
-                $validatedData['image_path'] = null;
-            }
-            // Hapus 'image' dari validatedData agar tidak mencoba disimpan ke DB jika kolomnya tidak ada
-            unset($validatedData['image']); 
+        // 1. generate kode barang
+        $last = InventoryItem::latest('id')->first();
+        $next = $last ? ((int) str_replace('ITM-', '', $last->item_code)) + 1 : 1;
+        $validated['item_code'] = 'ITM-' . str_pad($next, 3, '0', STR_PAD_LEFT);
 
-            $inventoryItem = InventoryItem::create($validatedData);
-            return response()->json($inventoryItem, 201); // 201 Created
-        } catch (ValidationException $e) {
-            return response()->json([
-                'message' => 'Validasi gagal.',
-                'errors' => $e->errors()
-            ], 422);
-        } catch (\Exception $e) {
-            return response()->json(['message' => 'Gagal menambah master barang: ' . $e->getMessage()], 500);
+        // 2. otomatis isi manufacturer dari brand
+        $validated['manufacturer'] = \App\Models\Brand::findOrFail($validated['brand_id'])->name;
+
+        // 3. upload gambar jika ada
+        if ($request->hasFile('image')) {
+            $validated['image_path'] = $request->file('image')->store('inventory_item_images', 'public');
+        } else {
+            $validated['image_path'] = null;
         }
+
+        $item = InventoryItem::create($validated);
+        return response()->json($item->load(['brand', 'category', 'type']), 201);
+
+    } catch (ValidationException $e) {
+        return response()->json(['message' => 'Validasi gagal.', 'errors' => $e->errors()], 422);
+    } catch (\Exception $e) {
+        return response()->json(['message' => 'Gagal menambah master barang: ' . $e->getMessage()], 500);
     }
+}
 
 /**
  * HEAD: Naikkan quantity master +1
@@ -136,80 +137,80 @@ public function getEmptySlots($id)
      * Update the specified resource in storage (Memperbarui master barang).
      * Hanya dapat diakses oleh Admin.
      */
-    public function update(Request $request, $id)
-    {
-        $inventoryItem = InventoryItem::find($id);
-        if (!$inventoryItem) {
-            return response()->json(['message' => 'Master barang tidak ditemukan'], 404);
-        }
+public function update(Request $request, $id)
+{
+    $item = InventoryItem::findOrFail($id);
 
-        try {
-            $validatedData = $request->validate([
-                'item_code' => 'required|string|max:255|unique:inventory_items,item_code,' . $id,
-                'name' => 'required|string|max:255',
-                'quantity' => 'required|integer|min:0',
-                'brand_id' => 'required|exists:brands,id',
-                'category_id' => 'required|exists:categories,id',
-                'type_id' => 'required|exists:item_types,id',
-                'manufacturer' => 'nullable|string|max:255',
-                'manufacture_year' => 'nullable|integer|min:1900|max:' . date('Y'),
-                'isbn' => 'nullable|string|max:255|unique:inventory_items,isbn,' . $id,
-                'image' => 'nullable|image|max:2048', // Field 'image' untuk upload
-            ]);
+    try {
+        $validated = $request->validate([
+            'name'     => 'required|string|max:255',
+            'quantity' => 'required|integer|min:0',
+            'brand_id' => 'required|exists:brands,id',
+            'category_id' => 'required|exists:categories,id',
+            'type_id'  => 'required|exists:item_types,id',
+            'manufacture_year' => 'nullable|integer|min:1900|max:' . now()->year,
+            'isbn'     => 'nullable|string|max:255|unique:inventory_items,isbn,' . $id,
+            'image'    => 'nullable|image|max:2048',
+        ]);
 
-            // Handle image upload jika ada
-            if ($request->hasFile('image')) {
-                // Hapus gambar lama jika ada
-                if ($inventoryItem->image_path) {
-                    Storage::disk('public')->delete($inventoryItem->image_path);
-                }
-                $imagePath = $request->file('image')->store('inventory_item_images', 'public');
-                $validatedData['image_path'] = $imagePath;
-            } else {
-                // Jika tidak ada file baru diupload, tapi ada request untuk menghapus/mengosongkan gambar
-                // Contoh: jika frontend mengirim 'image_path' : null
-                if (array_key_exists('image_path', $request->all()) && $request->image_path === null) {
-                    if ($inventoryItem->image_path) {
-                        Storage::disk('public')->delete($inventoryItem->image_path);
-                    }
-                    $validatedData['image_path'] = null;
-                }
+        // 1. otomatis isi manufacturer dari brand
+        $validated['manufacturer'] = \App\Models\Brand::findOrFail($validated['brand_id'])->name;
+
+        // 2. upload & hapus gambar lama jika ada file baru
+        if ($request->hasFile('image')) {
+            if ($item->image_path) {
+                Storage::disk('public')->delete($item->image_path);
             }
-            // Hapus 'image' dari validatedData
-            unset($validatedData['image']);
-
-            $inventoryItem->update($validatedData);
-            return response()->json($inventoryItem);
-        } catch (ValidationException $e) {
-            return response()->json([
-                'message' => 'Validasi gagal.',
-                'errors' => $e->errors()
-            ], 422);
-        } catch (\Exception $e) {
-            return response()->json(['message' => 'Gagal memperbarui master barang: ' . $e->getMessage()], 500);
+            $validated['image_path'] = $request->file('image')->store('inventory_item_images', 'public');
+        } elseif ($request->boolean('remove_image')) {
+            // opsional: frontend kirim flag remove_image = true
+            Storage::disk('public')->delete($item->image_path);
+            $validated['image_path'] = null;
         }
+
+        $item->update($validated);
+        return response()->json($item->load(['brand', 'category', 'type']));
+
+    } catch (ValidationException $e) {
+        return response()->json(['message' => 'Validasi gagal.', 'errors' => $e->errors()], 422);
+    } catch (\Exception $e) {
+        return response()->json(['message' => 'Gagal memperbarui master barang: ' . $e->getMessage()], 500);
     }
+}
 
     /**
      * Remove the specified resource from storage (Menghapus master barang).
      * Hanya dapat diakses oleh Admin.
      */
-    public function destroy($id)
-    {
-        $inventoryItem = InventoryItem::find($id);
-        if (!$inventoryItem) {
-            return response()->json(['message' => 'Master barang tidak ditemukan'], 404);
+public function destroy($id)
+{
+    $item = InventoryItem::find($id);
+    if (!$item) {
+        return response()->json(['message' => 'Master barang tidak ditemukan'], 404);
+    }
+
+    try {
+        // 1. Hapus gambar lokal (storage/public)
+        if ($item->image_path) {
+            Storage::disk('public')->delete($item->image_path);
         }
 
-        try {
-            // Hapus gambar terkait jika ada
-            if ($inventoryItem->image_path) {
-                Storage::disk('public')->delete($inventoryItem->image_path);
-            }
-            $inventoryItem->delete();
-            return response()->json(['message' => 'Master barang berhasil dihapus'], 200);
-        } catch (\Exception $e) {
-            return response()->json(['message' => 'Gagal menghapus master barang: ' . $e->getMessage()], 500);
+        // 2. Hapus gambar di Cloudinary (jika pakai CloudinaryLabs)
+        if ($item->image_path && str_contains($item->image_path, 'res.cloudinary.com')) {
+            // extract public_id dari URL full
+            $path = parse_url($item->image_path, PHP_URL_PATH);   // /v12345678/folder/name.jpg
+            $segments = explode('/', trim($path, '/'));          // [v12345678, folder, name.jpg]
+            $publicId = pathinfo(end($segments), PATHINFO_FILENAME); // name
+            $folder   = $segments[count($segments) - 2];         // folder
+
+            Cloudinary::destroy("{$folder}/{$publicId}");
         }
+
+        $item->delete();
+
+        return response()->json(['message' => 'Master barang berhasil dihapus'], 200);
+    } catch (\Exception $e) {
+        return response()->json(['message' => 'Gagal menghapus master barang: ' . $e->getMessage()], 500);
     }
+}
 }

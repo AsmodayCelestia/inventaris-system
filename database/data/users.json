@@ -3,21 +3,21 @@
     "name": "Heru",
     "email": "heru@darwis.com",
     "password": "admin123",
-    "divisi": "IT",
+    "division_id": 1,
     "role": "admin"
   },
   {
     "name": "Salim",
     "email": "salim@darwis.com",
     "password": "petugas123",
-    "divisi": "Umum",
+    "division_id": 2,
     "role": "head"
   },
-    {
+  {
     "name": "Petugas Lapangan",
     "email": "petugas@darwis.com",
     "password": "petugas123",
-    "divisi": "Umum",
+    "division_id": 2,
     "role": "karyawan"
   }
 ]

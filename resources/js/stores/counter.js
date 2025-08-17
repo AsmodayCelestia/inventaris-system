@@ -64,13 +64,25 @@ export const useCounterStore = defineStore('inventoryApp', {
       startDate: null,
       endDate: null,
     },
+      authReady: false,
   }),
 
   getters: {
     isAdmin: (state) => state.userRole === 'admin',
     isHead: (state) => state.userRole === 'head',
     isKaryawan: (state) => state.userRole === 'karyawan',
+    isKeuangan: (state) => state.userDivisi === 'Keuangan',
 
+// tambahkan di getters juga (opsional, kalau mau pakai di banyak tempat)
+// boleh baca / create harga
+canSeePrice: (state) =>
+  state.userRole === 'admin' ||
+  state.userDivisi === 'Keuangan' ||
+  (state.userRole === 'head' && state.userDivisi === 'Umum'),
+
+// boleh update harga
+canUpdatePrice: (state) =>
+  state.userRole === 'admin' || state.userDivisi === 'Keuangan',
     authHeader: (state) => ({
       headers: {
         Authorization: state.token ? `Bearer ${state.token}` : '',
@@ -93,6 +105,13 @@ export const useCounterStore = defineStore('inventoryApp', {
     isAssignedToRoom: (state) => (roomId) =>
       state.assignedRooms.some((room) => room.id === roomId),
   },
+
+  // Tambahkan di getters
+    isSupervisorThisRoom: (state) => (roomId) =>
+    state.userId === state.rooms.find(r => r.id === roomId)?.supervisor_id,
+
+    isPjThisItem: (state) => (pjId) =>
+    state.userId === pjId,
 
   actions: {
     // --- Aksi Autentikasi ---
@@ -190,35 +209,55 @@ async login(payload) {
 // stores/counter.js
 async initializeAuth() {
   const token = localStorage.getItem('Authorization');
+  
   if (!token) {
-    this.clearAuth();               // helper kecil (lihat bawah)
+    this.resetState();
+    this.authReady = true;
     return;
   }
 
   this.token = token;
   axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
-  // coba validasi token ke backend (opsional tapi recommended)
   try {
     const { data } = await axios.get(`${API_BASE_URL}/user`);
-    this.isLoggedIn       = true;
-    this.userRole         = data.role;
-    this.userName         = data.name;
-    this.userId           = data.id;
-    this.userEmail        = data.email;
-    this.userDivisi       = data.divisi;
-    this.isPjMaintenance  = data.isPjMaintenance || false;
+    
+    // Update state
+    this.isLoggedIn = true;
+    this.userRole = data.role;
+    this.userName = data.name;
+    this.userId = data.id;
+    this.userEmail = data.email;
+    this.userDivisi = data.divisi;
+    this.isPjMaintenance = data.isPjMaintenance || false;
     this.isRoomSupervisor = data.isRoomSupervisor || false;
-    this.assignedRooms    = data.assignedRooms || [];
+    this.assignedRooms = data.assignedRooms || [];
+    
   } catch (e) {
-    console.error('Token invalid/expired -> logout');
-    this.logout();
+    console.error('Token invalid/expired - SKIP logout');
+    // ❌ HAPUS BARIS INI:
+    // localStorage.removeItem('Authorization');
+    
+    // Cuma reset state, biarkan token di storage
+    this.resetState();
+  } finally {
+    this.authReady = true;
   }
 },
-
-clearAuth() {
-  this.logout();   // panggil action logout tanpa hit API
+// Tambahin method reset state
+resetState() {
+  this.token = null;
+  this.isLoggedIn = false;
+  this.userRole = null;
+  this.userName = null;
+  this.userId = null;
+  this.userEmail = null;
+  this.userDivisi = null;
+  this.isPjMaintenance = false;
+  this.isRoomSupervisor = false;
+  this.assignedRooms = [];
 },
+
 
 
     // --- Aksi Master Data (Brands, Categories, ItemTypes, LocationUnits, Floors, Rooms, Users) ---
@@ -480,6 +519,50 @@ clearAuth() {
         }
     },
 
+    async fetchDivisions() {
+    try {
+        const { data } = await axios.get(`${API_BASE_URL}/divisions`);
+        return data; // langsung return array
+    } catch (error) {
+        console.error('Failed to fetch divisions:', error);
+        if (error.response?.status === 401) this.logout();
+        throw error;
+    }
+    },
+
+    async createDivision(payload) {
+    try {
+        const { data } = await axios.post(`${API_BASE_URL}/divisions`, payload);
+        return data;
+    } catch (error) {
+        console.error('Failed to create division:', error);
+        if (error.response?.status === 401) this.logout();
+        throw error;
+    }
+    },
+
+    async updateDivision(id, payload) {
+    try {
+        const { data } = await axios.put(`${API_BASE_URL}/divisions/${id}`, payload);
+        return data;
+    } catch (error) {
+        console.error('Failed to update division:', error);
+        if (error.response?.status === 401) this.logout();
+        throw error;
+    }
+    },
+
+    async deleteDivision(id) {
+    try {
+        await axios.delete(`${API_BASE_URL}/divisions/${id}`);
+    } catch (error) {
+        console.error('Failed to delete division:', error);
+        if (error.response?.status === 401) this.logout();
+        throw error;
+    }
+    },
+
+
     async fetchUsersList() {
       try {
         const response = await axios.get(`${API_BASE_URL}/users`);
@@ -664,18 +747,18 @@ async setUserMaintenanceStatus(id, status = true) {
       }
     },
     async fetchInventoryDetail(id) {
-      try {
-        console.log(API_BASE_URL);
-        const response = await axios.get(`${API_BASE_URL}/inventories/${id}`);
-        const data = response.data;
-        console.log('DATA INVENTORY:', data);
-        this.selectedInventoryDetail = response.data;
-        return response.data;
-      } catch (error) {
-        console.error('Failed to fetch inventory detail:', error);
-        if (error.response && error.response.status === 401) this.logout();
-        throw error;
-      }
+        this.inventoryLoading = true;
+        try {
+            const { data } = await axios.get(`${API_BASE_URL}/inventories/${id}`);
+            this.selectedInventoryDetail = data.data;
+
+            // simpan juga flag ke state (opsional)
+            this.selectedInventoryDetail.meta = data.meta;
+        } catch (e) {
+            console.error(e);
+        } finally {
+            this.inventoryLoading = false;
+        }
     },
     async createInventory(inventoryData) {
         this.inventoryLoading = true;
@@ -753,15 +836,15 @@ async setUserMaintenanceStatus(id, status = true) {
       }
     },
     async fetchMaintenanceDetail(id) {
-  try {
-    const { data } = await axios.get(`${API_BASE_URL}/maintenance/${id}?with=inventory`);
-    return data;
-  } catch (error) {
-    console.error('Failed to fetch maintenance detail:', error);
-    if (error.response?.status === 401) this.logout();
-    throw error;
-  }
-},
+        try {
+            const { data } = await axios.get(`${API_BASE_URL}/maintenance/${id}?with=inventory`);
+            return data;
+        } catch (error) {
+            console.error('Failed to fetch maintenance detail:', error);
+            if (error.response?.status === 401) this.logout();
+            throw error;
+        }
+    },
 
     async addMaintenanceRecord(inventoryId, maintenanceData) {
         try {
