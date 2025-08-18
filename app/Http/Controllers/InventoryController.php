@@ -103,7 +103,7 @@ public function store(Request $request)
     $inventory->image_path = $imagePath;
     $inventory->qr_code_path = null;
     $inventory->save();
-
+    $this->ensureQrGenerated($inventory);
     return response()->json($inventory->load(['item', 'room', 'unit']), 201);
 }
 
@@ -117,14 +117,14 @@ public function show(Inventory $inventory)
         'canSee'   => $this->canSeePrice(),
     ]);
 
-$inventory->load([
-    'item',
-    'room',
-    'room.locationPersonInCharge',
-    'unit',
-    'personInCharge',
-    'maintenances'
-]);
+    $inventory->load([
+        'item',
+        'room',
+        'room.locationPersonInCharge',
+        'unit',
+        'personInCharge',
+        'maintenances'
+    ]);
 
     $data = $inventory->toArray();
 
@@ -357,6 +357,22 @@ public function update(Request $request, $id)
         }
     }
 
+public function showForScan($inventoryNumber)
+{
+    $inventory = Inventory::with([
+            'item',
+            'room',
+            'room.locationPersonInCharge',
+            'unit',
+            'personInCharge',
+            'maintenances'
+        ])
+        ->where('inventory_number', $inventoryNumber)
+        ->firstOrFail();
+
+    // pakai logika show() yang sudah ada
+    return $this->show($inventory);
+}
     /* -----------------------------------------------------------------
        |  METHOD BARU UNTUK FLOW HEAD (quantity sudah naik di master)
        ----------------------------------------------------------------- */
@@ -424,7 +440,7 @@ public function storeFromSlot(Request $request, $inventoryItem)
         'image_path'       => $imagePath,
         'qr_code_path'     => null,
     ]);
-
+    $this->ensureQrGenerated($inventory);
     return response()->json($inventory->load(['item', 'room', 'unit']), 201);
 }
 
@@ -456,6 +472,42 @@ public function storeFromSlot(Request $request, $inventoryItem)
         } catch (\Exception $e) {
             \Log::error('Destroy inventory error: ' . $e->getMessage());
             return response()->json(['message' => 'Gagal menghapus inventaris'], 500);
+        }
+    }
+
+    // private helper di InventoryController
+    private function ensureQrGenerated(Inventory $inventory): void
+    {
+        if ($inventory->qr_code_path) {
+            return; // sudah ada, skip
+        }
+
+        try {
+            $detailUrl = config('app.short_url') . '/' . $inventory->id;
+            $qrResult  = \Endroid\QrCode\Builder\Builder::create()
+                ->writer(new \Endroid\QrCode\Writer\PngWriter())
+                ->data($detailUrl)
+                ->size(500)
+                ->margin(10)
+                ->build();
+
+            $qrFile = 'qrcodes/inventories/' . $inventory->inventory_number . '-' . \Illuminate\Support\Str::random(10) . '.png';
+            \Illuminate\Support\Facades\Storage::disk('public')->put($qrFile, $qrResult->getString());
+
+            $cloud = \CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary::upload(
+                storage_path('app/public/' . $qrFile),
+                [
+                    'folder'    => 'inventories_qrcodes',
+                    'public_id' => 'qr-' . \Illuminate\Support\Str::slug($inventory->inventory_number) . '-' . \Illuminate\Support\Str::random(8),
+                ]
+            );
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($qrFile);
+
+            $inventory->qr_code_path = $cloud->getSecurePath();
+            $inventory->saveQuietly();
+        } catch (\Exception $e) {
+            \Log::error('QR helper error: ' . $e->getMessage());
+            // silent fail di store/storeFromSlot, tidak hentikan proses utama
         }
     }
 

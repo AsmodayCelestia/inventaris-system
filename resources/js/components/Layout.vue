@@ -90,6 +90,11 @@
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Lantai</p>
                                     </router-link>
+                                </li>                                                           <li class="nav-item">
+                                    <router-link to="/master-data/rooms" class="nav-link" :class="{ active: $route.path === '/master-data/rooms' }">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Ruang</p>
+                                    </router-link>
                                 </li>
                                 <li class="nav-item">
                                     <router-link to="/master-data/units" class="nav-link" :class="{ active: $route.path === '/master-data/units' }">
@@ -147,44 +152,28 @@
                             </ul>
                         </li>
                         <!-- Maintenance (Admin, Head, Maintenance Role) -->
-                        <li class="nav-item has-treeview"
-                            :class="{ 'menu-open': isMaintenanceOpen }"
-                            v-if="counterStore.canAccessMaintenance">
-                            <a href="#" class="nav-link" @click.prevent="toggleMaintenance" :class="{ active: $route.path.startsWith('/maintenance') }">
-                                <i class="nav-icon fas fa-tools"></i>
-                                <p>
-                                    Maintenance
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <router-link to="/maintenance/create" class="nav-link" :class="{ active: $route.path === '/maintenance/create' }">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Tambah Maintenance Baru</p>
-                                    </router-link>
-                                </li>
-                                <li class="nav-item">
-                                    <router-link to="/maintenance/planning" class="nav-link" :class="{ active: $route.path === '/maintenance/planning' }">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Maintenance Direncanakan</p>
-                                    </router-link>
-                                </li>
-                                <li class="nav-item">
-                                    <router-link to="/maintenance/done" class="nav-link" :class="{ active: $route.path === '/maintenance/done' }">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Maintenance Selesai</p>
-                                    </router-link>
-                                </li>
-                                <li class="nav-item">
-                                    <router-link to="/maintenance/list" class="nav-link" :class="{ active: $route.path === '/maintenance/riwayat' }">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Maintenance List</p>
-                                    </router-link>
-                                </li>
-                            </ul>
-                        </li>
+<li class="nav-item has-treeview"
+    :class="{ 'menu-open': isMaintenanceOpen }"
+    v-if="counterStore.isAdmin || counterStore.isHead || counterStore.isKeuangan || counterStore.isPjMaintenance || counterStore.isRoomSupervisor">
+    <a href="#" class="nav-link" @click.prevent="toggleMaintenance">
+        <i class="nav-icon fas fa-tools"></i>
+        <p>Maintenance <i class="right fas fa-angle-left"></i></p>
+    </a>
+    <ul class="nav nav-treeview">
+        <!-- Tambah & Planning hanya untuk admin/head/PJ/supervisor -->
+        <li v-if="!counterStore.isKeuangan && !counterStore.isPjMaintenance" class="nav-item">
+            <router-link to="/maintenance/create" class="nav-link"><p>Tambah Maintenance Baru</p></router-link>
+        </li>
 
+        <!-- DONE & LIST semua boleh -->
+        <li class="nav-item">
+            <router-link to="/maintenance/done"  class="nav-link"><p>Maintenance Selesai</p></router-link>
+        </li>
+        <li v-if="!counterStore.isKeuangan" class="nav-item">
+            <router-link to="/maintenance/list"  class="nav-link"><p>Maintenance List</p></router-link>
+        </li>
+    </ul>
+</li>
 
                         <!-- QR Code (Admin & Head) -->
     <li class="nav-item has-treeview"

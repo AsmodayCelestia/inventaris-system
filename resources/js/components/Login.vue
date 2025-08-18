@@ -64,12 +64,10 @@
               </div>
             </form>
 
-            <p v-if="counterStore.error" class="text-danger mt-3">
-              {{ counterStore.error }}
-            </p>
             <p class="mt-4 text-center text-sm text-muted">
-              Belum punya akun?
-              <router-link to="/register" class="text-primary hover:underline">Daftar Sekarang</router-link>
+              <router-link to="/scan-qrcode" class="text-primary hover:underline">
+                <i class="fas fa-qrcode mr-1"></i> Scan QR Inventaris
+              </router-link>
             </p>
           </div>
         </div>

@@ -19,6 +19,7 @@ class InventoryMaintenance extends Model
         'solution_taken',
         'notes',
         'status',
+        'cost',
         'photo_1',
         'photo_2',
         'photo_3',
@@ -82,4 +83,6 @@ public function getPhoto3UrlAttribute()
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs();
     }
+
+    
 }

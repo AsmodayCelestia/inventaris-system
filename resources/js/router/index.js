@@ -60,7 +60,7 @@ const routes = [
                         path: '',
                         name: 'InventoryUnitList',
                         component: InventoryUnitList,
-                        meta: { requiresAuth: true, roles: ['admin', 'head', 'karyawan'] }
+                        meta: { requiresAuth: true }
                     },
                     {
                         path: 'master-barang',
@@ -115,7 +115,7 @@ const routes = [
     path: '/scan-qrcode',
     name: 'QRCodeScan',
     component: () => import('../components/QRCodeScan.vue'),
-    meta: { requiresAuth: true, roles: ['admin', 'head', 'karyawan'] }
+    meta: { requiresAuth: false }
 },
             // MAINTENANCE
             {
@@ -128,28 +128,33 @@ const routes = [
                 path: 'maintenance/done',
                 name: 'MaintenanceDone',
                 component: () => import('../components/maintenance/MaintenanceDone.vue'),
-                meta: { requiresAuth: true, roles: ['admin', 'head', 'karyawan'] }
+                meta: { requiresAuth: true }
+            },
+            {
+                path: 'maintenance-done/:inventoryId',
+                name: 'MaintenanceDoneByInventory',
+                component: () => import('../components/maintenance/MaintenanceDone.vue'),
+                props: true
             },
             {
                 path: 'maintenance/list',
                 name: 'MaintenanceHistory',
                 component: () => import('../components/maintenance/MaintenanceList.vue'),
-                meta: { requiresAuth: true, roles: ['admin', 'head', 'karyawan'] }
+                meta: { requiresAuth: true }
             },
             {
                 path: 'maintenance/:id',
                 name: 'MaintenanceDetail',
                 component: () => import('../components/maintenance/MaintenanceDetail.vue'),
-                meta: { requiresAuth: true, roles: ['admin', 'head', 'karyawan'] }
+                meta: { requiresAuth: true }
             },
             {
                 path: 'maintenance/edit/:id',
                 name: 'MaintenanceEdit',
                 component: () => import('../components/maintenance/EditMaintenance.vue'),
                 props: true,
-                meta: { requiresAuth: true, roles: ['admin', 'head', 'karyawan'] }
+                meta: { requiresAuth: true }
             },
-
             {
                 path: 'master-data/brands',
                 name: 'BrandList',

@@ -72,6 +72,8 @@ export const useCounterStore = defineStore('inventoryApp', {
     isHead: (state) => state.userRole === 'head',
     isKaryawan: (state) => state.userRole === 'karyawan',
     isKeuangan: (state) => state.userDivisi === 'Keuangan',
+    isSupervisorOfInventory: (state) => (inventory) =>
+  inventory?.room?.location_person_in_charge?.id === state.userId,
 
 // tambahkan di getters juga (opsional, kalau mau pakai di banyak tempat)
 // boleh baca / create harga
@@ -835,16 +837,27 @@ async setUserMaintenanceStatus(id, status = true) {
         if (error.response && error.response.status === 401) this.logout();
       }
     },
-    async fetchMaintenanceDetail(id) {
-        try {
-            const { data } = await axios.get(`${API_BASE_URL}/maintenance/${id}?with=inventory`);
-            return data;
-        } catch (error) {
-            console.error('Failed to fetch maintenance detail:', error);
-            if (error.response?.status === 401) this.logout();
-            throw error;
+
+async fetchMaintenanceDetail(id) {
+    try {
+        const { data } = await axios.get(
+            `${API_BASE_URL}/maintenance/${id}?with=inventory`,
+            { headers: { Authorization: localStorage.getItem('Authorization') } }
+        );
+
+        // ── konversi ke ISO date ──
+        if (data.inspection_date) {
+            const [d, m, y] = data.inspection_date.split('/');
+            data.inspection_date = `${y}-${m}-${d}`;
         }
-    },
+
+        return data;
+    } catch (error) {
+        console.error('Failed to fetch maintenance detail:', error);
+        if (error.response?.status === 401) this.logout();
+        throw error;
+    }
+},
 
     async addMaintenanceRecord(inventoryId, maintenanceData) {
         try {
@@ -896,42 +909,44 @@ async scheduleInventory(inventoryId, scheduleData) {
   }
 },
 
-    async updateMaintenanceRecord(id, maintenanceData) {
-        try {
-            const formData = new FormData();
-            for (const key in maintenanceData) {
-                if (maintenanceData[key] !== null) {
-                    formData.append(key, maintenanceData[key]);
-                }
-            }
-            formData.append('_method', 'PUT');
-
-            const response = await axios.post(`${API_BASE_URL}/maintenance/${id}`, formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            });
-            return response.data;
-        } catch (error) {
-            console.error('Failed to update maintenance record:', error);
-            if (error.response && error.response.status === 401) this.logout();
-            throw error;
-        }
-    },
 async updateMaintenanceRecord(id, formData) {
+  formData.append('_method', 'PUT');   // penting
+  return axios.post(
+    `${API_BASE_URL}/maintenance/${id}`,
+    formData,
+    { headers: { Authorization: localStorage.getItem('Authorization') } }
+  );
+},
+
+async fetchDoneMaintenanceByInventory(inventoryId) {
   try {
-    const response = await axios.post(
-      `${API_BASE_URL}/maintenance/${id}`,
-      formData,
-      { headers: { 'Content-Type': 'multipart/form-data' } }
+    const { data } = await axios.get(
+      `${API_BASE_URL}/inventories/${inventoryId}/maintenance-done`,
+      this.authHeader
     );
-    return response.data;
-  } catch (error) {
-    console.error('Failed to update maintenance record:', error);
-    if (error.response?.status === 401) this.logout();
-    throw error;
+    return data; // array maintenance dengan status 'done'
+  } catch (err) {
+    console.error(err);
+    throw err;
   }
 },
+
+// async updateMaintenanceRecord(id, formData) {
+//   try {
+//     const response = await axios.post(
+//       `${API_BASE_URL}/maintenance/${id}`,
+//       formData,
+//       { headers: { 'Content-Type': 'multipart/form-data' } }
+//     );
+//     return response.data;
+//   } catch (error) {
+//     console.error('Failed to update maintenance record:', error);
+//     if (error.response?.status === 401) this.logout();
+//     throw error;
+//   }
+// },
+
+
 
     // --- Aksi Dashboard & Laporan ---
     async fetchDashboardStats() {

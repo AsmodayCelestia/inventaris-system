@@ -92,9 +92,25 @@
               </div>
 
               <div class="form-group">
+                <label for="solution_taken">Solusi / Langkah yang Dilakukan (opsional)</label>
+                <textarea v-model="form.solution_taken" class="form-control" rows="3"></textarea>
+              </div>
+
+              <div class="form-group">
                 <label for="notes">Catatan Tambahan (opsional)</label>
                 <textarea v-model="form.notes" class="form-control" rows="2"></textarea>
               </div>
+            </div>
+
+            <div class="form-group">
+              <label for="cost">Estimasi Biaya (Rp)</label>
+              <input
+                type="number"
+                v-model.number="form.cost"
+                class="form-control"
+                placeholder="0"
+                min="0"
+              />
             </div>
 
             <div class="card-footer">
@@ -134,6 +150,8 @@ const form = ref({
   last_odometer_reading: '',
   issue_found: '',
   notes: '',
+  solution_taken: '',
+  cost: null,       
 });
 
 // Auto-calculate next due date
@@ -185,9 +203,11 @@ const submitForm = async () => {
     await counterStore.addMaintenanceRecord(inventory_id, {
       inspection_date: form.value.last_maintenance_at,
       issue_found: form.value.issue_found,
+      solution_taken:  form.value.solution_taken,
       notes: form.value.notes,
       status: 'planning',
       pj_id: form.value.pj_id,
+      cost: form.value.cost,
     });
 
     alert('Jadwal maintenance berhasil ditambahkan.');

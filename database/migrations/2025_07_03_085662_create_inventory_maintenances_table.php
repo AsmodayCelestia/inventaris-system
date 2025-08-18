@@ -15,13 +15,14 @@ return new class extends Migration {
             $table->text('notes')->nullable();
             $table->enum('status', ['planning', 'done'])->default('planning');
 
+            $table->decimal('cost', 15, 0)->nullable();   // <-- TAMBAH INI
+
             $table->string('photo_1')->nullable();
             $table->string('photo_2')->nullable();
             $table->string('photo_3')->nullable();
 
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
-            $table->integer('odometer_reading')->nullable(); // Hanya diisi jika itemnya bertipe KM
-
+            $table->integer('odometer_reading')->nullable();
             $table->timestamps();
         });
     }

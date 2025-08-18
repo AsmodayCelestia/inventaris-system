@@ -49,8 +49,12 @@
                   class="form-control"
                   required
                 />
+                <small v-if="errors.inspection_date" class="text-danger">
+                  {{ errors.inspection_date[0] }}
+                </small>
               </div>
 
+              <!-- Masalah -->
               <div class="form-group">
                 <label>Masalah yang Ditemukan</label>
                 <textarea
@@ -59,8 +63,12 @@
                   rows="3"
                   placeholder="Deskripsikan masalah..."
                 ></textarea>
+                <small v-if="errors.issue_found" class="text-danger">
+                  {{ errors.issue_found[0] }}
+                </small>
               </div>
 
+              <!-- Solusi -->
               <div class="form-group">
                 <label>Tindakan Perbaikan</label>
                 <textarea
@@ -69,8 +77,12 @@
                   rows="3"
                   placeholder="Langkah yang dilakukan..."
                 ></textarea>
+                <small v-if="errors.solution_taken" class="text-danger">
+                  {{ errors.solution_taken[0] }}
+                </small>
               </div>
 
+              <!-- Catatan -->
               <div class="form-group">
                 <label>Catatan Tambahan</label>
                 <textarea
@@ -79,6 +91,9 @@
                   rows="2"
                   placeholder="Catatan opsional..."
                 ></textarea>
+                <small v-if="errors.notes" class="text-danger">
+                  {{ errors.notes[0] }}
+                </small>
               </div>
 
               <!-- Status -->
@@ -88,6 +103,9 @@
                   <option value="planning">Direncanakan</option>
                   <option value="done">Selesai</option>
                 </select>
+                <small v-if="errors.status" class="text-danger">
+                  {{ errors.status[0] }}
+                </small>
               </div>
 
               <!-- Foto 1 -->
@@ -120,84 +138,74 @@
                       class="form-check-input"
                       v-model="removePhoto1"
                     />
-                    <label class="form-check-label">
-                      Hapus gambar yang ada
-                    </label>
+                    <label class="form-check-label">Hapus gambar yang ada</label>
                   </div>
                 </div>
+                <small v-if="errors.photo_1" class="text-danger">
+                  {{ errors.photo_1[0] }}
+                </small>
               </div>
 
-              <!-- Foto 2 -->
-              <div class="form-group">
-                <label>Foto 2</label>
-                <div class="custom-file">
+            <!-- Foto 2 -->
+            <div class="form-group">
+              <label>Foto 2</label>
+              <div class="custom-file">
+                <input
+                  type="file"
+                  class="custom-file-input"
+                  accept="image/*"
+                  @change="e => handlePhoto(e, 'photo_2')"
+                />
+                <label class="custom-file-label">
+                  {{ imageName2 || "Pilih gambar..." }}
+                </label>
+              </div>
+              <div class="mt-2" v-if="preview2 || existingPhoto2">
+                <img
+                  :src="preview2 || existingPhoto2"
+                  alt="Preview"
+                  class="img-thumbnail"
+                  style="max-width: 200px"
+                />
+                <div class="form-check mt-2" v-if="existingPhoto2 && !preview2">
                   <input
-                    type="file"
-                    class="custom-file-input"
-                    accept="image/*"
-                    @change="e => handlePhoto(e, 'photo_2')"
+                    type="checkbox"
+                    class="form-check-input"
+                    v-model="removePhoto2"
                   />
-                  <label class="custom-file-label">
-                    {{ imageName2 || "Pilih gambar..." }}
-                  </label>
-                </div>
-                <div class="mt-2" v-if="preview2 || existingPhoto2">
-                  <img
-                    :src="preview2 || existingPhoto2"
-                    alt="Preview"
-                    class="img-thumbnail"
-                    style="max-width: 200px"
-                  />
-                  <div
-                    class="form-check mt-2"
-                    v-if="existingPhoto2 && !preview2"
-                  >
-                    <input
-                      type="checkbox"
-                      class="form-check-input"
-                      v-model="removePhoto2"
-                    />
-                    <label class="form-check-label">
-                      Hapus gambar yang ada
-                    </label>
-                  </div>
+                  <label class="form-check-label">Hapus gambar yang ada</label>
                 </div>
               </div>
+            </div>
 
-              <!-- Foto 3 -->
-              <div class="form-group">
-                <label>Foto 3</label>
-                <div class="custom-file">
+            <!-- Foto 3 -->
+            <div class="form-group">
+              <label>Foto 3</label>
+              <div class="custom-file">
+                <input
+                  type="file"
+                  class="custom-file-input"
+                  accept="image/*"
+                  @change="e => handlePhoto(e, 'photo_3')"
+                />
+                <label class="custom-file-label">
+                  {{ imageName3 || "Pilih gambar..." }}
+                </label>
+              </div>
+              <div class="mt-2" v-if="preview3 || existingPhoto3">
+                <img
+                  :src="preview3 || existingPhoto3"
+                  alt="Preview"
+                  class="img-thumbnail"
+                  style="max-width: 200px"
+                />
+                <div class="form-check mt-2" v-if="existingPhoto3 && !preview3">
                   <input
-                    type="file"
-                    class="custom-file-input"
-                    accept="image/*"
-                    @change="e => handlePhoto(e, 'photo_3')"
+                    type="checkbox"
+                    class="form-check-input"
+                    v-model="removePhoto3"
                   />
-                  <label class="custom-file-label">
-                    {{ imageName3 || "Pilih gambar..." }}
-                  </label>
-                </div>
-                <div class="mt-2" v-if="preview3 || existingPhoto3">
-                  <img
-                    :src="preview3 || existingPhoto3"
-                    alt="Preview"
-                    class="img-thumbnail"
-                    style="max-width: 200px"
-                  />
-                  <div
-                    class="form-check mt-2"
-                    v-if="existingPhoto3 && !preview3"
-                  >
-                    <input
-                      type="checkbox"
-                      class="form-check-input"
-                      v-model="removePhoto3"
-                    />
-                    <label class="form-check-label">
-                      Hapus gambar yang ada
-                    </label>
-                  </div>
+                  <label class="form-check-label">Hapus gambar yang ada</label>
                 </div>
               </div>
             </div>
@@ -210,6 +218,7 @@
                 Batal
               </router-link>
             </div>
+          </div>
           </form>
         </div>
       </div>
@@ -226,8 +235,10 @@ const route   = useRoute();
 const router  = useRouter();
 const counter = useCounterStore();
 
-const loading      = ref(false);
-const fetchError   = ref(null);
+const loading    = ref(false);
+const fetchError = ref(null);
+const errors     = ref({});
+
 const form = ref({
   inspection_date: "",
   issue_found: "",
@@ -236,112 +247,115 @@ const form = ref({
   status: "done",
 });
 
-// Foto
-const preview1        = ref(null);
-const preview2        = ref(null);
-const preview3        = ref(null);
-const existingPhoto1  = ref("");
-const existingPhoto2  = ref("");
-const existingPhoto3  = ref("");
-const imageName1      = ref("");
-const imageName2      = ref("");
-const imageName3      = ref("");
-const removePhoto1    = ref(false);
-const removePhoto2    = ref(false);
-const removePhoto3    = ref(false);
+// foto & preview
+const preview1 = ref(null);
+const preview2 = ref(null);
+const preview3 = ref(null);
+const existingPhoto1 = ref("");
+const existingPhoto2 = ref("");
+const existingPhoto3 = ref("");
+const imageName1 = ref("");
+const imageName2 = ref("");
+const imageName3 = ref("");
+const removePhoto1 = ref(false);
+const removePhoto2 = ref(false);
+const removePhoto3 = ref(false);
 
 /* -------------------------------------------------
-   Handler foto
+   Handle photo
 -------------------------------------------------- */
-function handlePhoto(event, key) {
-  const file = event.target.files[0];
+function handlePhoto(e, key) {
+  const file = e.target.files[0];
   let previewRef, nameRef, removeRef;
-
   switch (key) {
     case "photo_1":
-      previewRef = preview1;
-      nameRef    = imageName1;
-      removeRef  = removePhoto1;
+      previewRef = preview1; nameRef = imageName1; removeRef = removePhoto1;
       break;
     case "photo_2":
-      previewRef = preview2;
-      nameRef    = imageName2;
-      removeRef  = removePhoto2;
+      previewRef = preview2; nameRef = imageName2; removeRef = removePhoto2;
       break;
     case "photo_3":
-      previewRef = preview3;
-      nameRef    = imageName3;
-      removeRef  = removePhoto3;
+      previewRef = preview3; nameRef = imageName3; removeRef = removePhoto3;
       break;
   }
-
   if (!file) {
-    form.value[key]   = null;
-    previewRef.value  = null;
-    nameRef.value     = "";
-    removeRef.value   = false;
+    form.value[key] = null;
+    previewRef.value = null;
+    nameRef.value = "";
+    removeRef.value = false;
     return;
   }
-
-  form.value[key]   = file;
-  previewRef.value  = URL.createObjectURL(file);
-  nameRef.value     = file.name;
-  removeRef.value   = false;
+  form.value[key] = file;
+  previewRef.value = URL.createObjectURL(file);
+  nameRef.value = file.name;
+  removeRef.value = false;
 }
 
 /* -------------------------------------------------
-   Ambil data saat mounted
+   Load record on mount
 -------------------------------------------------- */
 onMounted(async () => {
   const id = route.params.id;
   loading.value = true;
   try {
-    const record = await counter.fetchMaintenanceDetail(id);
+    const rec = await counter.fetchMaintenanceDetail(id);
+
+    // ──👉  format tanggal jadi yyyy-mm-dd  ──
+    const isoDate = rec.inspection_date
+      ? new Date(rec.inspection_date).toISOString().slice(0, 10)
+      : '';
+
     form.value = {
-      inspection_date: record.inspection_date,
-      issue_found: record.issue_found || "",
-      solution_taken: record.solution_taken || "",
-      notes: record.notes || "",
-      status: record.status,
+      inspection_date: isoDate,
+      issue_found: rec.issue_found || '',
+      solution_taken: rec.solution_taken || '',
+      notes: rec.notes || '',
+      status: rec.status,
     };
-    existingPhoto1.value = record.photo_1 || "";
-    existingPhoto2.value = record.photo_2 || "";
-    existingPhoto3.value = record.photo_3 || "";
+
+    existingPhoto1.value = rec.photo_1 || '';
+    existingPhoto2.value = rec.photo_2 || '';
+    existingPhoto3.value = rec.photo_3 || '';
   } catch (e) {
-    fetchError.value = "Data tidak ditemukan";
-    alert("Data tidak ditemukan");
-    router.push("/maintenance/list");
+    fetchError.value = e.message || 'Gagal memuat data';
+    router.push('/maintenance/list');
   } finally {
     loading.value = false;
   }
 });
 
 /* -------------------------------------------------
-   Submit
+   Submit form
 -------------------------------------------------- */
 async function submitForm() {
   loading.value = true;
+  errors.value = {};
+
+  const fd = new FormData();
+  fd.append("inspection_date", form.value.inspection_date);
+  fd.append("status", form.value.status);
+  fd.append("issue_found", form.value.issue_found || "");
+  fd.append("solution_taken", form.value.solution_taken || "");
+  fd.append("notes", form.value.notes || "");
+
+  fd.append("remove_photo_1", removePhoto1.value ? "1" : "0");
+  fd.append("remove_photo_2", removePhoto2.value ? "1" : "0");
+  fd.append("remove_photo_3", removePhoto3.value ? "1" : "0");
+
+  ["photo_1", "photo_2", "photo_3"].forEach(k => {
+    if (form.value[k]) fd.append(k, form.value[k]);
+  });
+
   try {
-    const fd = new FormData();
-
-    Object.entries(form.value).forEach(([k, v]) => {
-      if (v !== null && v !== "") fd.append(k, v);
-    });
-
-    fd.append("_method", "PUT");
-    fd.append("remove_photo_1", removePhoto1.value ? "1" : "0");
-    fd.append("remove_photo_2", removePhoto2.value ? "1" : "0");
-    fd.append("remove_photo_3", removePhoto3.value ? "1" : "0");
-
-    ["photo_1", "photo_2", "photo_3"].forEach((k) => {
-      if (form.value[k]) fd.append(k, form.value[k]);
-    });
-
     await counter.updateMaintenanceRecord(route.params.id, fd);
-    alert("Laporan berhasil diperbarui!");
+    alert("Data berhasil diperbarui");
     router.push("/maintenance/list");
   } catch (e) {
-    alert("Gagal menyimpan: " + e.message);
+    if (e.response?.status === 422) {
+      errors.value = e.response.data.errors;
+    } else {
+      alert("Gagal menyimpan: " + (e.response?.data?.message || e.message));
+    }
   } finally {
     loading.value = false;
   }

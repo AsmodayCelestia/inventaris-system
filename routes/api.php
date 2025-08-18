@@ -24,6 +24,7 @@ use App\Http\Controllers\DivisionController;
 
 // PUBLIC
 Route::post('/login', [AuthController::class, 'login']);
+Route::get('/inventories/scan/{inventoryNumber}', [InventoryController::class, 'showForScan']);
 
 // AUTHENTICATED
 Route::middleware('auth:sanctum')->group(function () {
@@ -44,9 +45,13 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/inventories/qr/{inventoryNumber}', [InventoryController::class,'showByQrCode']);
     Route::get('/maintenance/history', [MaintenanceController::class,'index']);
+    Route::get('/inventories/{inventory}/maintenance-done',[MaintenanceController::class, 'historyDone']);
     Route::post('/inventories/{inventoryId}/maintenance', [MaintenanceController::class,'store']);
     Route::get('/maintenance/{id}', [MaintenanceController::class,'show']);
-    Route::post('/maintenance/{id}', [MaintenanceController::class,'update']);
+    Route::put('/maintenance/{id}', [MaintenanceController::class,'update']);
+
+
+    // Route::post('/maintenance/{id}', [MaintenanceController::class,'update']);
 
     Route::get('/dashboard/stats', [DashboardController::class,'getStats']);
     Route::get('/me/supervised-inventories', [InventoryController::class,'supervisedByMe']);
@@ -74,7 +79,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/inventory-items/{inventoryItem}/inventories', [InventoryController::class,'storeFromSlot']);
 
         // Maintenance
-        Route::put('/maintenance/{id}', [MaintenanceController::class,'update']);
+        // Route::put('/maintenance/{id}', [MaintenanceController::class,'update']);
         Route::delete('/maintenance/{id}', [MaintenanceController::class,'destroy']);
 
         // Schedule

@@ -84,7 +84,7 @@
                   >
                     <i class="fas fa-trash"></i>
                   </a>
-                  <span v-else class="text-muted">Tidak ada aksi</span>
+                  <span v-else class="text-muted"></span>
                 </td>
               </tr>
             </tbody>

@@ -101,12 +101,17 @@ const userRole = computed(() => counter.userRole);
 
 // ✅ Filter berdasarkan role dan inventory.pj_id
 const filteredList = computed(() => {
+  let list = counter.maintenanceHistory;
+
+  // 1) filter status "planning"
+  list = list.filter(m => m.status === 'planning');
+
+  // 2) filter berdasarkan role
   if (userRole.value === 'karyawan') {
-    return counter.maintenanceHistory.filter(
-      (m) => m.inventory?.pj_id === userId.value
-    );
+    list = list.filter(m => m.inventory?.pj_id === userId.value);
   }
-  return counter.maintenanceHistory; // admin, head, owner lihat semua
+
+  return list;
 });
 
 // ✅ Format tanggal

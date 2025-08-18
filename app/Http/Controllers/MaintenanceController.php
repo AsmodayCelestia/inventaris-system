@@ -2,201 +2,256 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\InventoryMaintenance; // Asumsi kamu punya model InventoryMaintenance
-use App\Models\Inventory; // Perlu untuk update last_maintenance_at di Inventory
+use App\Models\InventoryMaintenance;
+use App\Models\Inventory;
 use Illuminate\Http\Request;
-use Illuminate\Validation\ValidationException;
-use Illuminate\Support\Facades\Auth; // Untuk mendapatkan user yang sedang login
-use Illuminate\Support\Facades\Storage; // Untuk handle upload foto
+use Illuminate\Support\Facades\Auth;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Illuminate\Support\Str;
+use Carbon\Carbon;
 
 class MaintenanceController extends Controller
 {
-    /**
-     * Display a listing of the resource (Daftar semua riwayat maintenance).
-     * Dapat diakses oleh semua user yang terautentikasi.
-     * Bisa difilter berdasarkan inventory_id atau lainnya.
-     */
+    /* ---------- INDEX ---------- */
     public function index(Request $request)
     {
-        $query = InventoryMaintenance::with(['inventory.item', 'responsiblePerson']); // Eager load relasi
+        $query = InventoryMaintenance::with(['inventory.item', 'responsiblePerson']);
+        $user  = Auth::user();
+        $division = $user->division()->value('name');
 
-        if ($request->has('inventory_id') && $request->inventory_id !== '') {
+        if (in_array($user->role, ['admin', 'head'])) {
+            // bebas
+        } elseif ($user->role === 'karyawan' && $division === 'Keuangan') {
+            $query->where('status', 'done');
+        } elseif ($user->role === 'karyawan' && $division === 'Umum') {
+            $query->where('user_id', $user->id);
+        }
+
+        if ($request->filled('inventory_id')) {
             $query->where('inventory_id', $request->inventory_id);
         }
 
-        // Urutkan berdasarkan tanggal pemeriksaan terbaru
-        $maintenances = $query->orderBy('inspection_date', 'desc')->get();
-
-        return response()->json($maintenances);
+        return response()->json(
+            $query->orderBy('inspection_date', 'desc')->get()
+        );
     }
 
-    /**
-     * Store a newly created resource in storage (Menambah riwayat maintenance baru).
-     * Dapat diakses oleh Admin, Head, atau Karyawan/Petugas.
-     */
+    /* ---------- STORE ---------- */
     public function store(Request $request, $inventoryId)
     {
-        try {
-            $validatedData = $request->validate([
-                'inspection_date' => 'required|date',
-                'issue_found' => 'nullable|string',
-                'notes' => 'nullable|string',
-                'status' => 'required|string|in:planning,done',
-                'pj_id' => 'required|exists:users,id', // <-- Tambahkan validasi pj_id di sini
-                'photo_1' => 'nullable|image|max:2048',
-                'photo_2' => 'nullable|image|max:2048',
-                'photo_3' => 'nullable|image|max:2048',
-            ]);
+        $inventory = Inventory::findOrFail($inventoryId);
 
-            $inventory = Inventory::find($inventoryId);
-            if (!$inventory) {
-                return response()->json(['message' => 'Inventaris tidak ditemukan'], 404);
+        $validated = $request->validate([
+            'inspection_date'  => 'required|date',
+            'issue_found'      => 'nullable|string',
+            'solution_taken'   => 'nullable|string',
+            'notes'            => 'nullable|string',
+            'status'           => 'required|in:planning,done',
+            'pj_id'            => 'required|exists:users,id',
+            'cost'             => 'nullable|numeric|min:0',
+            'photo_1'          => 'nullable|image|max:2048',
+            'photo_2'          => 'nullable|image|max:2048',
+            'photo_3'          => 'nullable|image|max:2048',
+        ]);
+
+        $data = [
+            'inventory_id'    => $inventoryId,
+            'inspection_date' => $validated['inspection_date'],
+            'issue_found'     => $validated['issue_found']     ?? null,
+            'solution_taken'  => $validated['solution_taken']  ?? null,
+            'notes'           => $validated['notes']           ?? null,
+            'status'          => $validated['status'],
+            'cost'            => $validated['cost']            ?? null,
+            'user_id'         => $validated['pj_id'],
+        ];
+
+        for ($i = 1; $i <= 3; $i++) {
+            $key = "photo_$i";
+            if ($request->hasFile($key)) {
+                $uploaded = Cloudinary::upload($request->file($key)->getRealPath(), [
+                    'folder'    => 'maintenance_photos',
+                    'public_id' => Str::slug("inv-$inventoryId-maint-$key-".time()),
+                ]);
+                $data[$key] = $uploaded->getSecurePath();
             }
-
-            $maintenanceData = [
-                'inventory_id' => $inventoryId,
-                'inspection_date' => $validatedData['inspection_date'],
-                'issue_found' => $validatedData['issue_found'],
-                'notes' => $validatedData['notes'],
-                'status' => $validatedData['status'],
-                'user_id' => $validatedData['pj_id']
-            ];
-
-
-            // Handle photo uploads
-            for ($i = 1; $i <= 3; $i++) {
-                $photoField = 'photo_' . $i;
-                if ($request->hasFile($photoField)) {
-                    $photoPath = $request->file($photoField)->store('maintenance_photos', 'public');
-                    $maintenanceData[$photoField] = $photoPath;
-                }
-            }
-
-            $maintenance = InventoryMaintenance::create($maintenanceData);
-
-            return response()->json($maintenance, 201); // 201 Created
-        } catch (ValidationException $e) {
-            return response()->json([
-                'message' => 'Validasi gagal.',
-                'errors' => $e->errors()
-            ], 422);
-        } catch (\Exception $e) {
-            return response()->json(['message' => 'Gagal menambah riwayat maintenance: ' . $e->getMessage()], 500);
         }
+
+        $maintenance = InventoryMaintenance::create($data);
+
+        if ($maintenance->status === 'done') {
+            $inventory->last_maintenance_at = $maintenance->inspection_date;
+            $inventory->save();
+        }
+
+        return response()->json($maintenance, 201);
     }
 
+/* ---------- SHOW ---------- */
+public function show($id)
+{
+    $maintenance = InventoryMaintenance::with(['inventory.item', 'responsiblePerson'])
+                                       ->findOrFail($id);
+    $user     = Auth::user();
+    $division = $user->division()->value('name');
 
-    /**
-     * Display the specified resource (Menampilkan detail satu riwayat maintenance).
-     * Dapat diakses oleh semua user yang terautentikasi.
-     */
-    public function show($id)
-    {
-        $maintenance = InventoryMaintenance::with(['inventory.item', 'responsiblePerson'])->find($id); // Eager load relasi
-        if (!$maintenance) {
-            return response()->json(['message' => 'Riwayat maintenance tidak ditemukan'], 404);
+    // 1. Admin / Head bebas
+    if (in_array($user->role, ['admin', 'head'])) {
+        return response()->json($maintenance);
+    }
+
+    // 2. Keuangan hanya boleh lihat DONE
+    if ($user->role === 'karyawan' && $division === 'Keuangan') {
+        if ($maintenance->status !== 'done') {
+            return response()->json(['message' => 'Forbidden'], 403);
         }
         return response()->json($maintenance);
     }
 
-    /**
-     * Update the specified resource in storage (Memperbarui riwayat maintenance).
-     * Hanya dapat diakses oleh Admin atau Head.
-     */
-    public function update(Request $request, $id)
-    {
-        $maintenance = InventoryMaintenance::find($id);
-        if (!$maintenance) {
-            return response()->json(['message' => 'Riwayat maintenance tidak ditemukan'], 404);
+    // 3. Umum boleh lihat jika:
+    //    a) dia PJ-nya, atau
+    //    b) dia pengawas ruangan barang ini
+    if ($user->role === 'karyawan') {
+        if (
+            $maintenance->user_id === $user->id ||
+            $maintenance->inventory->room->pj_lokasi_id === $user->id
+        ) {
+            return response()->json($maintenance);
         }
-
-        try {
-            $validatedData = $request->validate([
-                'inspection_date' => 'required|date',
-                'issue_found' => 'nullable|string',
-                'solution_taken' => 'nullable|string',
-                'notes' => 'nullable|string',
-                'status' => 'required|string|in:planning,done',
-                'photo_1' => 'nullable|image|max:2048',
-                'photo_2' => 'nullable|image|max:2048',
-                'photo_3' => 'nullable|image|max:2048',
-            ]);
-
-            // Handle photo uploads (hapus yang lama, simpan yang baru)
-// hapus foto lama di cloudinary
-for ($i = 1; $i <= 3; $i++) {
-    $photoField = 'photo_' . $i;
-    $removeKey  = 'remove_' . $photoField;
-
-    if ($request->boolean($removeKey) && $maintenance->$photoField) {
-        $publicId = pathinfo(parse_url($maintenance->$photoField, PHP_URL_PATH), PATHINFO_FILENAME);
-        Cloudinary::destroy('maintenance_photos/' . $publicId);
-        $validatedData[$photoField] = null;
+        return response()->json(['message' => 'Forbidden'], 403);
     }
 
-    if ($request->hasFile($photoField)) {
-        // hapus dulu foto lama kalau ada
-        if ($maintenance->$photoField) {
-            $publicId = pathinfo(parse_url($maintenance->$photoField, PHP_URL_PATH), PATHINFO_FILENAME);
-            Cloudinary::destroy('maintenance_photos/' . $publicId);
-        }
-
-        $uploaded = Cloudinary::upload($request->file($photoField)->getRealPath(), [
-            'folder' => 'maintenance_photos',
-            'public_id' => Str::slug('maintenance-' . $id . '-' . $i . '-' . time()),
-        ]);
-        $validatedData[$photoField] = $uploaded->getSecurePath();
-    }
+    // 4. Selain itu langsung 403
+    return response()->json(['message' => 'Forbidden'], 403);
 }
 
-            $maintenance->update($validatedData);
+/* ---------- UPDATE ---------- */
+public function update(Request $request, $id)
+{
+    $maintenance = InventoryMaintenance::findOrFail($id);
+    $user        = Auth::user();
+    $division    = $user->division()->value('name');
 
-            // Update last_maintenance_at di tabel Inventory jika statusnya 'done'
-            if ($maintenance->status === 'done') {
-                $inventory = $maintenance->inventory;
-                if ($inventory) {
-                    $inventory->last_maintenance_at = $maintenance->inspection_date;
-                    // $inventory->next_due_date = $inventory->calculateNextDue()['value']; // Contoh
-                    $inventory->save();
-                }
+    /* ---------- Gate ---------- */
+    if (! in_array($user->role, ['admin', 'head'])) {
+        if ($user->role === 'karyawan' && $division === 'Umum') {
+            if ($maintenance->user_id !== $user->id) {
+                return response()->json(['message' => 'Forbidden'], 403);
             }
-
-            return response()->json($maintenance);
-        } catch (ValidationException $e) {
-            return response()->json([
-                'message' => 'Validasi gagal.',
-                'errors' => $e->errors()
-            ], 422);
-        } catch (\Exception $e) {
-            return response()->json(['message' => 'Gagal memperbarui riwayat maintenance: ' . $e->getMessage()], 500);
+        } elseif ($user->role === 'karyawan' && $division === 'Keuangan') {
+            if ($maintenance->status !== 'done') {
+                return response()->json(['message' => 'Forbidden'], 403);
+            }
+        } else {
+            return response()->json(['message' => 'Forbidden'], 403);
         }
     }
 
-    /**
-     * Remove the specified resource from storage (Menghapus riwayat maintenance).
-     * Hanya dapat diakses oleh Admin atau Head.
-     */
+    /* ---------- Validasi ---------- */
+    $validated = $request->validate([
+        'inspection_date'  => 'required|date',
+        'issue_found'      => 'nullable|string',
+        'solution_taken'   => 'nullable|string',
+        'notes'            => 'nullable|string',
+        'status'           => 'required|in:planning,done',
+        'cost'             => 'nullable|numeric|min:0',
+        'user_id'          => 'sometimes|exists:users,id',
+        'photo_1'          => 'nullable|image|max:2048',
+        'photo_2'          => 'nullable|image|max:2048',
+        'photo_3'          => 'nullable|image|max:2048',
+    ]);
+
+    /* ---------- Simpan status lama ---------- */
+    $oldStatus = $maintenance->status;
+
+    /* ---------- Update record ---------- */
+    $update = [
+        'inspection_date' => $validated['inspection_date'],
+        'issue_found'     => $validated['issue_found']     ?? null,
+        'solution_taken'  => $validated['solution_taken']  ?? null,
+        'notes'           => $validated['notes']           ?? null,
+        'status'          => $validated['status'],
+        'cost'            => $validated['cost']            ?? null,
+        'user_id'         => $validated['user_id']         ?? $maintenance->user_id,
+    ];
+
+    /* ---------- Foto ---------- */
+    for ($i = 1; $i <= 3; $i++) {
+        $key = "photo_$i";
+        if ($request->boolean("remove_photo_$i") && $maintenance->$key) {
+            $publicId = pathinfo(parse_url($maintenance->$key, PHP_URL_PATH), PATHINFO_FILENAME);
+            Cloudinary::destroy('maintenance_photos/'.$publicId);
+            $update[$key] = null;
+        }
+        if ($request->hasFile($key)) {
+            if ($maintenance->$key) {
+                $publicId = pathinfo(parse_url($maintenance->$key, PHP_URL_PATH), PATHINFO_FILENAME);
+                Cloudinary::destroy('maintenance_photos/'.$publicId);
+            }
+            $uploaded = Cloudinary::upload($request->file($key)->getRealPath(), [
+                'folder'    => 'maintenance_photos',
+                'public_id' => Str::slug("inv-{$maintenance->inventory_id}-maint-$key-".time()),
+            ]);
+            $update[$key] = $uploaded->getSecurePath();
+        }
+    }
+
+    $maintenance->update($update);
+
+    /* ---------- Auto-create next maintenance ---------- */
+    if ($oldStatus === 'planning' && $maintenance->status === 'done') {
+        $inventory = $maintenance->inventory;
+        $inventory->last_maintenance_at = $maintenance->inspection_date;
+        $inventory->save();
+
+        $nextDate = Carbon::parse($maintenance->inspection_date)
+                    ->addMonths($inventory->maintenance_interval_month ?? 1);
+
+        InventoryMaintenance::create([
+            'inventory_id'    => $inventory->id,
+            'inspection_date' => $nextDate,
+            'status'          => 'planning',
+            'user_id'         => $maintenance->user_id, // tetap sama
+        ]);
+    }
+
+    return response()->json($maintenance);
+}
+
+    /* ---------- DESTROY ---------- */
     public function destroy($id)
     {
-        $maintenance = InventoryMaintenance::find($id);
-        if (!$maintenance) {
-            return response()->json(['message' => 'Riwayat maintenance tidak ditemukan'], 404);
+        $maintenance = InventoryMaintenance::findOrFail($id);
+
+        for ($i = 1; $i <= 3; $i++) {
+            $key = "photo_$i";
+            if ($maintenance->$key) {
+                $publicId = pathinfo(parse_url($maintenance->$key, PHP_URL_PATH), PATHINFO_FILENAME);
+                Cloudinary::destroy('maintenance_photos/'.$publicId);
+            }
         }
 
-        try {
-            // Hapus foto terkait jika ada
-            for ($i = 1; $i <= 3; $i++) {
-                $photoField = 'photo_' . $i;
-                if ($maintenance->$photoField) {
-                    Storage::disk('public')->delete($maintenance->$photoField);
-                }
-            }
-            $maintenance->delete();
-            return response()->json(['message' => 'Riwayat maintenance berhasil dihapus'], 200);
-        } catch (\Exception $e) {
-            return response()->json(['message' => 'Gagal menghapus riwayat maintenance: ' . $e->getMessage()], 500);
-        }
+        $maintenance->delete();
+        return response()->json(['message' => 'Riwayat maintenance berhasil dihapus']);
     }
+
+    public function historyDone(Inventory $inventory)
+{
+    $user = Auth::user();
+
+    /* cek hak akses: admin/head atau pengawas ruangan */
+    if (
+        ! in_array($user->role, ['admin', 'head']) &&
+        $user->id !== optional($inventory->room)->pj_lokasi_id
+    ) {
+        return response()->json(['message' => 'Forbidden'], 403);
+    }
+
+    $data = $inventory->maintenances()
+                      ->where('status', 'done')
+                      ->with(['inventory.item', 'responsiblePerson'])
+                      ->orderBy('inspection_date', 'desc')
+                      ->get();
+
+    return response()->json($data);
+}
 }
