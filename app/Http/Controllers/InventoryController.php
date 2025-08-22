@@ -70,8 +70,8 @@ public function table(Request $request)
     // 1. grand total (jangan sentuh query utama)
     $grandTotal = (clone $query)
         ->selectRaw('
-            IFNULL(SUM(purchase_price), 0)          as purchase,
-            IFNULL(SUM(estimated_depreciation), 0)  as depreciation
+            COALESCE(SUM(purchase_price), 0)          as purchase,
+            COALESCE(SUM(estimated_depreciation), 0)  as depreciation
         ')
         ->first();
 
