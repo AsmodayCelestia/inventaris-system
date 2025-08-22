@@ -19,5 +19,40 @@
     "password": "petugas123",
     "division_id": 2,
     "role": "karyawan"
+  },
+  {
+    "name": "petugas2",
+    "email": "petugas2@darwis.com",
+    "password": "petugas123",
+    "division_id": 2,
+    "role": "karyawan"
+  },
+  {
+    "name": "mila",
+    "email": "mila@darwis.com",
+    "password": "petugas123",
+    "division_id": 4,
+    "role": "karyawan"
+  },
+  {
+    "name": "amel",
+    "email": "amel@darwis.com",
+    "password": "petugas123",
+    "division_id": 4,
+    "role": "karyawan"
+  },
+  {
+    "name": "ayuni",
+    "email": "ayuni@darwis.com",
+    "password": "petugas123",
+    "division_id": 3,
+    "role": "karyawan"
+  },
+  {
+    "name": "yuli",
+    "email": "yuli@darwis.com",
+    "password": "petugas123",
+    "division_id": 4,
+    "role": "karyawan"
   }
 ]
