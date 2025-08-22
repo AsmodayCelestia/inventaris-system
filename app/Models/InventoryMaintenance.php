@@ -3,14 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;           // 1
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Spatie\Activitylog\Traits\LogsActivity; // Import trait LogsActivity
-use Spatie\Activitylog\LogOptions; // Import LogOptions untuk konfigurasi log
-use Illuminate\Support\Facades\Storage;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class InventoryMaintenance extends Model
 {
-    use HasFactory, LogsActivity;
+    use HasFactory, LogsActivity, SoftDeletes;            // 2
 
     protected $fillable = [
         'inventory_id',
@@ -23,12 +23,10 @@ class InventoryMaintenance extends Model
         'photo_1',
         'photo_2',
         'photo_3',
+        'creator_id',
         'user_id',
     ];
 
-    /* -------------------------------------------------
-       URL mutator untuk Vue (agar langsung full URL)
-    -------------------------------------------------- */
     protected $appends = [
         'photo_1_url',
         'photo_2_url',
@@ -36,36 +34,24 @@ class InventoryMaintenance extends Model
         'status_label',
     ];
 
-public function getPhoto1UrlAttribute()
-{
-    return $this->photo_1 ?? null;
-}
+    /* URL mutator */
+    public function getPhoto1UrlAttribute() { return $this->photo_1 ?? null; }
+    public function getPhoto2UrlAttribute() { return $this->photo_2 ?? null; }
+    public function getPhoto3UrlAttribute() { return $this->photo_3 ?? null; }
 
-public function getPhoto2UrlAttribute()
-{
-    return $this->photo_2 ?? null;
-}
-
-public function getPhoto3UrlAttribute()
-{
-    return $this->photo_3 ?? null;
-}
-
-    /* -------------------------------------------------
-       Label status untuk Vue
-    -------------------------------------------------- */
+    /* Label status baru */
     public function getStatusLabelAttribute()
     {
         return match ($this->status) {
-            'planning' => 'Direncanakan',
-            'done'     => 'Selesai',
-            default    => ucfirst($this->status),
+            'reported'    => 'Dilaporkan',
+            'on_progress' => 'Diproses',
+            'handled'     => 'Ditangani',
+            'done'        => 'Selesai',
+            'cancelled'   => 'Dibatalkan',
         };
     }
 
-    /* -------------------------------------------------
-       Relasi yang sudah ada
-    -------------------------------------------------- */
+    /* Relasi */
     public function inventory()
     {
         return $this->belongsTo(Inventory::class);
@@ -76,6 +62,12 @@ public function getPhoto3UrlAttribute()
         return $this->belongsTo(User::class, 'user_id');
     }
 
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'creator_id');
+    }
+    
+    /* Activity-log */
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
@@ -84,5 +76,9 @@ public function getPhoto3UrlAttribute()
             ->dontSubmitEmptyLogs();
     }
 
-    
+    /* Scope helper (opsional) */
+    public function scopeNeedAction($query)
+    {
+        return $query->where('status', 'reported');
+    }
 }

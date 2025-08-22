@@ -8,29 +8,26 @@
 
     <div class="card-body">
       <form @submit.prevent="handleSubmit">
-        <!-- Nama -->
         <div class="form-group">
           <label>Nama <span class="text-danger">*</span></label>
           <input v-model="form.name" type="text" class="form-control" required />
         </div>
 
-        <!-- Email -->
         <div class="form-group">
           <label>Email <span class="text-danger">*</span></label>
           <input v-model="form.email" type="email" class="form-control" required />
         </div>
 
-        <!-- Password (hanya saat tambah) -->
         <div class="form-group" v-if="!isEdit">
           <label>Password <span class="text-danger">*</span></label>
           <input v-model="form.password" type="password" class="form-control" required minlength="6" />
         </div>
+
         <div class="form-group" v-if="!isEdit">
           <label>Konfirmasi Password <span class="text-danger">*</span></label>
-          <input v-model="form.password_confirmation" type="password" class="form-control" required minlength="6" />
+          <input v-model="form.password_confirmation" type="password" class="form-control" required />
         </div>
 
-        <!-- Role -->
         <div class="form-group">
           <label>Role <span class="text-danger">*</span></label>
           <select v-model="form.role" class="form-control" required>
@@ -41,9 +38,9 @@
           </select>
         </div>
 
-        <!-- Divisi -->
+        <!-- Divisi (FK) -->
         <div class="form-group">
-          <label>Divisi</label>
+          <label>Divisi <span class="text-danger">*</span></label>
           <select v-model="form.division_id" class="form-control">
             <option value="">-- Pilih Divisi --</option>
             <option v-for="d in divisions" :key="d.id" :value="d.id">{{ d.name }}</option>
@@ -62,12 +59,10 @@
 import { reactive, watch, onMounted, computed, ref } from 'vue';
 import { useCounterStore } from '../../stores/counter';
 
-const emit         = defineEmits(['update:modelValue', 'saved', 'close']);
+const emit = defineEmits(['saved', 'close']);
 const counterStore = useCounterStore();
 
-const props = defineProps({
-  modelValue: { type: Object, default: null }
-});
+const props = defineProps({ modelValue: { type: Object, default: null } });
 
 const divisions = ref([]);
 const isEdit    = computed(() => !!props.modelValue);
@@ -85,24 +80,17 @@ onMounted(async () => {
   divisions.value = await counterStore.fetchDivisions();
 });
 
-watch(
-  () => props.modelValue,
-  (val) => {
-    if (val) {
-      form.name        = val.name;
-      form.email       = val.email;
-      form.role        = val.role;
-      form.division_id = val.division_id || '';
-      form.password = '';
-      form.password_confirmation = '';
-    } else {
-      Object.assign(form, {
-        name: '', email: '', password: '', password_confirmation: '', role: '', division_id: ''
-      });
-    }
-  },
-  { immediate: true }
-);
+watch(() => props.modelValue, (val) => {
+  if (val) {
+    form.name        = val.name;
+    form.email       = val.email;
+    form.role        = val.role;
+    form.division_id = val.division_id || '';
+    form.password = form.password_confirmation = '';
+  } else {
+    Object.assign(form, { name:'', email:'', password:'', password_confirmation:'', role:'', division_id:'' });
+  }
+}, { immediate: true });
 
 const handleSubmit = async () => {
   try {
@@ -116,7 +104,7 @@ const handleSubmit = async () => {
       : await counterStore.createUser(payload);
     emit('saved');
   } catch (e) {
-    console.error(e);
+    console.error(e.response?.data || e);
   }
 };
 </script>

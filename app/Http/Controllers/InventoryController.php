@@ -12,28 +12,89 @@ use Illuminate\Support\Str;
 use Endroid\QrCode\Builder\Builder;
 use Endroid\QrCode\Writer\PngWriter;
 use Illuminate\Support\Arr;
-
+use DataTables;
 
 class InventoryController extends Controller
 {
 
     private function canSeePrice(): bool
     {
-        $user = auth()->user()->loadMissing('division');
+        $user = auth()->user();
+        if (!$user) {
+            return false; // publik gak boleh lihat harga
+        }
+
+        $user->loadMissing('division');
         return $user->role === 'admin' ||
-               $user->division?->name === 'Keuangan' ||
-               ($user->role === 'head' && $user->division?->name === 'Umum');
+            $user->division?->name === 'Keuangan' ||
+            ($user->role === 'head' && $user->division?->name === 'Umum');
     }
 
     private function canUpdatePrice(): bool
     {
-        $user = auth()->user()->loadMissing('division');
+        $user = auth()->user();
+        if (!$user) {
+            return false; // publik gak boleh update harga
+        }
+
+        $user->loadMissing('division');
         return $user->role === 'admin' || $user->division?->name === 'Keuangan';
     }
 
     /* -----------------------------------------------------------------
        |  METHOD LAMA (TIDAK BERUBAH)
        ----------------------------------------------------------------- */
+
+
+
+
+public function table(Request $request)
+{
+    $query = Inventory::with('item', 'room', 'unit');
+
+    // ---------- filter yang sama persis ----------
+    if ($search = $request->input('search.value')) {
+        $query->where(function ($q) use ($search) {
+            $q->where('inventory_number', 'like', "%{$search}%")
+              ->orWhereHas('item', fn($b) => $b->where('name', 'like', "%{$search}%"));
+        });
+    }
+
+    if ($status = $request->input('status')) {
+        $query->where('status', $status);
+    }
+
+    collect(['room_id', 'unit_id', 'floor_id', 'pj_id'])
+        ->each(fn($key) => $request->filled($key) && $query->where($key, $request->input($key)));
+
+    // 1. grand total (jangan sentuh query utama)
+    $grandTotal = (clone $query)
+        ->selectRaw('
+            IFNULL(SUM(purchase_price), 0)          as purchase,
+            IFNULL(SUM(estimated_depreciation), 0)  as depreciation
+        ')
+        ->first();
+
+    // 2. count rows setelah filter
+    $recordsFiltered = (clone $query)->count();   // <–– ini yang bener
+    $recordsTotal    = Inventory::count();        // total DB
+
+    // 3. ambil data untuk paginasi
+    $length = (int) $request->input('length', 10);
+    $start  = (int) $request->input('start', 0);
+    $items  = $query->offset($start)->limit($length)->get();
+
+    return response()->json([
+        'draw'            => (int) $request->input('draw', 1),
+        'recordsTotal'    => $recordsTotal,
+        'recordsFiltered' => $recordsFiltered,
+        'data'            => $items,
+        'grand_total'     => [
+            'purchase'     => (float) ($grandTotal->purchase ?? 0),
+            'depreciation' => (float) ($grandTotal->depreciation ?? 0),
+        ],
+    ]);
+}
 
 public function index(Request $request)
 {
@@ -241,7 +302,7 @@ public function update(Request $request, $id)
     public function showByQrCode($inventoryNumber)
     {
         $inventory = Inventory::with(['item', 'room', 'unit', 'personInCharge', 'maintenances'])
-            ->where('inventory_number', $inventoryNumber)
+            ->where('id', $inventoryNumber)
             ->firstOrFail();
 
         $data = $inventory->toArray();
@@ -357,21 +418,44 @@ public function update(Request $request, $id)
         }
     }
 
-public function showForScan($inventoryNumber)
+public function showForScan($id)
 {
     $inventory = Inventory::with([
-            'item',
-            'room',
-            'room.locationPersonInCharge',
-            'unit',
-            'personInCharge',
-            'maintenances'
-        ])
-        ->where('inventory_number', $inventoryNumber)
-        ->firstOrFail();
+        'item',
+        'room',
+        'room.locationPersonInCharge',
+        'unit',
+        'personInCharge',
+        'maintenances'
+    ])->findOrFail($id);
 
-    // pakai logika show() yang sudah ada
-    return $this->show($inventory);
+    $data = $inventory->toArray();
+
+        Arr::forget($data, [
+            // field langsung
+            'purchase_price',
+            'estimated_depreciation',
+            'created_at',
+            'updated_at',
+            'id',
+            'inventory_item_id',
+            'unit_id',
+            'room_id',
+            'pj_id',
+            'expected_replacement',
+            'last_checked_at',
+            'maintenance_frequency_type',
+            'maintenance_frequency_value',
+            'last_maintenance_at',
+            'next_due_date',
+            'next_due_km',
+            'last_odometer_reading',
+
+            // relasi
+            'maintenances',
+        ]);
+    
+    return response()->json($data);
 }
     /* -----------------------------------------------------------------
        |  METHOD BARU UNTUK FLOW HEAD (quantity sudah naik di master)

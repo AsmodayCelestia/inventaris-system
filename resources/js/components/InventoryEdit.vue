@@ -341,7 +341,7 @@ onMounted(() => {
 
   if (!canAccess) {
     alert('Anda tidak memiliki akses ke halaman ini.');
-    router.push('/inventories');
+    router.push('/InventoryUnitList');
     return;
   }
 

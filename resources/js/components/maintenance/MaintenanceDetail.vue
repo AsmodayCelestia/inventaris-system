@@ -1,3 +1,4 @@
+<!-- Detail Laporan Maintenance – lengkap & gate disesuaikan, siap copy-paste -->
 <template>
   <div>
     <!-- Header -->
@@ -25,50 +26,64 @@
     <!-- Content -->
     <div class="content">
       <div class="container-fluid">
-        <div class="card">
-          <div class="card-header">
-            <h3 class="card-title">
-              Laporan #{{ record.id || '-' }}
-              <span class="ml-2 badge" :class="badgeClass(record.status)">
-                {{ record.status_label || record.status }}
-              </span>
-            </h3>
-            <div class="card-tools">
-              <!-- tombol Edit hanya muncul jika boleh edit -->
-              <router-link
-                v-if="showEditButton"
-                :to="`/maintenance/edit/${record.id}`"
-                class="btn btn-sm btn-warning"
-              >
-                <i class="fas fa-edit"></i> Edit
-              </router-link>
-            </div>
-          </div>
+        <!-- Hak akses -->
+        <div v-if="!canView" class="alert alert-danger m-3">
+          Anda tidak memiliki hak akses ke laporan ini.
+        </div>
 
-          <div class="card-body">
-            <!-- Loading -->
-            <div v-if="loading" class="text-center p-4">
-              <i class="fas fa-spinner fa-spin fa-2x"></i>
-              <p class="mt-2">Memuat data...</p>
+        <!-- Loading -->
+        <div v-else-if="loading" class="text-center p-4">
+          <i class="fas fa-spinner fa-spin fa-2x"></i>
+          <p class="mt-2">Memuat data...</p>
+        </div>
+
+        <!-- Error -->
+        <div v-else-if="error" class="alert alert-danger m-3">
+          {{ error }}
+        </div>
+
+        <!-- Konten utama -->
+        <div v-else>
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">
+                Laporan #{{ record.id || '-' }}
+                <span class="ml-2 badge" :class="badgeClass(record.status)">
+                  {{ record.status_label || record.status }}
+                </span>
+              </h3>
+              <div class="card-tools">
+                <button
+                  v-if="showTakeButton"
+                  class="btn btn-sm btn-primary mr-1"
+                  @click="takeMaintenance"
+                >
+                  <i class="fas fa-hand-paper"></i> Ambil
+                </button>
+                <router-link
+                  v-if="showEditButton"
+                  :to="`/maintenance/edit/${record.id}`"
+                  class="btn btn-sm btn-warning"
+                >
+                  <i class="fas fa-edit"></i> Edit
+                </router-link>
+              </div>
             </div>
 
-            <!-- Error -->
-            <div v-else-if="error" class="alert alert-danger">
-              {{ error }}
-            </div>
-
-            <!-- Content -->
-            <div v-else>
+            <div class="card-body">
               <table class="table table-bordered">
-                <tr><th style="width: 220px">Inventaris</th><td>{{ record.inventory?.item?.name || '-' }} ({{ record.inventory?.inventory_number }})</td></tr>
-                <tr><th>Tanggal Pemeriksaan</th><td>{{ formatDateTime(record.inspection_date) }}</td></tr>
-                <tr><th>Status</th><td><span :class="badgeClass(record.status)">{{ record.status_label || record.status }}</span></td></tr>
-                <tr><th>Permasalahan</th><td><pre class="mb-0">{{ record.issue_found || '-' }}</pre></td></tr>
-                <tr><th>Solusi / Tindakan</th><td><pre class="mb-0">{{ record.solution_taken || '-' }}</pre></td></tr>
-                <tr><th>Catatan</th><td><pre class="mb-0">{{ record.notes || '-' }}</pre></td></tr>
-                <tr><th>Biaya</th><td>{{ record.cost ? rupiah(record.cost) : '-' }}</td></tr>
-                <tr><th>Teknisi / PJ</th><td>{{ record.responsible_person?.name || '-' }}</td></tr>
-                <tr><th>Odometer Terakhir</th><td>{{ record.odometer_reading ?? '-' }}</td></tr>
+                <tbody>
+                  <tr><th style="width: 220px">Inventaris</th><td>{{ record.inventory?.item?.name || '-' }} ({{ record.inventory?.inventory_number }})</td></tr>
+                  <tr><th>Tanggal Pemeriksaan</th><td>{{ formatDateTime(record.inspection_date) }}</td></tr>
+                  <tr><th>Status</th><td><span :class="badgeClass(record.status)">{{ record.status_label || record.status }}</span></td></tr>
+                  <tr><th>Permasalahan</th><td><pre class="mb-0">{{ record.issue_found || '-' }}</pre></td></tr>
+                  <tr><th>Solusi / Tindakan</th><td><pre class="mb-0">{{ record.solution_taken || '-' }}</pre></td></tr>
+                  <tr><th>Catatan</th><td><pre class="mb-0">{{ record.notes || '-' }}</pre></td></tr>
+                  <tr><th>Biaya</th><td>{{ record.cost ? rupiah(record.cost) : '-' }}</td></tr>
+                  <tr><th>Teknisi / PJ</th><td>{{ record.responsible_person?.name || '-' }}</td></tr>
+                  <tr><th>Pembuat Laporan</th><td>{{ record.creator?.name || '-' }}</td></tr>
+                  <tr><th>Odometer Terakhir</th><td>{{ record.odometer_reading ?? '-' }}</td></tr>
+                </tbody>
               </table>
 
               <!-- Foto -->
@@ -93,12 +108,12 @@
                 <div v-if="!photos.length" class="text-muted">Tidak ada foto.</div>
               </div>
             </div>
-          </div>
 
-          <div class="card-footer">
-            <router-link to="/maintenance/list" class="btn btn-secondary">
-              <i class="fas fa-arrow-left"></i> Kembali
-            </router-link>
+            <div class="card-footer">
+              <router-link :to="backRoute" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Kembali
+              </router-link>
+            </div>
           </div>
         </div>
       </div>
@@ -124,7 +139,6 @@ import 'dayjs/locale/id';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 
-// Setup dayjs
 dayjs.locale('id');
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -147,28 +161,73 @@ onMounted(async () => {
   }
 });
 
-const showEditButton = computed(() => {
-  // kalau belum ada data, sembunyikan dulu
+/* ------------ hak akses ------------ */
+const canView = computed(() => {
+    if (record.value.status === 'reported') return true;
   if (!record.value.id) return false;
+  const { creator_id, inventory } = record.value;
+  const { userRole, userId, userDivisi } = counter;
 
-  const isDone = record.value.status === 'done';
-  const role   = counter.userRole;
+  // admin/head bisa apa aja
+  if (['admin', 'head'].includes(userRole)) return true;
 
-  // planning → boleh edit semua role (sesuai gate backend)
-  if (!isDone) return true;
+  // Keuangan hanya boleh lihat apabila status sudah Done
+  if (userRole === 'karyawan' && userDivisi === 'Keuangan')
+    return record.value.status === 'done';
 
-  // done → hanya admin & head
-  return ['admin', 'head'].includes(role);
+  // Pembuat laporan
+  if (creator_id === userId) return true;
+
+  // PJ Umum
+  if (userRole === 'karyawan' && userDivisi === 'Umum' && record.value.user_id === userId) return true;
+
+  // Pengawas Ruangan
+  if (inventory?.room?.pj_lokasi_id === userId) return true;
+
+  return false;
 });
 
-/* helpers */
+/* ------------ hak edit ------------ */
+const showEditButton = computed(() => {
+  if (record.value.status === 'reported') return true;
+  if (!record.value.id) return false;
+  const status       = record.value.status;
+  const role         = counter.userRole;
+  const divisi       = counter.userDivisi;
+  const isPj         = record.value.user_id === counter.userId;
+  const isSupervisor = record.value.inventory?.room?.pj_lokasi_id === counter.userId;
+
+  // Admin/Head bisa edit apa saja
+  if (['admin', 'head'].includes(role)) return true;
+
+  // PJ Umum bisa edit saat on_progress / handled
+  if (role === 'karyawan' && divisi === 'Umum' && isPj) return ['on_progress', 'handled'].includes(status);
+
+  // Pengawas Ruangan bisa Mark Done saat handled / on_progress
+  if (isSupervisor && ['handled', 'on_progress'].includes(status)) return true;
+
+  return false;
+});
+
+/* ------------ hak ambil ------------ */
+const showTakeButton = computed(() =>
+  record.value.status === 'reported' &&
+  record.value.user_id === null &&
+  counter.userRole === 'karyawan' &&
+  counter.userDivisi === 'Umum'
+);
+
+/* ------------ helper ------------ */
 const rupiah = (val) =>
   new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(val);
 
 const badgeClass = (status) => ({
-  'badge-warning': status === 'planning',
-  'badge-success': status === 'done',
-});
+  reported   : 'badge-danger',
+  on_progress: 'badge-warning',
+  handled    : 'badge-info',
+  done       : 'badge-success',
+  cancelled  : 'badge-secondary',
+}[status] || 'badge-light');
 
 const photos = computed(() =>
   ['photo_1', 'photo_2', 'photo_3']
@@ -176,36 +235,51 @@ const photos = computed(() =>
     .filter(Boolean)
 );
 
-// Date formatting helpers
-const formatDate = (dateString, format = 'DD MMMM YYYY') => {
-  if (!dateString) return '-';
+const formatDateTime = (dateString) =>
+  dateString ? dayjs(dateString).format('DD MMMM YYYY') : '-';
+
+const takeMaintenance = async () => {
   try {
-    return dayjs(dateString).format(format);
-  } catch {
-    return '-';
+    await counter.assignMaintenance(record.value.id, { user_id: counter.userId });
+    record.value = await counter.fetchMaintenanceDetail(route.params.id);
+  } catch (e) {
+    alert(e?.response?.data?.message || 'Gagal mengambil tugas');
   }
 };
 
-const formatDateTime = (dateString) => {
-  if (!dateString) return '-';
-  try {
-    return dayjs(dateString).format('DD MMMM YYYY');
-  } catch {
-    return '-';
-  }
-};
+// tambahin di script setup
+const backRoute = computed(() => {
+  const { status } = record.value;
+  const { userRole, userDivisi } = counter;
 
-const formatRelativeTime = (dateString) => {
-  if (!dateString) return '-';
-  try {
-    return dayjs(dateString).fromNow();
-  } catch {
-    return '-';
+  // Kalau dari Keuangan & status done → balik ke approval/keuangan
+  if (userRole === 'karyawan' && userDivisi === 'Keuangan' && status === 'done') {
+    return '/maintenance/done';
   }
-};
 
-/* lightbox */
-const openLightbox = (url) => (lightbox.value = url);
+  // Kalau dari Umum/PJ → balik ke daftar tugas mereka
+  if (userRole === 'karyawan' && userDivisi === 'Umum' & status === 'reported') {
+    return '/maintenance/needed'; // atau '/maintenance/my-tasks'
+  }
+
+  if (userRole === 'karyawan' && userDivisi === 'Umum' & (status === 'on_progress' || status === 'handled')) {
+    return '/maintenance/list'; // atau '/maintenance/my-tasks'
+  }
+
+    if (userRole === 'karyawan' && userDivisi === 'Umum' & (status === 'on_progress' || status === 'done')) {
+    return '/maintenance/done'; // atau '/maintenance/my-tasks'
+  }
+
+  // Kalau dari Pengawas Ruangan → balik ke daftar ruangan mereka
+  if (record.value.inventory?.room?.pj_lokasi_id === counter.userId && (status === 'on_progress' || status === 'handled')) {
+    return `/maintenance/list`;
+  }
+
+  // Default fallback
+  return '/maintenance/list';
+});
+
+const openLightbox  = (url) => (lightbox.value = url);
 const closeLightbox = () => (lightbox.value = null);
 </script>
 

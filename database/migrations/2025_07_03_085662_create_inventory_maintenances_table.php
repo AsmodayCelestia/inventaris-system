@@ -5,30 +5,54 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
-    public function up(): void {
+    public function up(): void
+    {
         Schema::create('inventory_maintenances', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('inventory_id')->constrained('inventories')->onDelete('cascade');
+
+            $table->foreignId('inventory_id')
+                ->constrained('inventories')
+                ->onDelete('cascade');
+
             $table->date('inspection_date');
             $table->text('issue_found')->nullable();
             $table->text('solution_taken')->nullable();
             $table->text('notes')->nullable();
-            $table->enum('status', ['planning', 'done'])->default('planning');
 
-            $table->decimal('cost', 15, 0)->nullable();   // <-- TAMBAH INI
+            $table->enum('status', [
+                'reported',
+                'on_progress',
+                'handled',
+                'done',
+                'cancelled'
+            ])->default('reported');
+
+            $table->decimal('cost', 15, 0)->nullable();
 
             $table->string('photo_1')->nullable();
             $table->string('photo_2')->nullable();
             $table->string('photo_3')->nullable();
 
-            $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignId('user_id')
+                ->nullable()
+                ->constrained('users')
+                ->onDelete('set null');
+
             $table->integer('odometer_reading')->nullable();
+
+            // Tambahan satu baris
+            $table->foreignId('creator_id')
+                ->nullable()
+                ->constrained('users')
+                ->onDelete('set null');
+
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
-    public function down(): void {
+    public function down(): void
+    {
         Schema::dropIfExists('inventory_maintenances');
     }
 };
-// done

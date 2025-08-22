@@ -1,4 +1,7 @@
 [
   { "name": "IT" },
-  { "name": "Umum" }
+  { "name": "Umum" },
+  { "name": "Keuangan" },
+  { "name": "Perawat" },
+  { "name": "Marketing" }
 ]

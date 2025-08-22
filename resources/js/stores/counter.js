@@ -10,6 +10,7 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 export const useCounterStore = defineStore('inventoryApp', {
   state: () => ({
     // --- State Autentikasi & User ---
+    API_BASE_URL: API_BASE_URL,
     isLoggedIn: false,
     userRole: null, // 'admin', 'head', 'karyawan'
     userName: null,
@@ -36,6 +37,25 @@ export const useCounterStore = defineStore('inventoryApp', {
     inventoryItemLoading: false,
     inventoryItemError: null,
 
+inventoryTable: {
+  items: [],
+  totalRows: 0,
+  loading: false,
+  params: {
+    page: 1,
+    per_page: 10,
+    search: '',
+    room_id: null,
+    unit_id: null,
+    floor_id: null,
+    status: null,
+    pj_id: null,
+    start_date: null,
+    end_date: null,
+    sort_by: 'id',
+    sort_dir: 'asc'
+  }
+},
     // --- State Inventaris ---
     inventories: [],
     selectedInventoryDetail: null,
@@ -64,7 +84,8 @@ export const useCounterStore = defineStore('inventoryApp', {
       startDate: null,
       endDate: null,
     },
-      authReady: false,
+    authReady: false,
+    grandTotal: null, 
   }),
 
   getters: {
@@ -72,9 +93,10 @@ export const useCounterStore = defineStore('inventoryApp', {
     isHead: (state) => state.userRole === 'head',
     isKaryawan: (state) => state.userRole === 'karyawan',
     isKeuangan: (state) => state.userDivisi === 'Keuangan',
-    isSupervisorOfInventory: (state) => (inventory) =>
-  inventory?.room?.location_person_in_charge?.id === state.userId,
-
+//     isSupervisorOfInventory: (state) => (inventory) =>
+//   inventory?.room?.location_person_in_charge?.id === state.userId,
+isSupervisorOfInventory: (state) => (inventory) =>
+  state.userId === inventory?.room?.pj_lokasi_id,
 // tambahkan di getters juga (opsional, kalau mau pakai di banyak tempat)
 // boleh baca / create harga
 canSeePrice: (state) =>
@@ -114,6 +136,7 @@ canUpdatePrice: (state) =>
 
     isPjThisItem: (state) => (pjId) =>
     state.userId === pjId,
+    
 
   actions: {
     // --- Aksi Autentikasi ---
@@ -131,7 +154,14 @@ async login(payload) {
     const userEmail = res.data.email;
     const userDivisi = res.data.divisi;
     const userRole = res.data.role;
-    const isPjMaintenance = res.data.isPjMaintenance || false;
+// Tambahkan langsung setelah baris ini:
+const isPjMaintenance = res.data.isPjMaintenance || false;
+
+// Tambahkan:
+const isRoomSupervisor = res.data.isRoomSupervisor || false;
+const assignedRooms = (res.data.assignedRooms || []).filter(Boolean);
+
+    
 
     // Step 2: Simpan ke state dan localStorage
     this.token = token;
@@ -142,6 +172,9 @@ async login(payload) {
     this.userRole = userRole;
     this.isLoggedIn = true;
     this.isPjMaintenance = isPjMaintenance;
+    this.isRoomSupervisor = isRoomSupervisor;
+this.assignedRooms = assignedRooms;
+
 
     localStorage.setItem('Authorization', token);
     localStorage.setItem('userId', userId);
@@ -150,15 +183,19 @@ async login(payload) {
     localStorage.setItem('userDivisi', userDivisi);
     localStorage.setItem('userRole', userRole);
     localStorage.setItem('isPjMaintenance', isPjMaintenance);
+    // Simpan ke localStorage
+localStorage.setItem('isRoomSupervisor', isRoomSupervisor);
+localStorage.setItem('assignedRooms', JSON.stringify(assignedRooms));
+    
 
     // Step 3: Atur Authorization header global
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
     // Kalau backend belum kasih info supervisor & assigned_rooms, bisa dilewatin
-    this.isRoomSupervisor = false;
-    this.assignedRooms = [];
-    localStorage.setItem('isRoomSupervisor', false);
-    localStorage.setItem('assignedRooms', JSON.stringify([]));
+    // this.isRoomSupervisor = false;
+    // this.assignedRooms = [];
+    // localStorage.setItem('isRoomSupervisor', false);
+    // localStorage.setItem('assignedRooms', JSON.stringify([]));
 
   } catch (error) {
     console.error('Login gagal:', error);
@@ -232,8 +269,11 @@ async initializeAuth() {
     this.userEmail = data.email;
     this.userDivisi = data.divisi;
     this.isPjMaintenance = data.isPjMaintenance || false;
+    // this.isRoomSupervisor = data.isRoomSupervisor || false;
+    // this.assignedRooms = data.assignedRooms || [];
+    // Tambahkan:
     this.isRoomSupervisor = data.isRoomSupervisor || false;
-    this.assignedRooms = data.assignedRooms || [];
+    this.assignedRooms = (data.assignedRooms || []).filter(Boolean);
     
   } catch (e) {
     console.error('Token invalid/expired - SKIP logout');
@@ -733,6 +773,23 @@ async setUserMaintenanceStatus(id, status = true) {
 
 
     // --- Aksi Data Inventaris ---
+    // di actions store
+resetInventoryTable() {
+  this.inventoryTable.params = {
+    page: 1,
+    per_page: 10,
+    search: '',
+    room_id: null,
+    unit_id: null,
+    floor_id: null,
+    status: null,
+    pj_id: null,
+    start_date: null,
+    end_date: null,
+    sort_by: 'id',
+    sort_dir: 'asc'
+  };
+},
     async fetchInventories(filters = {}) {
       this.inventoryLoading = true;
       this.inventoryError = null;
@@ -748,6 +805,38 @@ async setUserMaintenanceStatus(id, status = true) {
         this.inventoryLoading = false;
       }
     },
+// stores/counter.js
+async fetchInventoryTable(params = {}) {
+  this.inventoryTable.loading = true;
+  this.inventoryTable.params = { ...this.inventoryTable.params, ...params };
+
+  // --- mapping ke format DataTables ---
+  const dt = {
+    draw:      this.inventoryTable.params.page,     // bebas, backend cuma echo
+    start:     (this.inventoryTable.params.page - 1) * this.inventoryTable.params.per_page,
+    length:    this.inventoryTable.params.per_page,
+    search:    { value: this.inventoryTable.params.search || '' },
+    status:    this.inventoryTable.params.status,
+    room_id:   this.inventoryTable.params.room_id,
+    unit_id:   this.inventoryTable.params.unit_id,
+    floor_id:  this.inventoryTable.params.floor_id,
+    pj_id:     this.inventoryTable.params.pj_id,
+    start_date:this.inventoryTable.params.start_date,
+    end_date:  this.inventoryTable.params.end_date,
+    order:     [{ column: 0, dir: this.inventoryTable.params.sort_dir || 'asc' }]
+  };
+
+  try {
+    const { data } = await axios.get(`${API_BASE_URL}/inventories/table`, { params: dt });
+    this.inventoryTable.items    = data.data;           // array records
+    this.inventoryTable.totalRows = data.recordsFiltered;
+    this.grandTotal = data.grand_total ?? { purchase: 0, depreciation: 0 };
+  } catch (error) {
+    this.inventoryError = error.response?.data?.message || error.message;
+  } finally {
+    this.inventoryTable.loading = false;
+  }
+},
     async fetchInventoryDetail(id) {
         this.inventoryLoading = true;
         try {
@@ -824,13 +913,14 @@ async setUserMaintenanceStatus(id, status = true) {
 
     // --- Aksi Maintenance ---
     async fetchMaintenanceHistory(inventoryId = null, filters = {}) {
-      try {
-        let url = `${API_BASE_URL}/maintenance/history`;
-        if (inventoryId) {
-          url = `${API_BASE_URL}/inventories/${inventoryId}/maintenance`;
-        }
+        try {
+            let url = `${API_BASE_URL}/maintenance/active`; // ✅ ganti ke /active
+            if (inventoryId) {
+            url = `${API_BASE_URL}/inventories/${inventoryId}/maintenance`;
+            }
+
         const queryParams = new URLSearchParams(filters).toString();
-        const response = await axios.get(`${url}?${queryParams}`);
+        const response = await axios.get(`${url}?${queryParams}`)
         this.maintenanceHistory = response.data;
       } catch (error) {
         console.error('Failed to fetch maintenance history:', error);
@@ -894,7 +984,6 @@ async fetchMaintenanceDetail(id) {
         }
     },
 
-    // Tambah di store/counter.js
 async scheduleInventory(inventoryId, scheduleData) {
   try {
     const response = await axios.put(`${API_BASE_URL}/inventories/${inventoryId}/schedule`, scheduleData, {
@@ -930,6 +1019,55 @@ async fetchDoneMaintenanceByInventory(inventoryId) {
     throw err;
   }
 },
+
+// --- Barang yang butuh maintenance (belum di-assign) ---
+async fetchMaintenanceNeeded() {
+  try {
+    const { data } = await axios.get(`${API_BASE_URL}/maintenance/need`, this.authHeader);
+    return data; // pastikan backend return array
+  } catch (error) {
+    console.error('Gagal ambil daftar barang butuh maintenance:', error);
+    if (error.response?.status === 401) this.logout();
+    throw error;
+  }
+},
+
+// --- Assign maintenance ke user yang login ---
+async assignMaintenance(id, payload) {
+  try {
+    const response = await axios.patch(
+      `${API_BASE_URL}/maintenance/${id}/assign`,
+      payload,
+      this.authHeader
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Gagal assign maintenance:', error);
+    if (error.response?.status === 401) this.logout();
+    throw error;
+  }
+},
+
+async updateMaintenanceRecordJson(id, payload) {
+  return axios.put(
+    `${API_BASE_URL}/maintenance/${id}`,
+    payload,
+    { headers: { Authorization: localStorage.getItem('Authorization') } }
+  );
+},
+// resources/js/stores/counter.js
+async fetchDoneMaintenance() {
+  try {
+    const { data } = await axios.get(`${API_BASE_URL}/maintenance/done`, this.authHeader);
+    this.maintenanceHistory = data; // sekarang pasti berasal dari /done
+  } catch (e) {
+    console.error('Gagal ambil maintenance selesai:', e);
+    if (e.response?.status === 401) this.logout();
+    this.maintenanceHistory = []; // fallback
+  }
+},
+
+
 
 // async updateMaintenanceRecord(id, formData) {
 //   try {

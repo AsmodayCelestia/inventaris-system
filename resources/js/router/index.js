@@ -101,6 +101,13 @@ const routes = [
                         component: InventoryDetail,
                         props: true,
                         meta: { requiresAuth: true } // semua role login boleh akses
+                    },
+                    {
+                        path: '/inventories/scan/:id',
+                        name: 'inventory-detail-public',
+                        component: InventoryDetail,   // reuse komponen yang sama
+                        props: true,
+                        meta: { requiresAuth: false }  // tidak paksa login
                     }
                 ]
             },
@@ -122,7 +129,7 @@ const routes = [
                 path: 'maintenance/create',
                 name: 'MaintenanceCreate',
                 component: () => import('../components/maintenance/MaintenanceCreate.vue'),
-                meta: { requiresAuth: true, roles: ['admin', 'head', 'karyawan'] }
+                meta: { requiresAuth: true }
             },
             {
                 path: 'maintenance/done',
@@ -154,6 +161,13 @@ const routes = [
                 component: () => import('../components/maintenance/EditMaintenance.vue'),
                 props: true,
                 meta: { requiresAuth: true }
+            },
+            // di bawah route 'maintenance/edit/:id' (atau sesukamu)
+            {
+                path: 'maintenance/needed',
+                name: 'MaintenanceNeeded',
+                component: () => import('../components/maintenance/MaintenanceNeeded.vue'),
+                meta: { requiresAuth: true }   // semua role boleh
             },
             {
                 path: 'master-data/brands',
@@ -371,6 +385,7 @@ router.beforeEach(async (to, from, next) => {
       return next({ name: 'Dashboard' });
     }
   }
+
   return next();
 });
 

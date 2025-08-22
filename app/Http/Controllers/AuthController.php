@@ -65,7 +65,13 @@ public function login(Request $request)
             'email'           => $user->email,
             'divisi'          => $user->division->name,
             'role'            => $user->role,
-            'isPjMaintenance' => $isPjMaintenance,
+            'isPjMaintenance' => \App\Models\InventoryMaintenance::where('user_id', $user->id)->exists(),
+            'isRoomSupervisor'=> $user->is_room_supervisor ?? false,
+'assignedRooms' => $user->responsibleRooms
+                    ->pluck('name')   // atau 'id'
+                    ->filter()        // ← hilangkan null
+                    ->values()
+                    ->toArray(),
         ]);
     } catch (ValidationException $e) {
         return response()->json([

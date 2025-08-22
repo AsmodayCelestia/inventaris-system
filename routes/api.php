@@ -24,7 +24,7 @@ use App\Http\Controllers\DivisionController;
 
 // PUBLIC
 Route::post('/login', [AuthController::class, 'login']);
-Route::get('/inventories/scan/{inventoryNumber}', [InventoryController::class, 'showForScan']);
+Route::get('/inventories/scan/{id}', [InventoryController::class, 'showForScan']);
 
 // AUTHENTICATED
 Route::middleware('auth:sanctum')->group(function () {
@@ -40,16 +40,23 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('floors',         FloorController::class)->only(['index','show']);
     Route::apiResource('rooms',          RoomController::class)->only(['index','show']);
     Route::apiResource('inventory-items',InventoryItemController::class)->only(['index','show']);
+    Route::get('/inventories/table', [InventoryController::class, 'table']);
     Route::apiResource('inventories',    InventoryController::class)->only(['index','show']);
     Route::apiResource('divisions', DivisionController::class)->only(['index','show']);
 
+    /* ---------- FLOW BARU ---------- */
+    Route::get('/maintenance/active', [MaintenanceController::class,'active']); // ✅ tambahkan ini
+Route::get('/maintenance/need', [MaintenanceController::class, 'need']);
+Route::patch('/maintenance/{id}/assign', [MaintenanceController::class, 'assign']);
+Route::patch('/maintenance/{id}/status', [MaintenanceController::class, 'updateStatus']);
+    
     Route::get('/inventories/qr/{inventoryNumber}', [InventoryController::class,'showByQrCode']);
     Route::get('/maintenance/history', [MaintenanceController::class,'index']);
+    Route::get('/maintenance/done', [MaintenanceController::class, 'done']);
     Route::get('/inventories/{inventory}/maintenance-done',[MaintenanceController::class, 'historyDone']);
     Route::post('/inventories/{inventoryId}/maintenance', [MaintenanceController::class,'store']);
     Route::get('/maintenance/{id}', [MaintenanceController::class,'show']);
     Route::put('/maintenance/{id}', [MaintenanceController::class,'update']);
-
 
     // Route::post('/maintenance/{id}', [MaintenanceController::class,'update']);
 

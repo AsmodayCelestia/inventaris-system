@@ -133,7 +133,7 @@ await axios.post(`/inventory-items/${itemId}/inventories`,    formData, {
     });
 
     alert('Inventaris berhasil ditambahkan!');
-    router.push(`/master-data/barang/${itemId}/edit`);
+    router.push({ name: 'InventoryUnitList' });
   } catch (err) {
     console.error(err);
     alert('Gagal menambahkan inventaris.');

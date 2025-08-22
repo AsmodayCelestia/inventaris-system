@@ -5,7 +5,7 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Edit Laporan Maintenance</h1>
+            <h1 class="m-0">{{ pageTitle }}</h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
@@ -15,7 +15,7 @@
               <li class="breadcrumb-item">
                 <router-link to="/maintenance/list">Maintenance</router-link>
               </li>
-              <li class="breadcrumb-item active">Edit</li>
+              <li class="breadcrumb-item active">{{ pageTitle }}</li>
             </ol>
           </div>
         </div>
@@ -25,188 +25,162 @@
     <!-- Content -->
     <div class="content">
       <div class="container-fluid">
-        <div class="card">
-          <div class="card-header">
-            <h3 class="card-title">Form Pelaporan Maintenance</h3>
+        <!-- 403 -->
+        <div v-if="context === 'forbidden'" class="card card-danger">
+          <div class="card-header">Akses Ditolak</div>
+          <div class="card-body">
+            Kamu tidak memiliki hak untuk mengubah maintenance ini.
           </div>
+        </div>
 
+        <!-- Self-assign -->
+        <div v-else-if="context === 'umum-selfassign'" class="card">
+          <div class="card-header">Ambil Tugas</div>
+          <div class="card-body">
+            <p>Kamu akan menjadi PJ untuk maintenance ini.</p>
+            <button class="btn btn-success" @click="selfAssign" :disabled="loading">
+              {{ loading ? "Menyimpan..." : "Ambil Tugas" }}
+            </button>
+          </div>
+        </div>
+
+        <!-- Mini-cancel (on_progress) -->
+        <div v-else-if="context === 'mini-cancel'" class="card">
+          <div class="card-header">Batalkan Laporan</div>
+          <form @submit.prevent="submitMiniCancel">
+            <div class="card-body">
+              <div class="form-group">
+                <label>Masalah yang Ditemukan</label>
+                <textarea v-model="form.issue_found" class="form-control" rows="3" :disabled="!canEditIssue"></textarea>
+              </div>
+              <div class="form-group">
+                <label>Catatan</label>
+                <textarea v-model="form.notes" class="form-control" rows="2" :disabled="!canEditNotes"></textarea>
+              </div>
+            </div>
+            <div class="card-footer">
+              <button type="submit" class="btn btn-warning" :disabled="loading">
+                Batalkan Maintenance
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Pengawas mark done (handled) -->
+        <div v-else-if="context === 'pengawas-mark-done'" class="card">
+          <div class="card-header">Tandai Selesai</div>
+          <form @submit.prevent="submitPengawasDone">
+<!-- Ringkasan maintenance -->
+<div class="card-body bg-light">
+  <h5>Ringkasan Maintenance</h5>
+  <table class="table table-borderless mb-0">
+    <tr><td style="width: 160px"><b>Barang</b></td><td>{{ maintenance.inventory?.item?.name || '-' }}</td></tr>
+    <tr><td><b>Nomor</b></td><td>{{ maintenance.inventory?.inventory_number || '-' }}</td></tr>
+    <tr><td><b>Ruang</b></td><td>{{ maintenance.inventory?.room?.name ?? '-' }}</td></tr>
+    <tr><td><b>Merk</b></td><td>{{ maintenance.inventory?.item?.manufacturer ?? '-' }}</td></tr>
+    <tr><td><b>Tanggal</b></td><td>{{ formatDate(maintenance.inspection_date) }}</td></tr>
+    <tr><td><b>PJ</b></td><td>{{ maintenance.responsible_person?.name ?? '-' }}</td></tr>
+    <tr><td><b>Dibuat oleh</b></td><td>{{ maintenance.creator?.name ?? '-' }}</td></tr>
+    <tr><td><b>Biaya estimasi</b></td><td>Rp {{ maintenance.cost ? Number(maintenance.cost).toLocaleString('id-ID') : '-' }}</td></tr>
+    <tr><td><b>Masalah</b></td><td class="text-muted">{{ maintenance.issue_found ?? '-' }}</td></tr>
+
+<tr v-if="photoList.length">
+  <td><b>Foto</b></td>
+  <td>
+    <div class="d-flex gap-2">
+      <img
+        v-for="(url, idx) in photoList"
+        :key="idx"
+        :src="url"
+        class="img-thumbnail"
+        style="width: 120px; height: 90px; object-fit: cover;"
+      />
+    </div>
+  </td>
+</tr>
+  </table>
+</div>
+            <div class="card-footer">
+              <button type="submit" class="btn btn-success" :disabled="loading">
+                Tandai Selesai
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Full / Umum-Update form -->
+        <div v-else-if="context === 'full' || context === 'umum-update'" class="card">
+          <div class="card-header">{{ context === "full" ? "Edit Laporan" : "Update Progress" }}</div>
           <form @submit.prevent="submitForm" enctype="multipart/form-data">
             <div class="card-body">
-              <div v-if="loading" class="text-center p-4">
-                <i class="fas fa-spinner fa-spin fa-2x"></i>
-                <p class="mt-2">Memuat data...</p>
-              </div>
-              <div v-else-if="fetchError" class="alert alert-danger m-3">
-                {{ fetchError }}
-              </div>
-
               <!-- Tanggal -->
               <div class="form-group">
                 <label>Tanggal Pemeriksaan</label>
-                <input
-                  type="date"
-                  v-model="form.inspection_date"
-                  class="form-control"
-                  required
-                />
-                <small v-if="errors.inspection_date" class="text-danger">
-                  {{ errors.inspection_date[0] }}
-                </small>
+                <input type="date" v-model="form.inspection_date" class="form-control" :disabled="!canEditDate" required />
+                <small v-if="errors.inspection_date" class="text-danger">{{ errors.inspection_date[0] }}</small>
               </div>
 
               <!-- Masalah -->
               <div class="form-group">
                 <label>Masalah yang Ditemukan</label>
-                <textarea
-                  v-model="form.issue_found"
-                  class="form-control"
-                  rows="3"
-                  placeholder="Deskripsikan masalah..."
-                ></textarea>
-                <small v-if="errors.issue_found" class="text-danger">
-                  {{ errors.issue_found[0] }}
-                </small>
+                <textarea v-model="form.issue_found" class="form-control" rows="3" :disabled="!canEditIssue" placeholder="Deskripsikan masalah..."></textarea>
+                <small v-if="errors.issue_found" class="text-danger">{{ errors.issue_found[0] }}</small>
               </div>
 
               <!-- Solusi -->
               <div class="form-group">
                 <label>Tindakan Perbaikan</label>
-                <textarea
-                  v-model="form.solution_taken"
-                  class="form-control"
-                  rows="3"
-                  placeholder="Langkah yang dilakukan..."
-                ></textarea>
-                <small v-if="errors.solution_taken" class="text-danger">
-                  {{ errors.solution_taken[0] }}
-                </small>
+                <textarea v-model="form.solution_taken" class="form-control" rows="3" :disabled="!canEditSolution" placeholder="Langkah yang dilakukan..."></textarea>
+                <small v-if="errors.solution_taken" class="text-danger">{{ errors.solution_taken[0] }}</small>
               </div>
 
               <!-- Catatan -->
               <div class="form-group">
                 <label>Catatan Tambahan</label>
-                <textarea
-                  v-model="form.notes"
-                  class="form-control"
-                  rows="2"
-                  placeholder="Catatan opsional..."
-                ></textarea>
-                <small v-if="errors.notes" class="text-danger">
-                  {{ errors.notes[0] }}
-                </small>
+                <textarea v-model="form.notes" class="form-control" rows="2" :disabled="!canEditNotes" placeholder="Catatan opsional..."></textarea>
+                <small v-if="errors.notes" class="text-danger">{{ errors.notes[0] }}</small>
               </div>
 
               <!-- Status -->
               <div class="form-group">
                 <label>Status</label>
-                <select v-model="form.status" class="form-control" required>
-                  <option value="planning">Direncanakan</option>
-                  <option value="done">Selesai</option>
+                <select v-model="form.status" class="form-control" :disabled="!canEditStatus" required>
+                  <option v-for="s in allowedStatus" :key="s" :value="s">{{ statusLabel[s] }}</option>
                 </select>
-                <small v-if="errors.status" class="text-danger">
-                  {{ errors.status[0] }}
-                </small>
+                <small v-if="errors.status" class="text-danger">{{ errors.status[0] }}</small>
               </div>
 
-              <!-- Foto 1 -->
+              <!-- Biaya -->
               <div class="form-group">
-                <label>Foto 1</label>
+                <label>Biaya (Rp)</label>
+                <input type="number" class="form-control" v-model.number="form.cost" min="0" :disabled="!canEditCost" />
+                <small v-if="errors.cost" class="text-danger">{{ errors.cost[0] }}</small>
+              </div>
+
+              <!-- Foto -->
+              <div v-for="i in [1,2,3]" :key="i" class="form-group">
+                <label>Foto {{ i }}</label>
                 <div class="custom-file">
-                  <input
-                    type="file"
-                    class="custom-file-input"
-                    accept="image/*"
-                    @change="e => handlePhoto(e, 'photo_1')"
-                  />
-                  <label class="custom-file-label">
-                    {{ imageName1 || "Pilih gambar..." }}
-                  </label>
+                  <input type="file" class="custom-file-input" accept="image/*" :disabled="!canEditPhotos" @change="e => handlePhoto(e, `photo_${i}`)" />
+                  <label class="custom-file-label">{{ imageName[i-1] || "Pilih gambar..." }}</label>
                 </div>
-                <div class="mt-2" v-if="preview1 || existingPhoto1">
-                  <img
-                    :src="preview1 || existingPhoto1"
-                    alt="Preview"
-                    class="img-thumbnail"
-                    style="max-width: 200px"
-                  />
-                  <div
-                    class="form-check mt-2"
-                    v-if="existingPhoto1 && !preview1"
-                  >
-                    <input
-                      type="checkbox"
-                      class="form-check-input"
-                      v-model="removePhoto1"
-                    />
+                <div class="mt-2" v-if="preview[i-1] || existingPhoto[i-1]">
+                  <img :src="preview[i-1] || existingPhoto[i-1]" class="img-thumbnail" style="max-width: 200px" />
+                  <div class="form-check mt-2" v-if="existingPhoto[i-1] && !preview[i-1]">
+                    <input type="checkbox" class="form-check-input" v-model="remove[i-1]" :disabled="!canEditPhotos" />
                     <label class="form-check-label">Hapus gambar yang ada</label>
                   </div>
                 </div>
-                <small v-if="errors.photo_1" class="text-danger">
-                  {{ errors.photo_1[0] }}
-                </small>
+                <small v-if="errors[`photo_${i}`]" class="text-danger">{{ errors[`photo_${i}`][0] }}</small>
               </div>
 
-            <!-- Foto 2 -->
-            <div class="form-group">
-              <label>Foto 2</label>
-              <div class="custom-file">
-                <input
-                  type="file"
-                  class="custom-file-input"
-                  accept="image/*"
-                  @change="e => handlePhoto(e, 'photo_2')"
-                />
-                <label class="custom-file-label">
-                  {{ imageName2 || "Pilih gambar..." }}
-                </label>
-              </div>
-              <div class="mt-2" v-if="preview2 || existingPhoto2">
-                <img
-                  :src="preview2 || existingPhoto2"
-                  alt="Preview"
-                  class="img-thumbnail"
-                  style="max-width: 200px"
-                />
-                <div class="form-check mt-2" v-if="existingPhoto2 && !preview2">
-                  <input
-                    type="checkbox"
-                    class="form-check-input"
-                    v-model="removePhoto2"
-                  />
-                  <label class="form-check-label">Hapus gambar yang ada</label>
-                </div>
-              </div>
-            </div>
-
-            <!-- Foto 3 -->
-            <div class="form-group">
-              <label>Foto 3</label>
-              <div class="custom-file">
-                <input
-                  type="file"
-                  class="custom-file-input"
-                  accept="image/*"
-                  @change="e => handlePhoto(e, 'photo_3')"
-                />
-                <label class="custom-file-label">
-                  {{ imageName3 || "Pilih gambar..." }}
-                </label>
-              </div>
-              <div class="mt-2" v-if="preview3 || existingPhoto3">
-                <img
-                  :src="preview3 || existingPhoto3"
-                  alt="Preview"
-                  class="img-thumbnail"
-                  style="max-width: 200px"
-                />
-                <div class="form-check mt-2" v-if="existingPhoto3 && !preview3">
-                  <input
-                    type="checkbox"
-                    class="form-check-input"
-                    v-model="removePhoto3"
-                  />
-                  <label class="form-check-label">Hapus gambar yang ada</label>
-                </div>
+              <!-- PJ (admin/head only) -->
+              <div v-if="context === 'full'" class="form-group">
+                <label>Penanggung Jawab</label>
+                <select v-model="form.user_id" class="form-control" :disabled="!canEditUser">
+                  <option :value="null">-- Tidak ada --</option>
+                  <option v-for="u in users" :key="u.id" :value="u.id">{{ u.name }}</option>
+                </select>
               </div>
             </div>
 
@@ -214,11 +188,8 @@
               <button type="submit" class="btn btn-primary" :disabled="loading">
                 {{ loading ? "Menyimpan..." : "Simpan Perubahan" }}
               </button>
-              <router-link to="/maintenance/list" class="btn btn-secondary ml-2">
-                Batal
-              </router-link>
+              <router-link to="/maintenance/list" class="btn btn-secondary ml-2">Batal</router-link>
             </div>
-          </div>
           </form>
         </div>
       </div>
@@ -227,7 +198,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useCounterStore } from "@/stores/counter";
 
@@ -235,127 +206,236 @@ const route   = useRoute();
 const router  = useRouter();
 const counter = useCounterStore();
 
+/* -------------------------------------------------
+   Reactives
+-------------------------------------------------- */
 const loading    = ref(false);
 const fetchError = ref(null);
 const errors     = ref({});
+const maintenance = ref(null);
+const users       = ref([]);
 
 const form = ref({
   inspection_date: "",
   issue_found: "",
   solution_taken: "",
   notes: "",
-  status: "done",
+  status: "",
+  cost: null,
+  user_id: null,
 });
 
-// foto & preview
-const preview1 = ref(null);
-const preview2 = ref(null);
-const preview3 = ref(null);
-const existingPhoto1 = ref("");
-const existingPhoto2 = ref("");
-const existingPhoto3 = ref("");
-const imageName1 = ref("");
-const imageName2 = ref("");
-const imageName3 = ref("");
-const removePhoto1 = ref(false);
-const removePhoto2 = ref(false);
-const removePhoto3 = ref(false);
+const preview       = ref([null, null, null]);
+const existingPhoto = ref(["", "", ""]);
+const imageName     = ref(["", "", ""]);
+const remove        = ref([false, false, false]);
+
+const statusOptions = ["reported","on_progress","handled","done","cancelled"];
+const statusLabel = {
+  reported   : "Dilaporkan",
+  on_progress: "Dalam Proses",
+  handled    : "Ditangani",
+  done       : "Selesai",
+  cancelled  : "Dibatalkan",
+};
 
 /* -------------------------------------------------
-   Handle photo
+   Context
+-------------------------------------------------- */
+const isCreator = computed(() => maintenance.value?.creator_id === counter.userId);
+
+const photoList = computed(() =>
+  [maintenance.value?.photo_1, maintenance.value?.photo_2, maintenance.value?.photo_3].filter(Boolean)
+);
+
+const context = computed(() => {
+  const user   = counter.userRole;
+  const divisi = counter.userDivisi;
+  const status = maintenance.value?.status;
+
+  if (["admin","head"].includes(user)) return "full";
+
+  if (user === "karyawan" && divisi === "Umum") {
+    if (status === "reported") return "umum-selfassign";
+    if (status === "on_progress") return "umum-update";
+  }
+
+  if (status === "on_progress" && (counter.isRoomSupervisor || isCreator.value))
+    return "mini-cancel";
+
+  if (status === "handled" && counter.isRoomSupervisor)
+    return "pengawas-mark-done";
+
+  return "forbidden";
+});
+
+/* -------------------------------------------------
+   Field-level disable maps
+-------------------------------------------------- */
+const canEditDate     = computed(() => ["full"].includes(context.value));
+const canEditIssue    = computed(() => ["full","umum-update","mini-cancel","pengawas-mark-done"].includes(context.value));
+const canEditSolution = computed(() => ["full","umum-update"].includes(context.value));
+const canEditNotes    = computed(() => ["full","umum-update","mini-cancel","pengawas-mark-done"].includes(context.value));
+const canEditStatus   = computed(() => ["full","umum-update","mini-cancel","pengawas-mark-done"].includes(context.value));
+const canEditCost     = computed(() => ["full","umum-update"].includes(context.value));
+const canEditPhotos   = computed(() => ["full","umum-update"].includes(context.value));
+const canEditUser     = computed(() => context.value === "full");
+
+/* -------------------------------------------------
+   Allowed status list
+-------------------------------------------------- */
+const allowedStatus = computed(() => {
+  switch (context.value) {
+    case "umum-update":  return ["handled","cancelled"];
+    case "mini-cancel":  return ["cancelled"];
+    case "pengawas-mark-done": return ["done"];
+    default:             return statusOptions;
+  }
+});
+
+const pageTitle = computed(() => {
+  switch (context.value) {
+    case "umum-selfassign": return "Ambil Tugas";
+    case "mini-cancel":     return "Batalkan Laporan";
+    case "pengawas-mark-done": return "Tandai Selesai";
+    case "full":            return "Edit Laporan";
+    case "umum-update":     return "Update Progress";
+    default:                return "Maintenance";
+  }
+});
+
+/* -------------------------------------------------
+   Helpers
 -------------------------------------------------- */
 function handlePhoto(e, key) {
+  const idx = +key.split("_")[1] - 1;
   const file = e.target.files[0];
-  let previewRef, nameRef, removeRef;
-  switch (key) {
-    case "photo_1":
-      previewRef = preview1; nameRef = imageName1; removeRef = removePhoto1;
-      break;
-    case "photo_2":
-      previewRef = preview2; nameRef = imageName2; removeRef = removePhoto2;
-      break;
-    case "photo_3":
-      previewRef = preview3; nameRef = imageName3; removeRef = removePhoto3;
-      break;
-  }
   if (!file) {
     form.value[key] = null;
-    previewRef.value = null;
-    nameRef.value = "";
-    removeRef.value = false;
+    preview.value[idx] = null;
+    imageName.value[idx] = "";
+    remove.value[idx] = false;
     return;
   }
   form.value[key] = file;
-  previewRef.value = URL.createObjectURL(file);
-  nameRef.value = file.name;
-  removeRef.value = false;
+  preview.value[idx] = URL.createObjectURL(file);
+  imageName.value[idx] = file.name;
+  remove.value[idx] = false;
 }
 
+
 /* -------------------------------------------------
-   Load record on mount
+   Helpers
+-------------------------------------------------- */
+function formatDate(date) {
+  return date
+    ? new Date(date).toLocaleDateString('id-ID', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      })
+    : '-';
+}
+/* -------------------------------------------------
+   Mount
 -------------------------------------------------- */
 onMounted(async () => {
   const id = route.params.id;
   loading.value = true;
   try {
-    const rec = await counter.fetchMaintenanceDetail(id);
-
-    // ──👉  format tanggal jadi yyyy-mm-dd  ──
-    const isoDate = rec.inspection_date
-      ? new Date(rec.inspection_date).toISOString().slice(0, 10)
-      : '';
-
+    maintenance.value = await counter.fetchMaintenanceDetail(id);
+    const isoDate = maintenance.value.inspection_date
+      ? new Date(maintenance.value.inspection_date).toISOString().slice(0, 10)
+      : "";
     form.value = {
       inspection_date: isoDate,
-      issue_found: rec.issue_found || '',
-      solution_taken: rec.solution_taken || '',
-      notes: rec.notes || '',
-      status: rec.status,
+      issue_found: maintenance.value.issue_found || "",
+      solution_taken: maintenance.value.solution_taken || "",
+      notes: maintenance.value.notes || "",
+      status: maintenance.value.status,
+      cost: maintenance.value.cost ?? null,
+      user_id: maintenance.value.user_id ?? null,
     };
-
-    existingPhoto1.value = rec.photo_1 || '';
-    existingPhoto2.value = rec.photo_2 || '';
-    existingPhoto3.value = rec.photo_3 || '';
+    existingPhoto.value = [maintenance.value.photo_1||"", maintenance.value.photo_2||"", maintenance.value.photo_3||""];
+    if (context.value === "full") users.value = await counter.fetchUsersList?.() ?? [];
   } catch (e) {
-    fetchError.value = e.message || 'Gagal memuat data';
-    router.push('/maintenance/list');
+    fetchError.value = e.message || "Gagal memuat data";
+    router.push("/maintenance/list");
   } finally {
     loading.value = false;
   }
 });
 
 /* -------------------------------------------------
-   Submit form
+   Submit handlers
 -------------------------------------------------- */
+async function selfAssign() {
+  loading.value = true;
+  try {
+    await counter.assignMaintenance(route.params.id, { user_id: counter.userId });
+    alert("Tugas diambil!");
+    router.push("/maintenance/list");
+  } catch (e) {
+    alert("Gagal: " + (e.response?.data?.message || e.message));
+  } finally {
+    loading.value = false;
+  }
+}
+
 async function submitForm() {
   loading.value = true;
   errors.value = {};
-
   const fd = new FormData();
-  fd.append("inspection_date", form.value.inspection_date);
-  fd.append("status", form.value.status);
-  fd.append("issue_found", form.value.issue_found || "");
-  fd.append("solution_taken", form.value.solution_taken || "");
-  fd.append("notes", form.value.notes || "");
-
-  fd.append("remove_photo_1", removePhoto1.value ? "1" : "0");
-  fd.append("remove_photo_2", removePhoto2.value ? "1" : "0");
-  fd.append("remove_photo_3", removePhoto3.value ? "1" : "0");
-
-  ["photo_1", "photo_2", "photo_3"].forEach(k => {
-    if (form.value[k]) fd.append(k, form.value[k]);
+  const allowed = new Set(["inspection_date","issue_found","solution_taken","notes","status","cost","user_id","photo_1","photo_2","photo_3"]);
+  Object.keys(form.value).forEach(k => {
+    if (allowed.has(k) && form.value[k] != null) fd.append(k, form.value[k]);
   });
-
+  ["photo_1","photo_2","photo_3"].forEach((k,i)=>{
+    fd.append(`remove_${k}`, remove.value[i] ? "1" : "0");
+    if (preview.value[i] && form.value[k]) fd.append(k, form.value[k]);
+  });
   try {
     await counter.updateMaintenanceRecord(route.params.id, fd);
-    alert("Data berhasil diperbarui");
+    alert("Berhasil disimpan!");
     router.push("/maintenance/list");
   } catch (e) {
-    if (e.response?.status === 422) {
-      errors.value = e.response.data.errors;
-    } else {
-      alert("Gagal menyimpan: " + (e.response?.data?.message || e.message));
-    }
+    if (e.response?.status === 422) errors.value = e.response.data.errors;
+    else alert("Gagal: " + (e.response?.data?.message || e.message));
+  } finally {
+    loading.value = false;
+  }
+}
+
+async function submitMiniCancel() {
+  loading.value = true;
+  try {
+    await counter.updateMaintenanceRecord(route.params.id, {
+      _method: "PUT",
+      issue_found: form.value.issue_found,
+      notes: form.value.notes,
+      status: "cancelled",
+    });
+    alert("Maintenance dibatalkan.");
+    router.push("/maintenance/list");
+  } catch (e) {
+    alert("Gagal: " + (e.response?.data?.message || e.message));
+  } finally {
+    loading.value = false;
+  }
+}
+
+async function submitPengawasDone() {
+  loading.value = true;
+  try {
+    await counter.updateMaintenanceRecordJson(route.params.id, {
+      issue_found: form.value.issue_found,
+      notes: form.value.notes,
+      status: "done",
+    });
+    alert("Ditandai selesai!");
+    router.push("/maintenance/list");
+  } catch (e) {
+    alert("Gagal: " + (e.response?.data?.message || e.message));
   } finally {
     loading.value = false;
   }

@@ -4,18 +4,7 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Tambah Jadwal Maintenance</h1>
-          </div>
-          <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item">
-                <router-link to="/dashboard">Home</router-link>
-              </li>
-              <li class="breadcrumb-item">
-                <router-link to="/maintenance/planning">Planning</router-link>
-              </li>
-              <li class="breadcrumb-item active">Tambah</li>
-            </ol>
+            <h1 class="m-0">{{ pageTitle }}</h1>
           </div>
         </div>
       </div>
@@ -25,22 +14,32 @@
       <div class="container-fluid">
         <div class="card">
           <div class="card-header">
-            <h3 class="card-title">Form Tambah Jadwal Maintenance</h3>
+            <h3 class="card-title">{{ pageTitle }}</h3>
           </div>
 
           <form @submit.prevent="submitForm">
             <div class="card-body">
-              <div class="form-group">
-                <label for="inventory_id">Pilih Inventaris</label>
-                <select v-model="form.inventory_id" class="form-control" required>
-                  <option value="">-- Pilih Inventaris --</option>
-                  <option v-for="item in inventoryItems" :key="item.id" :value="item.id">
-                    {{ item.name }} - {{ item.inventory_number }}
-                  </option>
+              <!-- SELECT MODE (hanya admin/head) -->
+              <div v-if="isAdminOrHead" class="form-group">
+                <label>Jenis Form</label>
+                <select v-model="mode" class="form-control">
+                  <option value="laporan">Laporkan Kerusakan</option>
+                  <option value="planning">Buat Jadwal Maintenance</option>
                 </select>
               </div>
 
+              <!-- INVENTARIS -->
               <div class="form-group">
+                <label for="inventory_id">Inventaris</label>
+                <select v-model="form.inventory_id" class="form-control" required>
+<option v-for="item in inventoryItems" :key="item.id" :value="item.id">
+  {{ item.item?.name || '-' }} - {{ item.inventory_number }}
+</option>
+                </select>
+              </div>
+
+              <!-- PJ (hanya planning & admin/head) -->
+              <div class="form-group" v-if="mode === 'planning'">
                 <label for="pj_id">Penanggung Jawab (PJ)</label>
                 <select v-model="form.pj_id" class="form-control" required>
                   <option value="">-- Pilih PJ --</option>
@@ -50,67 +49,66 @@
                 </select>
               </div>
 
+              <!-- TANGGAL LAPORAN / INSPEKSI -->
               <div class="form-group">
-                <label for="maintenance_frequency_type">Frekuensi Maintenance</label>
-                <select v-model="form.maintenance_frequency_type" class="form-control" required>
-                  <option value="">-- Pilih Tipe --</option>
-                  <option value="bulan">Bulan</option>
-                  <option value="minggu">Minggu</option>
-                  <option value="semester">Semester</option>
-                  <option value="km">KM</option>
-                </select>
+                <label for="inspection_date">Tanggal</label>
+                <input type="date" v-model="form.inspection_date" class="form-control" required />
               </div>
 
+              <!-- FIELD PLANNING (hanya planning) -->
+              <template v-if="mode === 'planning'">
+                <div class="form-group">
+                  <label for="maintenance_frequency_type">Frekuensi</label>
+                  <select v-model="form.maintenance_frequency_type" class="form-control">
+                    <option value="">-- Pilih --</option>
+                    <option value="bulan">Bulan</option>
+                    <option value="minggu">Minggu</option>
+                    <option value="semester">Semester</option>
+                    <option value="km">KM</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="maintenance_frequency_value">Nilai Frekuensi</label>
+                  <input type="number" v-model="form.maintenance_frequency_value" class="form-control" />
+                </div>
+
+                <div class="form-group" v-if="form.maintenance_frequency_type !== 'km'">
+                  <label for="next_due_date">Jatuh Tempo Berikutnya</label>
+                  <input type="date" v-model="form.next_due_date" class="form-control" />
+                </div>
+
+                <div class="form-group" v-if="form.maintenance_frequency_type === 'km'">
+                  <label for="next_due_km">Jatuh Tempo (KM)</label>
+                  <input type="number" v-model="form.next_due_km" class="form-control" />
+                </div>
+
+                <div class="form-group">
+                  <label for="last_odometer_reading">Odometer Terakhir</label>
+                  <input type="number" v-model="form.last_odometer_reading" class="form-control" />
+                </div>
+              </template>
+
+              <!-- DESKRIPSI -->
               <div class="form-group">
-                <label for="maintenance_frequency_value">Nilai Frekuensi</label>
-                <input type="number" v-model="form.maintenance_frequency_value" class="form-control" required />
-              </div>
-
-              <div class="form-group">
-                <label for="last_maintenance_at">Tanggal Maintenance</label>
-                <input type="date" v-model="form.last_maintenance_at" class="form-control" required />
-              </div>
-
-              <div class="form-group" v-if="form.maintenance_frequency_type !== 'km'">
-                <label for="next_due_date">Jatuh Tempo Berikutnya (Tanggal)</label>
-                <input type="date" v-model="form.next_due_date" class="form-control" />
-              </div>
-
-              <div class="form-group" v-if="form.maintenance_frequency_type === 'km'">
-                <label for="next_due_km">Jatuh Tempo Berikutnya (KM)</label>
-                <input type="number" v-model="form.next_due_km" class="form-control" />
-              </div>
-
-              <div class="form-group">
-                <label for="last_odometer_reading">Odometer Terakhir</label>
-                <input type="number" v-model="form.last_odometer_reading" class="form-control" />
-              </div>
-
-              <div class="form-group">
-                <label for="issue_found">Permasalahan (opsional)</label>
+                <label for="issue_found">Permasalahan</label>
                 <textarea v-model="form.issue_found" class="form-control" rows="3"></textarea>
               </div>
 
               <div class="form-group">
-                <label for="solution_taken">Solusi / Langkah yang Dilakukan (opsional)</label>
+                <label for="solution_taken">Solusi / Langkah</label>
                 <textarea v-model="form.solution_taken" class="form-control" rows="3"></textarea>
               </div>
 
               <div class="form-group">
-                <label for="notes">Catatan Tambahan (opsional)</label>
+                <label for="notes">Catatan Tambahan</label>
                 <textarea v-model="form.notes" class="form-control" rows="2"></textarea>
               </div>
-            </div>
 
-            <div class="form-group">
-              <label for="cost">Estimasi Biaya (Rp)</label>
-              <input
-                type="number"
-                v-model.number="form.cost"
-                class="form-control"
-                placeholder="0"
-                min="0"
-              />
+              <div class="form-group">
+                <label for="cost">Estimasi Biaya (Rp)</label>
+                <input type="number" v-model.number="form.cost" class="form-control" min="0" />
+              </div>
             </div>
 
             <div class="card-footer">
@@ -127,104 +125,125 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useCounterStore } from '@/stores/counter';
 import dayjs from 'dayjs';
+import { useRoute } from 'vue-router'
+const route = useRoute()
+
 
 const router = useRouter();
 const counterStore = useCounterStore();
 
+const mode = ref('laporan');            // default laporan
 const inventoryItems = ref([]);
 const users = ref([]);
 const isSubmitting = ref(false);
 
+const isAdminOrHead = computed(() => counterStore.isAdmin || counterStore.isHead);
+const pageTitle = computed(() =>
+  isAdminOrHead.value
+    ? mode.value === 'planning'
+      ? 'Buat Jadwal Maintenance'
+      : 'Laporkan Kerusakan'
+    : 'Laporkan Kerusakan'
+);
+
 const form = ref({
   inventory_id: '',
   pj_id: '',
+  inspection_date: '',
   maintenance_frequency_type: '',
   maintenance_frequency_value: '',
-  last_maintenance_at: '',
   next_due_date: '',
   next_due_km: '',
   last_odometer_reading: '',
   issue_found: '',
-  notes: '',
   solution_taken: '',
-  cost: null,       
+  notes: '',
+  cost: null,
 });
 
-// Auto-calculate next due date
+/* auto next due date (planning only) */
+import { watch } from 'vue';
 watch(
-  () => [form.value.maintenance_frequency_type, form.value.maintenance_frequency_value, form.value.last_maintenance_at],
+  () => [form.value.maintenance_frequency_type, form.value.maintenance_frequency_value, form.value.inspection_date],
   () => {
-    const { maintenance_frequency_type, maintenance_frequency_value, last_maintenance_at } = form.value;
-    if (!maintenance_frequency_type || !maintenance_frequency_value || !last_maintenance_at) return;
-
-    const last = dayjs(last_maintenance_at);
-    let next = '';
-    if (maintenance_frequency_type === 'bulan') {
-      next = last.add(maintenance_frequency_value, 'month');
-    } else if (maintenance_frequency_type === 'minggu') {
-      next = last.add(maintenance_frequency_value, 'week');
-    } else if (maintenance_frequency_type === 'semester') {
-      next = last.add(maintenance_frequency_value * 6, 'month');
-    }
+    if (mode.value !== 'planning') return;
+    const { maintenance_frequency_type, maintenance_frequency_value, inspection_date } = form.value;
+    if (!maintenance_frequency_type || !maintenance_frequency_value || !inspection_date) return;
+    const last = dayjs(inspection_date);
+    let next;
+    if (maintenance_frequency_type === 'bulan') next = last.add(maintenance_frequency_value, 'month');
+    else if (maintenance_frequency_type === 'minggu') next = last.add(maintenance_frequency_value, 'week');
+    else if (maintenance_frequency_type === 'semester') next = last.add(maintenance_frequency_value * 6, 'month');
     if (next) form.value.next_due_date = next.format('YYYY-MM-DD');
   }
 );
 
 const submitForm = async () => {
-  const {
-    inventory_id,
-    pj_id,
-    maintenance_frequency_type,
-    maintenance_frequency_value,
-    last_maintenance_at
-  } = form.value;
-
-  if (!inventory_id || !pj_id || !maintenance_frequency_type || !maintenance_frequency_value || !last_maintenance_at) {
-    alert('Harap lengkapi semua field wajib.');
+  const { inventory_id, inspection_date } = form.value;
+  if (!inventory_id || !inspection_date) {
+    alert('Inventaris dan tanggal wajib diisi.');
     return;
   }
 
   isSubmitting.value = true;
   try {
-    await counterStore.scheduleInventory(inventory_id, {
-      maintenance_frequency_type,
-      maintenance_frequency_value,
-      last_maintenance_at: form.value.last_maintenance_at,
-      next_due_date: form.value.next_due_date,
-      next_due_km: form.value.next_due_km,
-      last_odometer_reading: form.value.last_odometer_reading,
-      pj_id: form.value.pj_id,
-    });
-
-    await counterStore.addMaintenanceRecord(inventory_id, {
-      inspection_date: form.value.last_maintenance_at,
+    const payload = {
+      inspection_date,
       issue_found: form.value.issue_found,
-      solution_taken:  form.value.solution_taken,
+      solution_taken: form.value.solution_taken,
       notes: form.value.notes,
-      status: 'planning',
-      pj_id: form.value.pj_id,
+      status: isAdminOrHead.value && mode.value === 'planning' ? 'on_progress' : 'reported',
+      pj_id: mode.value === 'planning' ? form.value.pj_id : null,
       cost: form.value.cost,
-    });
+    };
 
-    alert('Jadwal maintenance berhasil ditambahkan.');
-    Object.keys(form.value).forEach(k => form.value[k] = '');
-    router.push('/maintenance/list');
+    await counterStore.addMaintenanceRecord(inventory_id, payload);
+
+    /* update schedule (planning only) */
+    if (isAdminOrHead.value && mode.value === 'planning') {
+      await counterStore.scheduleInventory(inventory_id, {
+        maintenance_frequency_type: form.value.maintenance_frequency_type,
+        maintenance_frequency_value: form.value.maintenance_frequency_value,
+        last_maintenance_at: inspection_date,
+        next_due_date: form.value.next_due_date,
+        next_due_km: form.value.next_due_km,
+        last_odometer_reading: form.value.last_odometer_reading,
+        pj_id: form.value.pj_id,
+      });
+    }
+
+    alert('Data berhasil disimpan.');
+    router.push('/maintenance/needed');
   } catch (e) {
-    alert('Gagal menyimpan data.');
+    alert('Gagal menyimpan.');
     console.error(e);
   } finally {
     isSubmitting.value = false;
   }
 };
 
+
 onMounted(async () => {
-  await counterStore.fetchInventoryItems();
-  inventoryItems.value = counterStore.inventoryItems;
-  await counterStore.fetchUsersList();
-  users.value = counterStore.usersList;
+  const idFromQuery = Number(route.query.inventory);
+
+  if (idFromQuery) {
+    // Flow 1 : akses dari QR / link langsung → cukup satu barang
+    const { data } = await axios.get(`/inventories/${idFromQuery}?with=item`);
+    inventoryItems.value = [data];            // array 1 elemen
+    form.value.inventory_id = idFromQuery;    // auto-select
+  } else {
+    // Flow 2 : akses biasa → ambil semua untuk dropdown
+    await counterStore.fetchInventories({ with: 'item' });
+    inventoryItems.value = counterStore.inventories;
+  }
+
+  // load users untuk PJ (keduanya butuh)
+  await counterStore.fetchUsers();
+  users.value = counterStore.users;
 });
+
 </script>

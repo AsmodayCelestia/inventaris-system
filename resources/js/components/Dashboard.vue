@@ -152,7 +152,7 @@ const filters = ref({
 });
 
 const fetchDashboard = async () => {
-  const res = await axios.get('/api/dashboard');
+  const res = await axios.get('/dashboard');
   const data = res.data;
 
   stats.value = data.stats;

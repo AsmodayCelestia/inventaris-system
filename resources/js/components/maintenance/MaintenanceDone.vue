@@ -28,15 +28,18 @@
           </div>
 
           <div class="card-body">
+            <!-- Loading -->
             <div v-if="counter.maintenanceLoading" class="text-center p-4">
               <i class="fas fa-spinner fa-spin fa-2x"></i>
               <p class="mt-2">Memuat data...</p>
             </div>
 
+            <!-- Kosong -->
             <div v-else-if="doneList.length === 0" class="alert alert-info m-3">
               Belum ada maintenance yang selesai.
             </div>
 
+            <!-- Tabel -->
             <table v-else class="table table-striped table-valign-middle">
               <thead>
                 <tr>
@@ -58,10 +61,15 @@
                     <span class="badge badge-success">Selesai</span>
                   </td>
                   <td>
-                    <router-link
-                      :to="`/maintenance/${item.id}`"
-                      class="text-muted mr-2">
+                    <router-link :to="`/maintenance/${item.id}`" class="text-muted mr-2">
                       <i class="fas fa-eye"></i>
+                    </router-link>
+                    <!-- Admin/Head bisa edit ulang jika perlu -->
+                    <router-link
+                      v-if="counter.isAdmin || counter.isHead"
+                      :to="`/maintenance/edit/${item.id}`"
+                      class="text-muted">
+                      <i class="fas fa-edit"></i>
                     </router-link>
                   </td>
                 </tr>
@@ -75,14 +83,12 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, onMounted } from 'vue';
 import { useCounterStore } from '@/stores/counter';
 
 const counter = useCounterStore();
 
-const doneList = computed(() =>
-  counter.maintenanceHistory.filter((m) => m.status === 'done')
-);
+const doneList = computed(() => counter.maintenanceHistory);
 
 const formatDate = (date) => {
   if (!date) return '-';
@@ -93,5 +99,5 @@ const formatDate = (date) => {
   });
 };
 
-counter.fetchMaintenanceHistory();
+onMounted(() => counter.fetchDoneMaintenance());
 </script>

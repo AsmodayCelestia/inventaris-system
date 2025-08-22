@@ -1,3 +1,4 @@
+<!-- Maintenance Aktif (full copy-paste) -->
 <template>
   <div>
     <!-- Header -->
@@ -63,11 +64,12 @@
                 <tr v-for="item in filteredList" :key="item.id">
                   <td>{{ item.inventory?.item?.name || '-' }}</td>
                   <td>{{ item.inventory?.inventory_number || '-' }}</td>
-<td>{{ item.responsible_person?.name ?? '-' }}</td>
-
+                  <td>{{ item.responsible_person?.name ?? '-' }}</td>
                   <td>{{ formatDate(item.inspection_date) }}</td>
                   <td>
-                    <span class="badge badge-warning">{{ item.status }}</span>
+                    <span :class="badgeClass(item.status)">
+                      {{ item.status_label || item.status }}
+                    </span>
                   </td>
                   <td>
                     <router-link :to="`/maintenance/${item.id}`" class="text-muted mr-2">
@@ -96,44 +98,73 @@ import { onMounted, computed } from 'vue';
 import { useCounterStore } from '@/stores/counter';
 const counter = useCounterStore();
 
-const userId = computed(() => counter.userId);
+const userId   = computed(() => counter.userId);
 const userRole = computed(() => counter.userRole);
+const userDiv  = computed(() => counter.userDivisi);
 
-// ✅ Filter berdasarkan role dan inventory.pj_id
+/* 1. Filter status aktif (on_progress / handled) + hak akses */
 const filteredList = computed(() => {
-  let list = counter.maintenanceHistory;
+  let list = counter.maintenanceHistory.filter(
+    m => !['reported', 'done', 'cancelled'].includes(m.status)
+  );
 
-  // 1) filter status "planning"
-  list = list.filter(m => m.status === 'planning');
-
-  // 2) filter berdasarkan role
-  if (userRole.value === 'karyawan') {
-    list = list.filter(m => m.inventory?.pj_id === userId.value);
+  /* 2. Hak akses per role (urutan penting!) */
+  if (userRole.value === 'karyawan' && userDiv.value === 'Umum') {
+    // a) Karyawan Umum → cuma yang dia kerjakan
+    list = list.filter(m => m.user_id === userId.value);
+  } else if (userRole.value === 'karyawan' && userDiv.value !== 'Umum') {
+    // b) Karyawan biasa & pengawas ruangan
+    list = list.filter(
+      m =>
+        m.creator_id === userId.value ||                 // dia yang lapor
+        m.inventory?.room?.pj_lokasi_id === userId.value // atau dia pengawas ruangannya
+    );
   }
+  // c) admin & head langsung lewat (tidak ada filter)
 
   return list;
 });
 
-// ✅ Format tanggal
-const formatDate = (date) => {
-  if (!date) return '-';
-  return new Date(date).toLocaleDateString('id-ID', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  });
-};
+const badgeClass = (status) => ({
+  reported   : 'badge-danger',
+  on_progress: 'badge-warning',
+  handled    : 'badge-info',
+  done       : 'badge-success',
+  cancelled  : 'badge-secondary',
+}[status] || 'badge-light');
 
-// ✅ Logic akses edit
+const formatDate = (date) =>
+  !date
+    ? '-'
+    : new Date(date).toLocaleDateString('id-ID', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      });
+
+/* 3. Hak edit sesuai rule final */
 const canEdit = (item) => {
-  console.log(item);
-  
-  if (['admin', 'head'].includes(userRole.value)) return true;
-  if (userRole.value === 'karyawan' && item.inventory?.pj_id === userId.value) return true;
-  return false; // owner tidak bisa edit
+  const role   = userRole.value;
+  const divisi = userDiv.value;
+  const isPj   = item.user_id === userId.value;
+  const isSuper = item.inventory?.room?.pj_lokasi_id === userId.value;
+
+  switch (item.status) {
+    case 'reported':
+      return ['admin', 'head'].includes(role);
+
+    case 'on_progress':
+      return (
+        (role === 'karyawan' && divisi === 'Umum' && isPj) || isSuper
+      );
+    case 'handled':
+      return ['admin', 'head'].includes(role) || isSuper;
+    default:
+      return false;
+  }
 };
 
 onMounted(() => {
-  counter.fetchMaintenanceHistory(); // isi counter.maintenanceHistory
+  counter.fetchMaintenanceHistory();
 });
 </script>

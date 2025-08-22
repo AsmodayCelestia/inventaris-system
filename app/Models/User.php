@@ -130,4 +130,16 @@ class User extends Authenticatable
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs();
     }
+
+    /* Maintenance yang dia BUAT (creator) */
+    public function createdMaintenances()
+    {
+        return $this->hasMany(InventoryMaintenance::class, 'creator_id');
+    }
+
+    /* Maintenance yang dia JALANKAN sebagai PJ */
+    public function assignedMaintenances()
+    {
+        return $this->hasMany(InventoryMaintenance::class, 'user_id');
+    }
 }
