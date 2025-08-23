@@ -152,41 +152,41 @@
                             </ul>
                         </li>
                         <!-- Maintenance (Admin, Head, Maintenance Role) -->
-<!-- (1) Menu Maintenance yang terbatas role -->
-<li class="nav-item has-treeview"
-    :class="{ 'menu-open': isMaintenanceOpen }"
-    v-if="counterStore.isAdmin || counterStore.isHead || counterStore.isKeuangan || counterStore.isPjMaintenance || counterStore.isRoomSupervisor">
-    <a href="#" class="nav-link" @click.prevent="toggleMaintenance">
-        <i class="nav-icon fas fa-tools"></i>
-        <p>Maintenance <i class="right fas fa-angle-left"></i></p>
-    </a>
-    <ul class="nav nav-treeview">
-        <!-- sub-item yang tetap terbatas -->
-        <li v-if="!counterStore.isKeuangan && !counterStore.isPjMaintenance" class="nav-item">
-            <router-link to="/maintenance/create" class="nav-link">
-                Tambah Maintenance Baru
-            </router-link>
-        </li>
-        <li class="nav-item">
-            <router-link to="/maintenance/done" class="nav-link">
-                Maintenance Selesai
-            </router-link>
-        </li>
-        <li v-if="!counterStore.isKeuangan" class="nav-item">
-            <router-link to="/maintenance/list" class="nav-link">
-                Maintenance List
-            </router-link>
-        </li>
-    </ul>
-</li>
+                        <!-- (1) Menu Maintenance yang terbatas role -->
+                        <li class="nav-item has-treeview"
+                            :class="{ 'menu-open': isMaintenanceOpen }"
+                            v-if="counterStore.isAdmin || counterStore.isHead || counterStore.isKeuangan || counterStore.isPjMaintenance || counterStore.isRoomSupervisor">
+                            <a href="#" class="nav-link" @click.prevent="toggleMaintenance">
+                                <i class="nav-icon fas fa-tools"></i>
+                                <p>Maintenance <i class="right fas fa-angle-left"></i></p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <!-- sub-item yang tetap terbatas -->
+                                <li v-if="!counterStore.isKeuangan && !counterStore.isPjMaintenance" class="nav-item">
+                                    <router-link to="/maintenance/create" class="nav-link">
+                                        Tambah Maintenance Baru
+                                    </router-link>
+                                </li>
+                                <li class="nav-item">
+                                    <router-link to="/maintenance/done" class="nav-link">
+                                        Maintenance Selesai
+                                    </router-link>
+                                </li>
+                                <li v-if="!counterStore.isKeuangan" class="nav-item">
+                                    <router-link to="/maintenance/list" class="nav-link">
+                                        Maintenance List
+                                    </router-link>
+                                </li>
+                            </ul>
+                        </li>
 
-<!-- (2) Menu "Maintenance Diperlukan" untuk SEMUA user yang login -->
-<li class="nav-item">
-    <router-link to="/maintenance/needed" class="nav-link">
-        <i class="nav-icon fas fa-wrench"></i>
-        <p>Maintenance Diperlukan</p>
-    </router-link>
-</li>
+                        <!-- (2) Menu "Maintenance Diperlukan" untuk SEMUA user yang login -->
+                        <li class="nav-item">
+                            <router-link to="/maintenance/needed" class="nav-link">
+                                <i class="nav-icon fas fa-wrench"></i>
+                                <p>Maintenance Diperlukan</p>
+                            </router-link>
+                        </li>
 
                         <!-- QR Code (Admin & Head) -->
     <li class="nav-item has-treeview"
@@ -229,6 +229,18 @@
                                 <i class="nav-icon fas fa-file-alt"></i>
                                 <p>Laporan</p>
                             </router-link>
+                        </li>
+
+                        <!-- Activity Log (Admin only) -->
+                        <li class="nav-item" v-if="counterStore.isAdmin">
+                        <router-link
+                            to="/activity-log"
+                            class="nav-link"
+                            :class="{ active: $route.path === '/activity-log' }"
+                        >
+                            <i class="nav-icon fas fa-history"></i>
+                            <p>Activity Log</p>
+                        </router-link>
                         </li>
 
                         <!-- Pengaturan (Hanya Admin) -->

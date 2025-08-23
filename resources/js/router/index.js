@@ -51,6 +51,14 @@ const routes = [
                 meta: { requiresAuth: true }
             },
 
+            /* ---------- ACTIVITY LOG ---------- */
+            {
+            path: 'activity-log',
+            name: 'ActivityLog',
+            component: () => import('../components/ActivityLog.vue'),
+            meta: { requiresAuth: true, roles: ['admin'] }
+            },
+
             // INVENTARIS
             {
                 path: 'inventories',

@@ -15,6 +15,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\InventoryItemController;
 use App\Http\Controllers\DivisionController;
+use App\Http\Controllers\ActivityLogController; 
 
 /*
 |--------------------------------------------------------------------------
@@ -111,7 +112,10 @@ Route::patch('/maintenance/{id}/status', [MaintenanceController::class, 'updateS
         Route::put('/qrcodes/{id}', [InventoryController::class,'updateQrCode']);
         Route::delete('/qrcodes/{id}', [InventoryController::class,'deleteQrCode']);
 
+        Route::get('/activity-log', [ActivityLogController::class, 'index']);
+        Route::get('/activity-log/datatable', [ActivityLogController::class, 'datatable']);
         Route::get('/reports/inventories/pdf',   [ReportController::class,'exportInventoriesPdf']);
         Route::get('/reports/inventories/excel', [ReportController::class,'exportInventoriesExcel']);
+        Route::get('/activity-log/{id}/detail', [ActivityLogController::class, 'detail']);
     });
 });
