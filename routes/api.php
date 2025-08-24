@@ -17,6 +17,52 @@ use App\Http\Controllers\InventoryItemController;
 use App\Http\Controllers\DivisionController;
 use App\Http\Controllers\ActivityLogController; 
 
+
+// use Endroid\QrCode\Builder\Builder;
+// use Endroid\QrCode\Writer\PngWriter;
+// use Endroid\QrCode\Label\Label;
+// use Endroid\QrCode\Label\Font\Font;
+// use Endroid\QrCode\Color\Color;
+// use Endroid\QrCode\Label\LabelAlignment;
+
+
+
+// Route::get('/qr-preview', function () {
+//     $url = trim((string) (request('url') ?: 'https://qr.darwis.web.id'));
+//     $inventoryNo = (string) (request('inv')  ?: 'INV-0000');
+//     $color       = strtolower((string) (request('color') ?: 'black'));
+//     $logo        = (string) (request('logo') ?: 'android-chrome-192x192.png');
+
+//     $rgb = match ($color) {
+//         'red'   => [255, 0,   0],
+//         'green' => [0,   255, 0],
+//         'blue'  => [0,   0,   255],
+//         default => [0,   0,   0],
+//     };
+
+//     $logoPath = public_path($logo);
+//     $logoPath = file_exists($logoPath) ? $logoPath : null;
+
+//     $fontPath = base_path('vendor/endroid/qr-code/assets/noto_sans.otf');
+//     $font     = new \Endroid\QrCode\Label\Font\Font($fontPath, 12);
+
+//     $qr = \Endroid\QrCode\Builder\Builder::create()
+//         ->writer(new \Endroid\QrCode\Writer\PngWriter())
+//         ->data($url)
+//         ->size(260)
+//         ->margin(20)
+//         ->foregroundColor(new \Endroid\QrCode\Color\Color(...$rgb))
+//         ->backgroundColor(new \Endroid\QrCode\Color\Color(255, 255, 255))
+//         ->logoPath($logoPath)
+//         ->logoResizeToWidth(50)
+//         ->labelText($inventoryNo)
+//         ->labelFont($font)
+//         // ❌ hapus labelAlignment()
+//         ->build();
+
+//     return response($qr->getString())
+//            ->header('Content-Type', 'image/png');
+// });
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -26,6 +72,9 @@ use App\Http\Controllers\ActivityLogController;
 // PUBLIC
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/inventories/scan/{id}', [InventoryController::class, 'showForScan']);
+// routes/api.php
+
+
 
 // AUTHENTICATED
 Route::middleware('auth:sanctum')->group(function () {
@@ -38,6 +87,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('categories',     CategoryController::class)->only(['index','show']);
     Route::apiResource('item-types',     ItemTypeController::class)->only(['index','show']);
     Route::apiResource('units',          LocationUnitController::class)->only(['index','show']);
+    Route::get('/floors/by-units', [FloorController::class, 'byUnits']);
+    Route::get('/rooms/by-units-floors', [RoomController::class, 'byUnitsFloors']);
     Route::apiResource('floors',         FloorController::class)->only(['index','show']);
     Route::apiResource('rooms',          RoomController::class)->only(['index','show']);
     Route::apiResource('inventory-items',InventoryItemController::class)->only(['index','show']);
@@ -116,6 +167,11 @@ Route::patch('/maintenance/{id}/status', [MaintenanceController::class, 'updateS
         Route::get('/activity-log/datatable', [ActivityLogController::class, 'datatable']);
         Route::get('/reports/inventories/pdf',   [ReportController::class,'exportInventoriesPdf']);
         Route::get('/reports/inventories/excel', [ReportController::class,'exportInventoriesExcel']);
+        Route::get('/activity-log/{id}/detail', [ActivityLogController::class, 'detail']);
+
+        Route::get('/activity-log/datatable', [ActivityLogController::class, 'datatable']);
+        Route::get('/activity-log/models',    [ActivityLogController::class, 'models']);
+        Route::get('/activity-log/users',     [ActivityLogController::class, 'users']);
         Route::get('/activity-log/{id}/detail', [ActivityLogController::class, 'detail']);
     });
 });

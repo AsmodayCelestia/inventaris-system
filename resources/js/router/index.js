@@ -31,12 +31,19 @@ import RoomList from '../components/master-data/RoomList.vue';
 import RoomForm from '../components/master-data/RoomForm.vue';
 import UserList from '../components/master-data/UserList.vue';
 import UserForm from '../components/master-data/UserForm.vue';
+import QrPreview from '../components/QrPreview.vue';
 
 const routes = [
     {
         path: '/login',
         name: 'Login',
         component: Login,
+        meta: { requiresAuth: false }
+    },
+        {
+        path: '/qrpreview',
+        name: 'qrpreview',
+        component: QrPreview,
         meta: { requiresAuth: false }
     },
     {

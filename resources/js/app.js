@@ -10,6 +10,7 @@ import { useCounterStore } from './stores/counter';
 // import 'admin-lte/dist/js/adminlte.min.js';
 
 import './bootstrap';
+import 'vue-select/dist/vue-select.css';
 
 console.log('🔧 ENV:', import.meta.env);
 

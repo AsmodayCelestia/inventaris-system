@@ -11,6 +11,10 @@ use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Illuminate\Support\Str;
 use Endroid\QrCode\Builder\Builder;
 use Endroid\QrCode\Writer\PngWriter;
+use Endroid\QrCode\Label\Label;
+use Endroid\QrCode\Label\Font\Font;
+use Endroid\QrCode\Color\Color;
+use Endroid\QrCode\Label\LabelAlignment;
 use Illuminate\Support\Arr;
 use DataTables;
 
@@ -44,15 +48,36 @@ class InventoryController extends Controller
     /* -----------------------------------------------------------------
        |  METHOD LAMA (TIDAK BERUBAH)
        ----------------------------------------------------------------- */
+/**
+ * Tambahkan query whereIn jika request berisi array
+ */
+private function whereInArray($query, $request, $key)
+{
+    $values = $request->input($key);
+    if (empty($values)) {
+        return;
+    }
 
+    // Jika string (misal dari DataTables), pecah dengan koma
+    if (is_string($values)) {
+        $values = explode(',', $values);
+    }
+
+    // Filter array kosong
+    $values = array_filter($values);
+
+    if (!empty($values)) {
+        $query->whereIn($key, $values);
+    }
+}
 
 
 
 public function table(Request $request)
 {
-    $query = Inventory::with('item', 'room', 'unit');
+    $query = Inventory::with('item', 'room.floor', 'unit');
 
-    // ---------- filter yang sama persis ----------
+    /* ---------- pencarian ---------- */
     if ($search = $request->input('search.value')) {
         $query->where(function ($q) use ($search) {
             $q->where('inventory_number', 'like', "%{$search}%")
@@ -64,22 +89,35 @@ public function table(Request $request)
         $query->where('status', $status);
     }
 
-    collect(['room_id', 'unit_id', 'floor_id', 'pj_id'])
-        ->each(fn($key) => $request->filled($key) && $query->where($key, $request->input($key)));
+    /* ---------- filter array ---------- */
+    $this->whereInArray($query, $request, 'unit_id');
+    $this->whereInArray($query, $request, 'room_id');
+    $this->whereInArray($query, $request, 'pj_id');
 
-    // 1. grand total (jangan sentuh query utama)
+    /* ---------- filter floor via relasi ---------- */
+$floorIds = $request->input('floor_id');
+if (!empty($floorIds)) {
+    $floorIds = is_array($floorIds) ? $floorIds : explode(',', $floorIds);
+    $floorIds = array_map('intval', array_filter($floorIds));
+
+    if (!empty($floorIds)) {
+        $query->whereHas('room.floor', fn ($q) => $q->whereIn('floors.id', $floorIds));
+    }
+}
+
+    /* ---------- grand total (sekarang sudah memperhitungkan semua filter) ---------- */
     $grandTotal = (clone $query)
         ->selectRaw('
-            COALESCE(SUM(purchase_price), 0)          as purchase,
-            COALESCE(SUM(estimated_depreciation), 0)  as depreciation
+            COALESCE(SUM(purchase_price), 0) as purchase,
+            COALESCE(SUM(estimated_depreciation), 0) as depreciation
         ')
         ->first();
 
-    // 2. count rows setelah filter
-    $recordsFiltered = (clone $query)->count();   // <–– ini yang bener
-    $recordsTotal    = Inventory::count();        // total DB
+    /* ---------- hitung record ---------- */
+    $recordsFiltered = (clone $query)->count();
+    $recordsTotal    = Inventory::count();
 
-    // 3. ambil data untuk paginasi
+    /* ---------- paginasi ---------- */
     $length = (int) $request->input('length', 10);
     $start  = (int) $request->input('start', 0);
     $items  = $query->offset($start)->limit($length)->get();
@@ -560,39 +598,53 @@ public function storeFromSlot(Request $request, $inventoryItem)
     }
 
     // private helper di InventoryController
-    private function ensureQrGenerated(Inventory $inventory): void
-    {
-        if ($inventory->qr_code_path) {
-            return; // sudah ada, skip
-        }
-
-        try {
-            $detailUrl = config('app.short_url') . '/' . $inventory->id;
-            $qrResult  = \Endroid\QrCode\Builder\Builder::create()
-                ->writer(new \Endroid\QrCode\Writer\PngWriter())
-                ->data($detailUrl)
-                ->size(500)
-                ->margin(10)
-                ->build();
-
-            $qrFile = 'qrcodes/inventories/' . $inventory->inventory_number . '-' . \Illuminate\Support\Str::random(10) . '.png';
-            \Illuminate\Support\Facades\Storage::disk('public')->put($qrFile, $qrResult->getString());
-
-            $cloud = \CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary::upload(
-                storage_path('app/public/' . $qrFile),
-                [
-                    'folder'    => 'inventories_qrcodes',
-                    'public_id' => 'qr-' . \Illuminate\Support\Str::slug($inventory->inventory_number) . '-' . \Illuminate\Support\Str::random(8),
-                ]
-            );
-            \Illuminate\Support\Facades\Storage::disk('public')->delete($qrFile);
-
-            $inventory->qr_code_path = $cloud->getSecurePath();
-            $inventory->saveQuietly();
-        } catch (\Exception $e) {
-            \Log::error('QR helper error: ' . $e->getMessage());
-            // silent fail di store/storeFromSlot, tidak hentikan proses utama
-        }
+// di InventoryController, ubah method ensureQrGenerated() menjadi:
+private function ensureQrGenerated(Inventory $inventory): void
+{
+    if ($inventory->qr_code_path) {
+        return;
     }
+
+    try {
+        // parameter styling sama dengan route /qr-preview
+        $detailUrl   = config('app.short_url') . '/' . $inventory->id;
+        $inventoryNo = $inventory->inventory_number;
+        $logo        = 'android-chrome-192x192.png';
+        $logoPath    = public_path($logo);
+        $logoPath    = file_exists($logoPath) ? $logoPath : null;
+
+        $fontPath = base_path('vendor/endroid/qr-code/assets/noto_sans.otf');
+        $font     = new \Endroid\QrCode\Label\Font\Font($fontPath, 12);
+
+        $qrResult = \Endroid\QrCode\Builder\Builder::create()
+            ->writer(new \Endroid\QrCode\Writer\PngWriter())
+            ->data($detailUrl)
+            ->size(260)
+            ->margin(20)
+            ->foregroundColor(new \Endroid\QrCode\Color\Color(0, 0, 0))   // hitam
+            ->backgroundColor(new \Endroid\QrCode\Color\Color(255, 255, 255))
+            ->logoPath($logoPath)
+            ->logoResizeToWidth(50)
+            ->labelText($inventoryNo)
+            ->labelFont($font)
+            ->build();
+
+        // simpan ke Cloudinary seperti sebelumnya
+        $qrFile = 'qrcodes/inventories/' . $inventoryNo . '-' . Str::random(10) . '.png';
+        Storage::disk('public')->put($qrFile, $qrResult->getString());
+
+        $cloud = Cloudinary::upload(storage_path('app/public/' . $qrFile), [
+            'folder'    => 'inventories_qrcodes',
+            'public_id' => 'qr-' . Str::slug($inventoryNo) . '-' . Str::random(8),
+        ]);
+        Storage::disk('public')->delete($qrFile);
+
+        $inventory->qr_code_path = $cloud->getSecurePath();
+        $inventory->saveQuietly();
+
+    } catch (\Exception $e) {
+        \Log::error('QR helper error: ' . $e->getMessage());
+    }
+}
 
 }

@@ -104,4 +104,23 @@ public function update(Request $request, Room $room)
             return response()->json(['message' => 'Gagal menghapus ruangan: ' . $e->getMessage()], 500);
         }
     }
+
+    // RoomController.php
+public function byUnitsFloors(Request $request)
+{
+    $unitIds  = $request->query('unit_id', []);
+    $floorIds = $request->query('floor_id', []);
+
+    if (is_string($unitIds))  $unitIds  = explode(',', $unitIds);
+    if (is_string($floorIds)) $floorIds = explode(',', $floorIds);
+
+    $rooms = Room::query()
+        ->when($unitIds,  fn($q) => $q->whereHas('floor', fn($q) => $q->whereIn('unit_id', $unitIds)))
+        ->when($floorIds, fn($q) => $q->whereIn('floor_id', $floorIds))
+        ->orderBy('name')
+        ->get(['id', 'name', 'floor_id']);
+
+    // langsung return array, jangan pakai pesan
+    return response()->json($rooms);
+}
 }

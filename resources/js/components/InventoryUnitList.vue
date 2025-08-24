@@ -17,101 +17,131 @@
 
   <div class="content">
     <div class="container-fluid">
-      <!-- Filter Row -->
+      <!-- Filter -->
+      <!-- GANTI SELURUH CARD FILTER dengan ini -->
       <div class="card">
-        <div class="card-header"><h5>Filter & Pencarian</h5></div>
+        <div class="card-header">
+          <h5 class="mb-0">Filter & Pencarian</h5>
+        </div>
         <div class="card-body">
+          <!-- Row 1: field filter -->
           <div class="row">
-            <div class="col-md-3 mb-2">
-              <label>Cari</label>
+            <div class="col-12 col-sm-6 col-md-4 col-lg-2 mb-3">
+              <label class="mb-1">Cari</label>
               <input
                 v-model="counterStore.inventoryTable.params.search"
-                class="form-control"
+                class="form-control form-control-sm"
                 placeholder="nomor / nama barang"
+                @input="debounceApply"
               />
             </div>
-            <div class="col-md-2 mb-2">
-              <label>Status</label>
-              <select v-model="counterStore.inventoryTable.params.status" class="form-control">
-                <option :value="null">Semua</option>
-                <option v-for="s in statusOptions" :key="s" :value="s">{{ s }}</option>
-              </select>
+
+            <!-- GANTI bagian Status -->
+            <div class="col-12 col-sm-6 col-md-4 col-lg-2 mb-3">
+              <label class="mb-1">Status</label>
+              <v-select
+                :options="statusOptions"
+                v-model="counterStore.inventoryTable.params.status"
+                :reduce="s => s"
+                placeholder="Semua"
+                class="small-vselect"
+                :clearable="true"
+              />
             </div>
-            <!-- <div class="col-md-2 mb-2">
-              <label>Lantai</label>
-              <select v-model="counterStore.inventoryTable.params.floor_id" class="form-control">
-                <option :value="null">Semua</option>
-                <option v-for="f in counterStore.floors" :key="f.id" :value="f.id">{{ f.name }}</option>
-              </select>
-            </div> -->
-            <div class="col-md-2 mb-2">
-              <label>Unit</label>
-              <select v-model="counterStore.inventoryTable.params.unit_id" class="form-control">
-                <option :value="null">Semua</option>
-                <option v-for="u in counterStore.locationUnits" :key="u.id" :value="u.id">{{ u.name }}</option>
-              </select>
+
+            <div class="col-12 col-sm-6 col-md-4 col-lg-2 mb-3">
+              <label class="mb-1">Unit</label>
+              <v-select
+                :options="counterStore.locationUnits"
+                v-model="selectedUnits"
+                label="name"
+                :reduce="u => u.id"
+                multiple
+                placeholder="Semua"
+                class="small-vselect"
+              />
             </div>
-            <div class="col-md-2 mb-2">
-              <label>Ruangan</label>
-              <select v-model="counterStore.inventoryTable.params.room_id" class="form-control">
-                <option :value="null">Semua</option>
-                <option v-for="r in counterStore.rooms" :key="r.id" :value="r.id">{{ r.name }}</option>
-              </select>
+
+            <div class="col-12 col-sm-6 col-md-4 col-lg-2 mb-3">
+              <label class="mb-1">Lantai</label>
+              <v-select
+                :options="availableFloors"
+                v-model="selectedFloors"
+                label="number"
+                :reduce="f => f.id"
+                multiple
+                placeholder="Semua"
+                :disabled="!selectedUnits.length"
+                class="small-vselect"
+              />
             </div>
-            <div class="col-md-1 mb-2 align-self-end">
-              <button class="btn btn-primary w-100" @click="applyFilter">Terapkan</button>
+
+            <div class="col-12 col-sm-6 col-md-4 col-lg-2 mb-3">
+              <label class="mb-1">Ruangan</label>
+              <v-select
+                :options="availableRooms"
+                v-model="selectedRooms"
+                label="name"
+                :reduce="r => r.id"
+                multiple
+                placeholder="Semua"
+                :disabled="!selectedFloors.length"
+                class="small-vselect"
+              />
             </div>
-            <div class="col-md-1 mb-2 align-self-end">
-              <button class="btn btn-secondary w-100" @click="resetFilter">Reset</button>
+
+            <!-- Row 2: tombol (auto wrap ke bawah di mobile) -->
+            <div class="col-12 col-lg-2 mb-3 d-flex flex-column justify-content-end gap-2">
+              <button class="btn btn-primary btn-sm w-100" @click="applyFilter">
+                <i class="fas fa-filter"></i> Terapkan
+              </button>
+              <button class="btn btn-outline-secondary btn-sm w-100" @click="resetFilter">
+                <i class="fas fa-undo"></i> Reset
+              </button>
             </div>
           </div>
         </div>
       </div>
-<!-- di atas tabel -->
-<div v-if="counterStore.isAdmin && counterStore.grandTotal"
-     class="row mb-3">
-  <div class="col-md-6">
-    <div class="small-box bg-info">
-      <div class="inner">
-<h4>{{ currency(counterStore.grandTotal?.purchase ?? 0) }}</h4>
 
-        <p>Total Nilai Beli (semua data sesuai filter)</p>
+      <!-- Grand Total -->
+      <div v-if="counterStore.isAdmin && counterStore.grandTotal" class="row mb-3">
+        <div class="col-md-6">
+          <div class="small-box bg-info">
+            <div class="inner">
+              <h4>{{ currency(counterStore.grandTotal?.purchase ?? 0) }}</h4>
+              <p>Total Nilai Beli (semua data sesuai filter)</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="small-box bg-warning">
+            <div class="inner">
+              <h4>{{ currency(counterStore.grandTotal?.depreciation ?? 0) }}</h4>
+              <p>Total Depresiasi (semua data sesuai filter)</p>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-  <div class="col-md-6">
-    <div class="small-box bg-warning">
-      <div class="inner">
-<h4>{{ currency(counterStore.grandTotal?.depreciation ?? 0) }}</h4>
 
-        <p>Total Depresiasi (semua data sesuai filter)</p>
-      </div>
-    </div>
-  </div>
-</div>
-      <!-- Data Table -->
+      <!-- Tabel -->
       <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
           <h3 class="card-title">Daftar Unit Inventaris</h3>
         </div>
         <div class="card-body">
-          <!-- Loading -->
           <div v-if="counterStore.inventoryTable.loading" class="text-center p-4">
             <i class="fas fa-spinner fa-spin fa-2x"></i>
             <p class="mt-2">Memuat data inventaris...</p>
           </div>
 
-          <!-- Error -->
           <div v-else-if="counterStore.inventoryError" class="alert alert-danger m-3">
             {{ counterStore.inventoryError }}
           </div>
 
-          <!-- Empty -->
           <div v-else-if="!counterStore.inventoryTable.items.length" class="alert alert-info m-3">
             Belum ada data unit inventaris.
           </div>
 
-          <!-- Tabel -->
           <div v-else>
             <table class="table table-striped table-valign-middle">
               <thead>
@@ -152,34 +182,23 @@
                     >
                       <i class="fas fa-trash"></i>
                     </a>
-                    <span v-else class="text-muted"></span>
                   </td>
                 </tr>
               </tbody>
             </table>
 
-            <!-- ✅ Pagination baru -->
+            <!-- Pagination -->
             <nav>
               <ul class="pagination justify-content-center">
-                <!-- Previous -->
-                <li
-                  class="page-item"
-                  :class="{ disabled: currentPage <= 1 }"
-                >
+                <li class="page-item" :class="{ disabled: currentPage <= 1 }">
                   <a class="page-link" href="#" @click.prevent="prevPage">Previous</a>
                 </li>
 
-                <!-- First + separator -->
                 <template v-if="windowStart > 1">
-                  <li class="page-item" :class="{ active: 1 === currentPage }">
-                    <a class="page-link" href="#" @click.prevent="goPage(1)">1</a>
-                  </li>
-                  <li v-if="windowStart > 2" class="page-item disabled">
-                    <span class="page-link">...</span>
-                  </li>
+                  <li class="page-item"><a class="page-link" href="#" @click.prevent="goPage(1)">1</a></li>
+                  <li v-if="windowStart > 2" class="page-item disabled"><span class="page-link">...</span></li>
                 </template>
 
-                <!-- Visible window -->
                 <li
                   v-for="p in visiblePages"
                   :key="p"
@@ -189,17 +208,11 @@
                   <a class="page-link" href="#" @click.prevent="goPage(p)">{{ p }}</a>
                 </li>
 
-                <!-- Last + separator -->
                 <template v-if="windowEnd < lastPage">
-                  <li v-if="windowEnd < lastPage - 1" class="page-item disabled">
-                    <span class="page-link">...</span>
-                  </li>
-                  <li class="page-item" :class="{ active: lastPage === currentPage }">
-                    <a class="page-link" href="#" @click.prevent="goPage(lastPage)">{{ lastPage }}</a>
-                  </li>
+                  <li v-if="windowEnd < lastPage - 1" class="page-item disabled"><span class="page-link">...</span></li>
+                  <li class="page-item"><a class="page-link" href="#" @click.prevent="goPage(lastPage)">{{ lastPage }}</a></li>
                 </template>
 
-                <!-- Next -->
                 <li
                   class="page-item"
                   :class="{ disabled: currentPage >= lastPage }"
@@ -215,13 +228,7 @@
   </div>
 
   <!-- Modal Konfirmasi Hapus -->
-  <div
-    class="modal fade"
-    id="deleteConfirmationModal"
-    tabindex="-1"
-    role="dialog"
-    aria-hidden="true"
-  >
+  <div class="modal fade" id="deleteConfirmationModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -243,54 +250,102 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, watch, nextTick } from 'vue';
 import { useCounterStore } from '@/stores/counter';
+import vSelect from 'vue-select';
+import 'vue-select/dist/vue-select.css';
+import axios from 'axios';
 
 const counterStore = useCounterStore();
 const itemIdToDelete = ref(null);
 const itemToDeleteName = ref('');
 const itemToDeleteType = ref('inventory');
 
+// ---- multi-select state ----
+const selectedUnits = ref([]);
+const selectedFloors = ref([]);
+const selectedRooms = ref([]);
+
+// ---- dynamic options ----
+const availableFloors = ref([]);
+const availableRooms = ref([]);
+
 // ---- data pendukung ----
 const statusOptions = ['Ada', 'Rusak', 'Perbaikan', 'Hilang', 'Dipinjam', '-'];
 
-// ganti SELURUH computed pagination di <script setup>
-const currentPage   = computed(() => counterStore.inventoryTable.params.page);
-const lastPage      = computed(() =>
+// ---- computed pagination ----
+const currentPage = computed(() => counterStore.inventoryTable.params.page);
+const lastPage = computed(() =>
   Math.max(
     1,
-    Math.ceil(
-      counterStore.inventoryTable.totalRows /
-        counterStore.inventoryTable.params.per_page
-    )
+    Math.ceil(counterStore.inventoryTable.totalRows / counterStore.inventoryTable.params.per_page)
   )
 );
-
-const windowSize   = 2;
-const windowStart  = computed(() =>
-  Math.max(1, currentPage.value - windowSize)
-);
-const windowEnd    = computed(() =>
-  Math.min(lastPage.value, currentPage.value + windowSize)
-);
+const windowSize = 2;
+const windowStart = computed(() => Math.max(1, currentPage.value - windowSize));
+const windowEnd = computed(() => Math.min(lastPage.value, currentPage.value + windowSize));
 const visiblePages = computed(() => {
   const pages = [];
-  for (let i = windowStart.value; i <= windowEnd.value; i++) {
-    pages.push(i);
-  }
-  // jika hasil kosong (lastPage = 0) → force [1]
+  for (let i = windowStart.value; i <= windowEnd.value; i++) pages.push(i);
   return pages.length ? pages : [1];
+});
+
+// ---- watchers ----
+watch(selectedUnits, async (newUnits) => {
+  selectedFloors.value = [];
+  selectedRooms.value = [];
+  if (!newUnits.length) {
+    availableFloors.value = [];
+    return;
+  }
+  const params = new URLSearchParams();
+  newUnits.forEach(u => params.append('unit_id[]', u));
+const { data } = await axios.get('/floors/by-units', {
+  params: { unit_id: newUnits },   // axios otomatis bikin ?unit_id[]=1&unit_id[]=2
+  headers: { Authorization: `Bearer ${counterStore.token}` }
+});
+  availableFloors.value = data;
+});
+
+watch([selectedUnits, selectedFloors], async ([units, floors]) => {
+  selectedRooms.value = [];
+  const params = new URLSearchParams();
+
+  if (units.length) units.forEach(u => params.append('unit_id[]', u));
+  if (floors.length) floors.forEach(f => params.append('floor_id[]', f));
+
+const { data } = await axios.get('/rooms/by-units-floors', {
+  params: { unit_id: units, floor_id: floors },
+  headers: { Authorization: `Bearer ${counterStore.token}` }
+});
+  availableRooms.value = data;
 });
 
 // ---- methods ----
 const applyFilter = () => {
+  counterStore.inventoryTable.params.unit_id = selectedUnits.value;
+  counterStore.inventoryTable.params.floor_id = selectedFloors.value;
+  counterStore.inventoryTable.params.room_id = selectedRooms.value;
   counterStore.inventoryTable.params.page = 1;
   counterStore.fetchInventoryTable();
 };
+
 const resetFilter = () => {
+  selectedUnits.value = [];
+  selectedFloors.value = [];
+  selectedRooms.value = [];
   counterStore.resetInventoryTable();
   counterStore.fetchInventoryTable();
 };
+
+const debounceApply = (() => {
+  let t;
+  return () => {
+    clearTimeout(t);
+    t = setTimeout(applyFilter, 400);
+  };
+})();
+
 const prevPage = () => {
   if (currentPage.value > 1) {
     counterStore.inventoryTable.params.page--;
@@ -364,3 +419,16 @@ onMounted(async () => {
   counterStore.fetchInventoryTable();
 });
 </script>
+
+<style>
+/* Ukuran lebih ringkas untuk v-select */
+.small-vselect .vs__dropdown-toggle,
+.small-vselect .vs__selected,
+.small-vselect .vs__search {
+  font-size: 0.875rem;
+  min-height: calc(1.5em + 0.5rem + 2px);
+}
+.small-vselect .vs__actions {
+  padding: 2px 6px;
+}
+</style>

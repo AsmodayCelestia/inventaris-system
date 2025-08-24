@@ -3,41 +3,74 @@
     <div class="container-fluid">
       <div class="row mb-2">
         <div class="col-sm-6"><h1 class="m-0">Activity Log</h1></div>
-        <div class="col-sm-6">
-          <ol class="breadcrumb float-sm-right">
-            <li class="breadcrumb-item">
-              <router-link to="/dashboard">Home</router-link>
-            </li>
-            <li class="breadcrumb-item active">Activity Log</li>
-          </ol>
-        </div>
       </div>
     </div>
   </div>
 
   <div class="content">
     <div class="container-fluid">
-      <!-- Filter -->
+      <!-- FILTER -->
       <div class="card">
         <div class="card-header"><h5>Filter & Pencarian</h5></div>
         <div class="card-body">
           <div class="row">
-            <div class="col-md-4 mb-2">
+            <!-- Search -->
+            <div class="col-md-3 mb-2">
               <label>Cari</label>
-              <input
-                v-model="filters.search"
-                @input="debounceSearch"
-                class="form-control"
-                placeholder="user / model / deskripsi"
-              />
+              <input v-model="filters.search" @input="debounceSearch" class="form-control" placeholder="teks apa pun"/>
             </div>
+
+            <!-- Date range -->
+            <div class="col-md-4 mb-2">
+              <label>Rentang Tanggal</label>
+              <div class="input-group">
+                <input type="date" v-model="filters.dateFrom" class="form-control" @change="reloadTable">
+                <div class="input-group-prepend input-group-append"><span class="input-group-text">s/d</span></div>
+                <input type="date" v-model="filters.dateTo"   class="form-control" @change="reloadTable">
+              </div>
+            </div>
+
+            <!-- Model -->
             <div class="col-md-3 mb-2">
               <label>Model</label>
-              <select v-model="filters.modelType" @change="reloadTable" class="form-control">
-                <option value="">Semua Model</option>
-                <option v-for="m in modelTypeOptions" :key="m" :value="m">{{ m }}</option>
-              </select>
+              <v-select
+                :options="modelTypeOptions"
+                v-model="filters.modelType"
+                :reduce="o => o.value"
+                label="label"
+                multiple
+                placeholder="Semua"
+                @input="reloadTable"
+              />
             </div>
+
+            <!-- Event -->
+            <div class="col-md-2 mb-2">
+              <label>Event</label>
+              <v-select
+                :options="eventOptions"
+                v-model="filters.event"
+                multiple
+                placeholder="Semua"
+                @input="reloadTable"
+              />
+            </div>
+
+            <!-- User -->
+            <div class="col-md-2 mb-2">
+              <label>User</label>
+              <v-select
+                :options="userOptions"
+                v-model="filters.userId"
+                label="name"
+                :reduce="u => u.id"
+                multiple
+                placeholder="Semua"
+                @input="reloadTable"
+              />
+            </div>
+
+            <!-- Buttons -->
             <div class="col-md-2 mb-2 align-self-end">
               <button class="btn btn-primary w-100" @click="reloadTable">Terapkan</button>
             </div>
@@ -48,7 +81,7 @@
         </div>
       </div>
 
-      <!-- Tabel -->
+      <!-- TABLE -->
       <div class="card">
         <div class="card-header"><h3 class="card-title">Daftar Aktivitas</h3></div>
         <div class="card-body">
@@ -57,20 +90,13 @@
             <p class="mt-2">Memuat data aktivitas...</p>
           </div>
 
-          <div v-else-if="!logs.length" class="alert alert-info m-3">
-            Tidak ada aktivitas yang tercatat.
-          </div>
+          <div v-else-if="!logs.length" class="alert alert-info m-3">Tidak ada aktivitas yang tercatat.</div>
 
           <div v-else>
             <table class="table table-striped">
               <thead>
                 <tr>
-                  <th>User</th>
-                  <th>Deskripsi</th>
-                  <th>Model</th>
-                  <th>Field Diubah</th>
-                  <th>Waktu</th>
-                  <th>Aksi</th>
+                  <th>User</th><th>Deskripsi</th><th>Model</th><th>Field Diubah</th><th>Waktu</th><th>Aksi</th>
                 </tr>
               </thead>
               <tbody>
@@ -81,9 +107,7 @@
                   <td>{{ log.changed_fields }}</td>
                   <td>{{ log.created_at }}</td>
                   <td>
-                    <button class="btn btn-sm btn-info" @click="openDetail(log.id)">
-                      Detail
-                    </button>
+                    <button class="btn btn-sm btn-info" @click="openDetail(log.id)">Detail</button>
                   </td>
                 </tr>
               </tbody>
@@ -97,30 +121,18 @@
                 </li>
 
                 <template v-if="windowStart > 1">
-                  <li class="page-item">
-                    <a class="page-link" href="#" @click.prevent="goPage(1)">1</a>
-                  </li>
-                  <li v-if="windowStart > 2" class="page-item disabled">
-                    <span class="page-link">...</span>
-                  </li>
+                  <li class="page-item"><a class="page-link" href="#" @click.prevent="goPage(1)">1</a></li>
+                  <li v-if="windowStart > 2" class="page-item disabled"><span class="page-link">...</span></li>
                 </template>
 
-                <li
-                  v-for="p in visiblePages"
-                  :key="p"
-                  class="page-item"
-                  :class="{ active: p === currentPage }"
-                >
+                <li v-for="p in visiblePages" :key="p"
+                    class="page-item" :class="{ active: p === currentPage }">
                   <a class="page-link" href="#" @click.prevent="goPage(p)">{{ p }}</a>
                 </li>
 
                 <template v-if="windowEnd < lastPage">
-                  <li v-if="windowEnd < lastPage - 1" class="page-item disabled">
-                    <span class="page-link">...</span>
-                  </li>
-                  <li class="page-item">
-                    <a class="page-link" href="#" @click.prevent="goPage(lastPage)">{{ lastPage }}</a>
-                  </li>
+                  <li v-if="windowEnd < lastPage - 1" class="page-item disabled"><span class="page-link">...</span></li>
+                  <li class="page-item"><a class="page-link" href="#" @click.prevent="goPage(lastPage)">{{ lastPage }}</a></li>
                 </template>
 
                 <li class="page-item" :class="{ disabled: currentPage === lastPage }">
@@ -154,18 +166,31 @@
 import { ref, reactive, computed, onMounted, nextTick } from 'vue';
 import axios from 'axios';
 import { Modal } from 'bootstrap';
+import vSelect from 'vue-select';
+import 'vue-select/dist/vue-select.css';
 import { useCounterStore } from '@/stores/counter';
 
 const store = useCounterStore();
 
-/* reaktif state */
-const logs            = ref([]);
-const loading         = ref(false);
-const detailModal     = ref(null);
-const prettyDetail    = ref('');
-const filters         = reactive({ search: '', modelType: '' });
-const pagination      = reactive({ currentPage: 1, perPage: 10, total: 0 });
+/* state */
+const logs   = ref([]);
+const loading = ref(false);
+const detailModal  = ref(null);
+const prettyDetail = ref('');
+
+const filters = reactive({
+  search    : '',
+  modelType : [],
+  event     : [],
+  userId    : [],
+  dateFrom  : '',
+  dateTo    : '',
+});
+const pagination = reactive({ currentPage: 1, perPage: 10, total: 0 });
+
 const modelTypeOptions = ref([]);
+const userOptions      = ref([]);
+const eventOptions     = ['created', 'updated', 'deleted'];
 
 /* computed */
 const currentPage  = computed(() => pagination.currentPage);
@@ -183,19 +208,21 @@ const visiblePages = computed(() => {
 const fetchLogs = async () => {
   loading.value = true;
   try {
-    const params = {
-      page: pagination.currentPage,
-      per_page: pagination.perPage,
-      search: filters.search,
-      model_type: filters.modelType,
-    };
-    const { data } = await axios.get(`${store.API_BASE_URL}/activity-log/datatable`, {
-      params,
+    const params = new URLSearchParams();
+    params.set('page', pagination.currentPage);
+    params.set('per_page', pagination.perPage);
+    if (filters.search)    params.set('search', filters.search);
+    if (filters.dateFrom)  params.set('date_from', filters.dateFrom);
+    if (filters.dateTo)    params.set('date_to', filters.dateTo);
+    if (filters.modelType.length) params.set('model_type', filters.modelType.join(','));
+    if (filters.event.length)     params.set('event', filters.event.join(','));
+    if (filters.userId.length)    params.set('user_id', filters.userId.join(','));
+
+    const { data } = await axios.get(`${store.API_BASE_URL}/activity-log/datatable?${params}`, {
       headers: { Authorization: `Bearer ${store.token}` },
     });
     logs.value   = data.data;
     pagination.total = data.recordsTotal;
-    modelTypeOptions.value = [...new Set(logs.value.map(l => l.model?.split(' ')[0]).filter(Boolean))];
   } catch (e) {
     console.error(e);
   } finally {
@@ -203,109 +230,42 @@ const fetchLogs = async () => {
   }
 };
 
+const loadOptions = async () => {
+  try {
+    const [models, users] = await Promise.all([
+      axios.get(`${store.API_BASE_URL}/activity-log/models`, { headers: { Authorization: `Bearer ${store.token}` } }),
+      axios.get(`${store.API_BASE_URL}/activity-log/users`,  { headers: { Authorization: `Bearer ${store.token}` } }),
+    ]);
+    // Ubah mapping agar value = FQCN, label = basename
+    modelTypeOptions.value = Object.entries(models.data).map(([label, value]) => ({
+      label,
+      value,
+    }));
+    userOptions.value = Object.entries(users.data).map(([id, name]) => ({
+      id: Number(id),
+      name,
+    }));
+  } catch (e) {
+    console.error(e);
+  }
+};
+
 const debounceSearch = (() => {
-  let timeout;
-  return () => {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => reloadTable(), 400);
-  };
+  let t; return () => { clearTimeout(t); t = setTimeout(reloadTable, 400); };
 })();
 
 const reloadTable = () => { pagination.currentPage = 1; fetchLogs(); };
-const resetFilter = () => { filters.search = ''; filters.modelType = ''; reloadTable(); };
-const prevPage    = () => { if (pagination.currentPage > 1) { pagination.currentPage--; fetchLogs(); } };
-const nextPage    = () => { if (pagination.currentPage < lastPage.value) { pagination.currentPage++; fetchLogs(); } };
-const goPage      = (p) => { pagination.currentPage = p; fetchLogs(); };
-
-const formatDetail = (raw) => {
-  const { event, causer, subject, created_at, old, new: newData } = raw;
-
-  const labels = {
-    pj_id: 'Penanggung Jawab',
-    status: 'Status Barang',
-    room_id: 'Ruangan',
-    unit_id: 'Unit',
-    image_path: 'Gambar',
-    next_due_km: 'KM Service Berikutnya',
-    qr_code_path: 'QR Code',
-    next_due_date: 'Tanggal Service Berikutnya',
-    purchase_price: 'Harga Beli',
-    last_checked_at: 'Terakhir Dicek',
-    inventory_number: 'Nomor Inventaris',
-    procurement_date: 'Tanggal Pengadaan',
-    inventory_item_id: 'Jenis Barang',
-    acquisition_source: 'Sumber Perolehan',
-    last_maintenance_at: 'Terakhir Maintenance',
-    expected_replacement: 'Perkiraan Penggantian',
-    last_odometer_reading: 'KM Terakhir',
-    estimated_depreciation: 'Depresiasi',
-    maintenance_frequency_type: 'Tipe Frekuensi',
-    maintenance_frequency_value: 'Nilai Frekuensi'
-  };
-
-  const map = obj =>
-    Object.entries(obj || {})
-      .filter(([, v]) => v !== null)
-      .map(([k, v]) => {
-        const label = labels[k] || k;
-        let prettyValue = v;
-        if (k.endsWith('_at') || k === 'procurement_date' || k === 'expected_replacement')
-          prettyValue = new Date(v).toLocaleDateString('id-ID');
-        if (k === 'purchase_price') prettyValue = `Rp ${Number(v).toLocaleString('id-ID')}`;
-        return { label, value: prettyValue };
-      });
-
-  let html = `
-    <div class="mb-2">
-      <strong>Aksi:</strong> <span class="badge badge-primary">${(event || 'N/A').toUpperCase()}</span><br>
-      <strong>Pengguna:</strong> ${causer || 'System'}<br>
-      <strong>Subject:</strong> ${subject || '-'}<br>
-      <strong>Waktu:</strong> ${created_at ? new Date(created_at).toLocaleString('id-ID') : '-'}
-    </div>
-  `;
-
-  const oldEntries = map(old);
-  const newEntries = map(newData);
-
-if (event === 'updated' && Object.keys(old || {}).length && Object.keys(newData || {}).length) {
-  const changes = [];
-
-  // gabungkan semua key
-  const allKeys = [...new Set([...Object.keys(old), ...Object.keys(newData)])];
-
-  for (const key of allKeys) {
-    const label = labels[key] || key;
-    let oldVal = old[key];
-    let newVal = newData[key];
-
-    // format value
-    if (key.endsWith('_at') || key === 'procurement_date' || key === 'expected_replacement') {
-      oldVal = oldVal ? new Date(oldVal).toLocaleDateString('id-ID') : '-';
-      newVal = newVal ? new Date(newVal).toLocaleDateString('id-ID') : '-';
-    }
-    if (key === 'purchase_price') {
-      oldVal = oldVal ? `Rp ${Number(oldVal).toLocaleString('id-ID')}` : '-';
-      newVal = newVal ? `Rp ${Number(newVal).toLocaleString('id-ID')}` : '-';
-    }
-
-    if (oldVal !== newVal) {
-      changes.push(`<tr><td>${label}</td><td>${oldVal ?? '-'}</td><td>${newVal ?? '-'}</td></tr>`);
-    }
-  }
-
-  if (changes.length) {
-    html += `<h6 class="mt-3">Perubahan:</h6>
-             <table class="table table-sm table-bordered">
-               <thead><tr><th width="30%">Field</th><th width="35%">Lama</th><th width="35%">Baru</th></tr></thead>
-               <tbody>${changes.join('')}</tbody>
-             </table>`;
-  } else {
-    html += `<div class="alert alert-info mt-3">Tidak ada perubahan.</div>`;
-  }
-}
-  return html;
+const resetFilter = () => {
+  Object.assign(filters, {
+    search: '', modelType: [], event: [], userId: [], dateFrom: '', dateTo: '',
+  });
+  reloadTable();
 };
+const prevPage = () => { if (pagination.currentPage > 1) { pagination.currentPage--; fetchLogs(); } };
+const nextPage = () => { if (pagination.currentPage < lastPage.value) { pagination.currentPage++; fetchLogs(); } };
+const goPage   = (p) => { pagination.currentPage = p; fetchLogs(); };
 
+/* detail modal */
 const openDetail = async (id) => {
   try {
     const { data } = await axios.get(`${store.API_BASE_URL}/activity-log/${id}/detail`, {
@@ -316,12 +276,64 @@ const openDetail = async (id) => {
     new Modal(detailModal.value).show();
   } catch (e) {
     console.error(e);
-    prettyDetail.value = `<div class="text-danger">Gagal memuat detail</div>`;
+    prettyDetail.value = '<div class="text-danger">Gagal memuat detail</div>';
     await nextTick();
     new Modal(detailModal.value).show();
   }
 };
 
+const formatDetail = (raw) => {
+  const { event, causer, subject, created_at, old, new: newData } = raw;
+  const labels = {}; // isi dengan label custom jika perlu
+
+  const map = (obj) => Object.entries(obj || {})
+    .map(([k, v]) => {
+      const label = labels[k] || k;
+      let val = v;
+      if (k.endsWith('_at') || k === 'procurement_date') val = new Date(v).toLocaleDateString('id-ID');
+      if (k === 'purchase_price') val = `Rp ${Number(v).toLocaleString('id-ID')}`;
+      return `<tr><td>${label}</td><td>${val ?? '-'}</td></tr>`;
+    });
+
+  let html = `
+    <div class="mb-2">
+      <strong>Aksi:</strong> <span class="badge badge-primary">${event.toUpperCase()}</span><br>
+      <strong>Pengguna:</strong> ${causer || 'System'}<br>
+      <strong>Subject:</strong> ${subject}<br>
+      <strong>Waktu:</strong> ${new Date(created_at).toLocaleString('id-ID')}
+    </div>`;
+
+  if (event === 'updated' && Object.keys(old).length && Object.keys(newData).length) {
+    const keys = [...new Set([...Object.keys(old), ...Object.keys(newData)])];
+    const rows = keys.map(k => {
+      const label = labels[k] || k;
+      let oVal = old[k];
+      let nVal = newData[k];
+      if (k.endsWith('_at') || k === 'procurement_date') {
+        oVal = oVal ? new Date(oVal).toLocaleDateString('id-ID') : '-';
+        nVal = nVal ? new Date(nVal).toLocaleDateString('id-ID') : '-';
+      }
+      if (k === 'purchase_price') {
+        oVal = oVal ? `Rp ${Number(oVal).toLocaleString('id-ID')}` : '-';
+        nVal = nVal ? `Rp ${Number(nVal).toLocaleString('id-ID')}` : '-';
+      }
+      return `<tr><td>${label}</td><td>${oVal ?? '-'}</td><td>${nVal ?? '-'}</td></tr>`;
+    }).join('');
+    html += `<h6 class="mt-3">Perubahan:</h6>
+             <table class="table table-sm table-bordered">
+               <thead><tr><th>Field</th><th>Lama</th><th>Baru</th></tr></thead>
+               <tbody>${rows}</tbody>
+             </table>`;
+  } else if (event === 'created') {
+    html += `<h6 class="mt-3">Data baru:</h6>
+             <table class="table table-sm table-bordered"><tbody>${map(newData).join('')}</tbody></table>`;
+  } else if (event === 'deleted') {
+    html += `<h6 class="mt-3">Data lama:</h6>
+             <table class="table table-sm table-bordered"><tbody>${map(old).join('')}</tbody></table>`;
+  }
+  return html;
+};
+
 /* lifecycle */
-onMounted(() => fetchLogs());
+onMounted(() => { loadOptions(); fetchLogs(); });
 </script>

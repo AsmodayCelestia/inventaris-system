@@ -126,4 +126,17 @@ class FloorController extends Controller
             return response()->json(['message' => 'Gagal menghapus lantai: ' . $e->getMessage()], 500);
         }
     }
+
+    // app/Http/Controllers/FloorController.php
+public function byUnits(Request $request)
+{
+    $unitIds = $request->query('unit_id', []);
+    if (is_string($unitIds)) {
+        $unitIds = explode(',', $unitIds);
+    }
+
+    return \App\Models\Floor::whereIn('unit_id', $unitIds)
+        ->orderBy('number')
+        ->get(['id', 'number', 'unit_id']);
+}
 }
