@@ -242,8 +242,8 @@ onMounted(async () => {
   }
 
   // load users untuk PJ (keduanya butuh)
-  await counterStore.fetchUsers();
-  users.value = counterStore.users;
+    await counterStore.fetchUsersList('Umum');
+    users.value = counterStore.usersList;
 });
 
 </script>

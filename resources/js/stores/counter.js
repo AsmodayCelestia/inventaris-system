@@ -605,15 +605,15 @@ resetState() {
     },
 
 
-    async fetchUsersList() {
+    async fetchUsersList(divisi = '') {
       try {
-        const response = await axios.get(`${API_BASE_URL}/users`);
+        const params = divisi ? { divisi } : {};
+        const response = await axios.get(`${API_BASE_URL}/users`, { params });
         console.log(response);
-        
         this.usersList = response.data;
       } catch (error) {
         console.error('Failed to fetch users list:', error);
-        if (error.response && error.response.status === 401) this.logout();
+        if (error.response?.status === 401) this.logout();
       }
     },
     async createUser(userData) {

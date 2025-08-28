@@ -190,12 +190,15 @@
             <i class="fas fa-exclamation-triangle"></i> Laporkan / Tambah Maintenance
             </router-link>
 
-            <router-link
-              v-if="!isPublic && counterStore.isSupervisorOfInventory(inventory)"
-              :to="`/maintenance-done/${inventory.id}`"
-              class="btn btn-info ml-2">
-              <i class="fas fa-history"></i> Riwayat Maintenance
-            </router-link>
+<router-link
+  v-if="!isPublic && inventory &&
+        (counterStore.isSupervisorOfInventory(inventory) ||
+         counterStore.isAdmin ||
+         counterStore.isHead)"
+  :to="`/maintenance-done/${inventory.id}`"
+  class="btn btn-info ml-2">
+  <i class="fas fa-history"></i> Riwayat Maintenance
+</router-link>
             <router-link to="/inventories" class="btn btn-secondary">Kembali</router-link>
           </div>
         </div>

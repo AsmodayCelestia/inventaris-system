@@ -73,32 +73,29 @@
 <!-- Ringkasan maintenance -->
 <div class="card-body bg-light">
   <h5>Ringkasan Maintenance</h5>
-  <table class="table table-borderless mb-0">
-    <tr><td style="width: 160px"><b>Barang</b></td><td>{{ maintenance.inventory?.item?.name || '-' }}</td></tr>
-    <tr><td><b>Nomor</b></td><td>{{ maintenance.inventory?.inventory_number || '-' }}</td></tr>
-    <tr><td><b>Ruang</b></td><td>{{ maintenance.inventory?.room?.name ?? '-' }}</td></tr>
-    <tr><td><b>Merk</b></td><td>{{ maintenance.inventory?.item?.manufacturer ?? '-' }}</td></tr>
-    <tr><td><b>Tanggal</b></td><td>{{ formatDate(maintenance.inspection_date) }}</td></tr>
+<table class="table table-borderless mb-0">
+  <tbody>
+    <tr><td style="width: 160px"><b>Tanggal</b></td><td>{{ formatDate(maintenance.inspection_date) }}</td></tr>
     <tr><td><b>PJ</b></td><td>{{ maintenance.responsible_person?.name ?? '-' }}</td></tr>
     <tr><td><b>Dibuat oleh</b></td><td>{{ maintenance.creator?.name ?? '-' }}</td></tr>
     <tr><td><b>Biaya estimasi</b></td><td>Rp {{ maintenance.cost ? Number(maintenance.cost).toLocaleString('id-ID') : '-' }}</td></tr>
     <tr><td><b>Masalah</b></td><td class="text-muted">{{ maintenance.issue_found ?? '-' }}</td></tr>
-
-<tr v-if="photoList.length">
-  <td><b>Foto</b></td>
-  <td>
-    <div class="d-flex gap-2">
-      <img
-        v-for="(url, idx) in photoList"
-        :key="idx"
-        :src="url"
-        class="img-thumbnail"
-        style="width: 120px; height: 90px; object-fit: cover;"
-      />
-    </div>
-  </td>
-</tr>
-  </table>
+    <tr v-if="photoList.length">
+      <td><b>Foto</b></td>
+      <td>
+        <div class="d-flex gap-2">
+          <img
+            v-for="(url, idx) in photoList"
+            :key="idx"
+            :src="url"
+            class="img-thumbnail"
+            style="width: 120px; height: 90px; object-fit: cover;"
+          />
+        </div>
+      </td>
+    </tr>
+  </tbody>
+</table>
 </div>
             <div class="card-footer">
               <button type="submit" class="btn btn-success" :disabled="loading">
@@ -175,9 +172,9 @@
               </div>
 
               <!-- PJ (admin/head only) -->
-              <div v-if="context === 'full'" class="form-group">
+              <div v-if="['admin','head'].includes(counter.userRole)" class="form-group">
                 <label>Penanggung Jawab</label>
-                <select v-model="form.user_id" class="form-control" :disabled="!canEditUser">
+                <select v-model="form.user_id" class="form-control">
                   <option :value="null">-- Tidak ada --</option>
                   <option v-for="u in users" :key="u.id" :value="u.id">{{ u.name }}</option>
                 </select>
@@ -201,6 +198,8 @@
 import { ref, computed, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useCounterStore } from "@/stores/counter";
+import { watch } from 'vue';
+
 
 const route   = useRoute();
 const router  = useRouter();
@@ -327,14 +326,16 @@ function handlePhoto(e, key) {
 /* -------------------------------------------------
    Helpers
 -------------------------------------------------- */
+
 function formatDate(date) {
-  return date
-    ? new Date(date).toLocaleDateString('id-ID', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-      })
-    : '-';
+  if (!date) return '-';
+  return new Date(date)
+    .toLocaleDateString('id-ID', {
+      timeZone: 'Asia/Jakarta',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
 }
 /* -------------------------------------------------
    Mount
@@ -342,11 +343,12 @@ function formatDate(date) {
 onMounted(async () => {
   const id = route.params.id;
   loading.value = true;
+  await counter.authReady;
   try {
     maintenance.value = await counter.fetchMaintenanceDetail(id);
-    const isoDate = maintenance.value.inspection_date
-      ? new Date(maintenance.value.inspection_date).toISOString().slice(0, 10)
-      : "";
+const raw = maintenance.value.inspection_date || "";
+const match = raw.match(/\d{4}-\d{2}-\d{2}/); // ambil 2025-08-27
+const isoDate = match ? match[0] : "";
     form.value = {
       inspection_date: isoDate,
       issue_found: maintenance.value.issue_found || "",
@@ -357,7 +359,12 @@ onMounted(async () => {
       user_id: maintenance.value.user_id ?? null,
     };
     existingPhoto.value = [maintenance.value.photo_1||"", maintenance.value.photo_2||"", maintenance.value.photo_3||""];
-    if (context.value === "full") users.value = await counter.fetchUsersList?.() ?? [];
+    if (['admin','head'].includes(counter.userRole)) {
+      await counter.fetchUsersList('Umum');
+      users.value = counter.usersList;
+    }
+    console.log('raw date:', maintenance.value.inspection_date);
+console.log('formatted:', formatDate(maintenance.value.inspection_date));
   } catch (e) {
     fetchError.value = e.message || "Gagal memuat data";
     router.push("/maintenance/list");

@@ -73,8 +73,8 @@ use App\Http\Controllers\ActivityLogController;
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/inventories/scan/{id}', [InventoryController::class, 'showForScan']);
 // routes/api.php
-
-
+        // download
+        Route::get('/qrcodes/download',   [InventoryController::class, 'downloadBulk']);   // ?ids=1,2,3 → zip
 
 // AUTHENTICATED
 Route::middleware('auth:sanctum')->group(function () {
@@ -98,18 +98,18 @@ Route::middleware('auth:sanctum')->group(function () {
 
     /* ---------- FLOW BARU ---------- */
     Route::get('/maintenance/active', [MaintenanceController::class,'active']); // ✅ tambahkan ini
-Route::get('/maintenance/need', [MaintenanceController::class, 'need']);
-Route::patch('/maintenance/{id}/assign', [MaintenanceController::class, 'assign']);
-Route::patch('/maintenance/{id}/status', [MaintenanceController::class, 'updateStatus']);
+    Route::get('/maintenance/need', [MaintenanceController::class, 'need']);
+    Route::patch('/maintenance/{id}/assign', [MaintenanceController::class, 'assign']);
+    Route::patch('/maintenance/{id}/status', [MaintenanceController::class, 'updateStatus']);
     
     Route::get('/inventories/qr/{inventoryNumber}', [InventoryController::class,'showByQrCode']);
     Route::get('/maintenance/history', [MaintenanceController::class,'index']);
+    Route::get('/maintenance/done-datatable', [MaintenanceController::class, 'doneDatatable']);
     Route::get('/maintenance/done', [MaintenanceController::class, 'done']);
     Route::get('/inventories/{inventory}/maintenance-done',[MaintenanceController::class, 'historyDone']);
     Route::post('/inventories/{inventoryId}/maintenance', [MaintenanceController::class,'store']);
     Route::get('/maintenance/{id}', [MaintenanceController::class,'show']);
     Route::put('/maintenance/{id}', [MaintenanceController::class,'update']);
-
     // Route::post('/maintenance/{id}', [MaintenanceController::class,'update']);
 
     Route::get('/dashboard/stats', [DashboardController::class,'getStats']);
@@ -119,13 +119,22 @@ Route::patch('/maintenance/{id}/status', [MaintenanceController::class, 'updateS
     });
 
         Route::put('/inventories/{id}', [InventoryController::class, 'update']);
-
+        Route::get('/inventory-items-datatable', [InventoryItemController::class, 'table'])
+            ->middleware(['auth:sanctum', 'role:admin,head']);
 
     /* ----------  ADMIN & HEAD  ---------- */
     Route::middleware('role:admin,head')->group(function () {
+
     Route::get('/users',        [UserController::class, 'index']);
     Route::get('/users/{user}', [UserController::class, 'show']);
     Route::put('/users/{user}', [UserController::class, 'update']);
+
+        // master data
+        Route::apiResource('brands',     BrandController::class)->except(['index','show']);
+        Route::apiResource('categories', CategoryController::class)->except(['index','show']);
+        Route::apiResource('item-types', ItemTypeController::class)->except(['index','show']);
+        Route::apiResource('floors',     FloorController::class)->except(['index','show']);
+        Route::apiResource('rooms',      RoomController::class)->except(['index','show']);
         // Inventory Items (full CUD)
         Route::apiResource('inventory-items', InventoryItemController::class)->except(['index','show']);
 
@@ -142,6 +151,7 @@ Route::patch('/maintenance/{id}/status', [MaintenanceController::class, 'updateS
         Route::delete('/maintenance/{id}', [MaintenanceController::class,'destroy']);
 
         // Schedule
+        Route::post('/maintenance/scheduled/{inventory}', [MaintenanceController::class, 'storeScheduled']);
         Route::put('/inventories/{inventory}/schedule', [InventoryController::class,'updateSchedule']);
     });
 
@@ -149,19 +159,13 @@ Route::patch('/maintenance/{id}/status', [MaintenanceController::class, 'updateS
     Route::middleware('role:admin')->group(function () {
 
         Route::post('/register', [AuthController::class,'register']);
-
-        Route::apiResource('brands',     BrandController::class)->except(['index','show']);
-        Route::apiResource('categories', CategoryController::class)->except(['index','show']);
-        Route::apiResource('item-types', ItemTypeController::class)->except(['index','show']);
         Route::apiResource('units',      LocationUnitController::class)->except(['index','show']);
-        Route::apiResource('floors',     FloorController::class)->except(['index','show']);
-        Route::apiResource('rooms',      RoomController::class)->except(['index','show']);
         Route::apiResource('divisions', DivisionController::class)->except(['index','show']);
         Route::apiResource('users', UserController::class)->except(['index', 'show', 'update']);
-
-        Route::post('/qrcodes', [InventoryController::class,'createQrCode']);
-        Route::put('/qrcodes/{id}', [InventoryController::class,'updateQrCode']);
-        Route::delete('/qrcodes/{id}', [InventoryController::class,'deleteQrCode']);
+        // bulk create / update / delete
+        Route::post('/qrcodes/bulk',      [InventoryController::class, 'bulkCreateQr']);
+        Route::put('/qrcodes/bulk',       [InventoryController::class, 'bulkUpdateQr']);
+        Route::delete('/qrcodes/bulk',    [InventoryController::class, 'bulkDeleteQr']);
 
         Route::get('/activity-log', [ActivityLogController::class, 'index']);
         Route::get('/activity-log/datatable', [ActivityLogController::class, 'datatable']);

@@ -352,109 +352,7 @@ public function update(Request $request, $id)
         return response()->json($data);
     }
 
-    /* -----------------------------------------------------------------
-       |  QR-CODE MANUAL (TETAP ADA, TIDAK OTOMATIS)
-       ----------------------------------------------------------------- */
-    public function createQrCode(Request $request)
-    {
-        if (auth()->user()->role !== 'admin') {
-            return response()->json(['error' => 'Tidak memiliki akses.'], 403);
-        }
 
-        $inventory = Inventory::findOrFail($request->inventory_id);
-        if ($inventory->qr_code_path) {
-            return response()->json(['error' => 'QR Code sudah ada.'], 400);
-        }
-
-        try {
-            $detailUrl = config('app.short_url') . '/' . $inventory->id;
-            $qrResult  = Builder::create()
-                ->writer(new PngWriter())
-                ->data($detailUrl)
-                ->size(500)
-                ->margin(10)
-                ->build();
-
-            $qrFile = 'qrcodes/inventories/' . $inventory->inventory_number . '-' . Str::random(10) . '.png';
-            Storage::disk('public')->put($qrFile, $qrResult->getString());
-
-            $cloud = Cloudinary::upload(storage_path('app/public/' . $qrFile), [
-                'folder'    => 'inventories_qrcodes',
-                'public_id' => 'qr-' . Str::slug($inventory->inventory_number) . '-' . Str::random(8),
-            ]);
-            Storage::disk('public')->delete($qrFile);
-
-            $inventory->qr_code_path = $cloud->getSecurePath();
-            $inventory->save();
-
-            return response()->json(['message' => 'QR Code berhasil dibuat.', 'data' => $inventory->load(['item', 'room', 'unit'])]);
-        } catch (\Exception $e) {
-            \Log::error('QR Code error: ' . $e->getMessage());
-            return response()->json(['error' => 'Gagal membuat QR Code.'], 500);
-        }
-    }
-
-    public function updateQrCode(Request $request, $id)
-    {
-        if (auth()->user()->role !== 'admin') {
-            return response()->json(['error' => 'Tidak memiliki akses.'], 403);
-        }
-
-        $inventory = Inventory::findOrFail($id);
-        if (!$inventory->qr_code_path) {
-            return response()->json(['error' => 'QR Code belum ada.'], 400);
-        }
-
-        try {
-            $detailUrl = config('app.short_url') . '/' . $inventory->id;
-            $qrResult  = Builder::create()
-                ->writer(new PngWriter())
-                ->data($detailUrl)
-                ->size(500)
-                ->margin(10)
-                ->build();
-
-            $qrFile = 'qrcodes/inventories/' . $inventory->inventory_number . '-' . Str::random(10) . '.png';
-            Storage::disk('public')->put($qrFile, $qrResult->getString());
-
-            $cloud = Cloudinary::upload(storage_path('app/public/' . $qrFile), [
-                'folder'    => 'inventories_qrcodes',
-                'public_id' => 'qr-' . Str::slug($inventory->inventory_number) . '-' . Str::random(8),
-            ]);
-            Storage::disk('public')->delete($qrFile);
-
-            $inventory->qr_code_path = $cloud->getSecurePath();
-            $inventory->save();
-
-            return response()->json(['message' => 'QR Code berhasil diperbarui.', 'data' => $inventory->load(['item', 'room', 'unit'])]);
-        } catch (\Exception $e) {
-            \Log::error('QR Code error: ' . $e->getMessage());
-            return response()->json(['error' => 'Gagal memperbarui QR Code.'], 500);
-        }
-    }
-
-    public function deleteQrCode(Request $request, $id)
-    {
-        if (auth()->user()->role !== 'admin') {
-            return response()->json(['error' => 'Tidak memiliki akses.'], 403);
-        }
-
-        $inventory = Inventory::findOrFail($id);
-        if (!$inventory->qr_code_path) {
-            return response()->json(['error' => 'QR Code tidak ada.'], 400);
-        }
-
-        try {
-            $publicIdQr = pathinfo(parse_url($inventory->qr_code_path, PHP_URL_PATH), PATHINFO_FILENAME);
-            Cloudinary::destroy('inventories_qrcodes/' . $publicIdQr);
-            $inventory->qr_code_path = null;
-            $inventory->save();
-            return response()->json(['message' => 'QR Code berhasil dihapus.']);
-        } catch (\Exception $e) {
-            \Log::error('Failed to delete QR Code: ' . $e->getMessage());
-            return response()->json(['error' => 'Gagal menghapus QR Code.'], 500);
-        }
-    }
 
 public function showForScan($id)
 {
@@ -645,6 +543,104 @@ private function ensureQrGenerated(Inventory $inventory): void
     } catch (\Exception $e) {
         \Log::error('QR helper error: ' . $e->getMessage());
     }
+}
+
+/* ----------------------------------------------------------
+   |  BULK QR-CODE
+   ---------------------------------------------------------- */
+public function bulkCreateQr(Request $request)
+{
+    $ids = $request->input('inventory_ids', []);
+    $done = 0;
+    foreach (Inventory::whereIn('id', $ids)->cursor() as $inv) {
+        if (!$inv->qr_code_path) {
+            $this->ensureQrGenerated($inv);
+            $done++;
+        }
+    }
+    return response()->json(['message' => "$done QR code berhasil dibuat"]);
+}
+
+public function bulkUpdateQr(Request $request)
+{
+    $ids = $request->input('inventory_ids', []);
+    $done = 0;
+
+    foreach (Inventory::whereIn('id', $ids)->cursor() as $inv) {
+        // 1. Hapus QR lama
+        if ($inv->qr_code_path) {
+            $publicId = pathinfo(parse_url($inv->qr_code_path, PHP_URL_PATH), PATHINFO_FILENAME);
+            Cloudinary::destroy('inventories_qrcodes/' . $publicId);
+            $inv->qr_code_path = null; // reset dulu
+            $inv->saveQuietly();
+        }
+
+        // 2. Generate ulang
+        $this->ensureQrGenerated($inv);
+        $done++;
+    }
+    return response()->json(['message' => "$done QR code berhasil diperbarui"]);
+}
+
+public function bulkDeleteQr(Request $request)
+{
+    $ids  = $request->input('inventory_ids', []);
+    $done = 0;
+
+    foreach (Inventory::whereIn('id', $ids)->cursor() as $inv) {
+        if ($inv->qr_code_path) {
+            // ambil full path setelah /image/upload/, lalu hilangkan ekstensi
+            $path     = parse_url($inv->qr_code_path, PHP_URL_PATH); // /v12345/inventories_qrcodes/qr-ABC123.png
+            $segments = explode('/', trim($path, '/'));
+            $publicId = implode('/', array_slice($segments, 2));     // inventories_qrcodes/qr-ABC123
+
+            Cloudinary::destroy($publicId);
+            $inv->update(['qr_code_path' => null]);
+            $done++;
+        }
+    }
+
+    return response()->json(['message' => "$done QR code berhasil dihapus"]);
+}
+
+/* ----------------------------------------------------------
+   |  DOWNLOAD
+   ---------------------------------------------------------- */
+
+public function downloadBulk(Request $request)
+{
+    $ids = $request->input('ids'); // 1,2,3
+    abort_if(empty($ids), 400, 'Tidak ada inventaris dipilih');
+
+    $inventories = Inventory::whereIn('id', explode(',', $ids))
+                            ->whereNotNull('qr_code_path')
+                            ->get();
+
+    abort_if($inventories->isEmpty(), 404, 'Tidak ada QR code');
+
+    // Jika hanya 1 file → langsung stream
+    if ($inventories->count() === 1) {
+        $file = file_get_contents($inventories->first()->qr_code_path);
+        return response($file, 200, [
+            'Content-Type'        => 'image/png',
+            'Content-Disposition' => 'attachment; filename="'.$inventories->first()->inventory_number.'.png"',
+        ]);
+    }
+
+    // Lebih dari 1 → zip
+    $zip = new \ZipArchive();
+    $zipName = storage_path('app/public/qr-codes-' . now()->timestamp . '.zip');
+    $zip->open($zipName, \ZipArchive::CREATE | \ZipArchive::OVERWRITE);
+
+    foreach ($inventories as $inv) {
+        $file = file_get_contents($inv->qr_code_path);
+        $zip->addFromString($inv->inventory_number . '.png', $file);
+    }
+    $zip->close();
+
+    return response()->download($zipName, 'qr-codes.zip', [
+            'Content-Type' => 'application/zip'
+        ])->deleteFileAfterSend(true);
 }
 
 }

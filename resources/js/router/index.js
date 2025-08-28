@@ -188,79 +188,79 @@ const routes = [
                 path: 'master-data/brands',
                 name: 'BrandList',
                 component: BrandList,
-                meta: { requiresAuth: true, roles: ['admin'] }
+                meta: { requiresAuth: true, roles: ['admin', 'head'] }
             },
             {
                 path: 'master-data/brands/create',
                 name: 'BrandCreate',
                 component: BrandForm,
-                meta: { requiresAuth: true, roles: ['admin'] }
+                meta: { requiresAuth: true, roles: ['admin', 'head'] }
             },
             {
                 path: 'master-data/brands/edit/:id',
                 name: 'BrandEdit',
                 component: BrandForm,
                 props: true,
-                meta: { requiresAuth: true, roles: ['admin'] }
+                meta: { requiresAuth: true, roles: ['admin', "head"] }
             },
             {
                 path: 'master-data/categories',
                 name: 'CategoryList',
                 component: CategoryList,
-                meta: { requiresAuth: true, roles: ['admin'] }
+                meta: { requiresAuth: true, roles: ['admin', 'head'] }
             },
             {
                 path: 'master-data/categories/create',
                 name: 'CategoryCreate',
                 component: CategoryForm,
-                meta: { requiresAuth: true, roles: ['admin'] }
+                meta: { requiresAuth: true, roles: ['admin', 'head'] }
             },
             {
                 path: 'master-data/categories/edit/:id',
                 name: 'CategoryEdit',
                 component: CategoryForm,
                 props: true,
-                meta: { requiresAuth: true, roles: ['admin'] }
+                meta: { requiresAuth: true, roles: ['admin', 'head'] }
             },
 
             {
                 path: 'master-data/item-types',
                 name: 'ItemTypeList',
                 component: ItemTypeList,
-                meta: { requiresAuth: true, roles: ['admin'] }
+                meta: { requiresAuth: true, roles: ['admin', 'head'] }
             },
             {
                 path: 'master-data/item-types/create',
                 name: 'ItemTypeCreate',
                 component: ItemTypeForm,
-                meta: { requiresAuth: true, roles: ['admin'] }
+                meta: { requiresAuth: true, roles: ['admin', 'head'] }
             },
             {
                 path: 'master-data/item-types/edit/:id',
                 name: 'ItemTypeEdit',
                 component: ItemTypeForm,
                 props: true,
-                meta: { requiresAuth: true, roles: ['admin'] }
+                meta: { requiresAuth: true, roles: ['admin', 'head'] }
             },
 
             {
                 path: 'master-data/floors',
                 name: 'FloorList',
                 component: FloorList,
-                meta: { requiresAuth: true, roles: ['admin'] }
+                meta: { requiresAuth: true, roles: ['admin', 'head'] }
             },
             {
                 path: 'master-data/floors/create',
                 name: 'FloorCreate',
                 component: FloorForm,
-                meta: { requiresAuth: true, roles: ['admin'] }
+                meta: { requiresAuth: true, roles: ['admin', 'head'] }
             },
             {
                 path: 'master-data/floors/edit/:id',
                 name: 'FloorEdit',
                 component: FloorForm,
                 props: true,
-                meta: { requiresAuth: true, roles: ['admin'] }
+                meta: { requiresAuth: true, roles: ['admin', 'head'] }
             },
 
             {
@@ -287,20 +287,20 @@ const routes = [
                 path: 'master-data/rooms',
                 name: 'RoomList',
                 component: RoomList,
-                meta: { requiresAuth: true, roles: ['admin'] }
+                meta: { requiresAuth: true, roles: ['admin', 'head'] }
             },
             {
                 path: 'master-data/rooms/create',
                 name: 'RoomCreate',
                 component: RoomForm,
-                meta: { requiresAuth: true, roles: ['admin'] }
+                meta: { requiresAuth: true, roles: ['admin', 'head'] }
             },
             {
                 path: 'master-data/rooms/edit/:id',
                 name: 'RoomEdit',
                 component: RoomForm,
                 props: true,
-                meta: { requiresAuth: true, roles: ['admin'] }
+                meta: { requiresAuth: true, roles: ['admin', 'head'] }
             },
 
             {

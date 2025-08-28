@@ -27,12 +27,19 @@ public function me(Request $request)
     ]);
 }
 
-    public function index()
-    {
-        // eager-load relasi division
-        $users = User::with('division')->get();
-        return response()->json($users);
+public function index(Request $request)
+{
+    $query = User::with('division');
+
+    // jika query string ?divisi=... ada, filter berdasarkan nama divisi
+    if ($request->filled('divisi')) {
+        $query->whereHas('division', function ($q) use ($request) {
+            $q->where('name', $request->divisi);
+        });
     }
+
+    return $query->get();
+}
 
     public function store(Request $request)
     {
