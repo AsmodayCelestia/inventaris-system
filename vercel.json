@@ -1,11 +1,11 @@
 {
   "version": 2,
-    "functions": {
-    "api/laravel.php": {
-        "runtime": "vercel-php@0.6.0"
+  "functions": {
+    "api/main.php": {
+      "runtime": "vercel-php@0.6.0"
     }
-    },
-    "routes": [
-    { "src": "/(.*)", "dest": "/api/laravel.php" }
-    ]
+  },
+  "routes": [
+    { "src": "/(.*)", "dest": "/api/main.php" }
+  ]
 }
