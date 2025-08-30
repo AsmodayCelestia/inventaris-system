@@ -104,6 +104,7 @@ Route::middleware('auth:sanctum')->group(function () {
     
     Route::get('/inventories/qr/{inventoryNumber}', [InventoryController::class,'showByQrCode']);
     Route::get('/maintenance/history', [MaintenanceController::class,'index']);
+    Route::get('/maintenance/active-datatable', [MaintenanceController::class, 'activeDatatable']);
     Route::get('/maintenance/done-datatable', [MaintenanceController::class, 'doneDatatable']);
     Route::get('/maintenance/done', [MaintenanceController::class, 'done']);
     Route::get('/inventories/{inventory}/maintenance-done',[MaintenanceController::class, 'historyDone']);

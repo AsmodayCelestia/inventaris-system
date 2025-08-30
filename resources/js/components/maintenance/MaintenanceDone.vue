@@ -1,3 +1,4 @@
+<!--  =========  FULL FILE (copy-paste ready)  =========  -->
 <template>
   <div>
     <!-- Header -->
@@ -41,7 +42,7 @@
               </div>
 
               <!-- Rentang Tanggal -->
-              <div class="col-md-4 mb-2">
+              <div class="col-md-3 mb-2">
                 <label>Rentang Tanggal</label>
                 <div class="input-group">
                   <input
@@ -62,15 +63,25 @@
                 </div>
               </div>
 
-              <div class="col-md-2 mb-2 align-self-end">
-                <button class="btn btn-primary w-100" @click="reloadTable">
-                  Terapkan
-                </button>
+              <!-- Filter PJ (khusus admin & head) – hanya karyawan Umum -->
+              <div v-if="counter.isAdmin || counter.isHead" class="col-md-3 mb-2">
+                <label>Penanggung Jawab</label>
+                <select v-model="filters.pjId" class="form-control" @change="reloadTable">
+                  <option value="">Semua PJ</option>
+                  <option
+                    v-for="u in pjOptions"
+                    :key="u.id"
+                    :value="u.id"
+                  >
+                    {{ u.name }}
+                  </option>
+                </select>
               </div>
-              <div class="col-md-2 mb-2 align-self-end">
-                <button class="btn btn-secondary w-100" @click="resetFilter">
-                  Reset
-                </button>
+
+              <!-- Tombol -->
+              <div class="col-md-3 mb-2 align-self-end d-flex gap-1">
+                <button class="btn btn-primary w-50" @click="reloadTable">Terapkan</button>
+                <button class="btn btn-secondary w-50" @click="resetFilter">Reset</button>
               </div>
             </div>
           </div>
@@ -132,7 +143,7 @@
                 </tbody>
               </table>
 
-              <!-- PAGINATION (mirip halaman Master) -->
+              <!-- PAGINATION -->
               <nav v-if="lastPage > 1">
                 <ul class="pagination justify-content-center">
                   <li class="page-item" :class="{ disabled: currentPage === 1 }">
@@ -152,7 +163,8 @@
                     v-for="p in visiblePages"
                     :key="p"
                     class="page-item"
-                    :class="{ active: p === currentPage }">
+                    :class="{ active: p === currentPage }"
+                  >
                     <a class="page-link" href="#" @click.prevent="goPage(p)">{{ p }}</a>
                   </li>
 
@@ -181,20 +193,22 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, onMounted, nextTick } from 'vue';
+import { ref, reactive, computed, onMounted } from 'vue';
 import axios from 'axios';
 import { useCounterStore } from '@/stores/counter';
 
 const counter = useCounterStore();
 
 /* ---------- state ---------- */
-const items   = ref([]);
-const loading = ref(false);
+const items     = ref([]);
+const loading   = ref(false);
+const pjOptions = ref([]);
 
 const filters = reactive({
   search  : '',
   dateFrom: '',
   dateTo  : '',
+  pjId    : '',
 });
 
 const pagination = reactive({
@@ -218,6 +232,12 @@ const visiblePages = computed(() => {
 });
 
 /* ---------- methods ---------- */
+const fetchPjOptions = async () => {
+  if (!(counter.isAdmin || counter.isHead)) return;
+  await counter.fetchUsersList('Umum');
+  pjOptions.value = counter.usersList;
+};
+
 const fetchItems = async () => {
   loading.value = true;
   try {
@@ -225,9 +245,10 @@ const fetchItems = async () => {
     params.set('per_page', pagination.perPage);
     params.set('page', pagination.currentPage);
 
-    if (filters.search) params.set('search', filters.search);
+    if (filters.search)   params.set('search', filters.search);
     if (filters.dateFrom) params.set('date_from', filters.dateFrom);
-    if (filters.dateTo) params.set('date_to', filters.dateTo);
+    if (filters.dateTo)   params.set('date_to', filters.dateTo);
+    if (filters.pjId)     params.set('pj_id', filters.pjId);
 
     const { data } = await axios.get(
       `${counter.API_BASE_URL}/maintenance/done-datatable?${params}`,
@@ -268,6 +289,7 @@ const resetFilter = () => {
   filters.search   = '';
   filters.dateFrom = '';
   filters.dateTo   = '';
+  filters.pjId     = '';
   reloadTable();
 };
 
@@ -291,5 +313,8 @@ const goPage = (p) => {
 };
 
 /* ---------- lifecycle ---------- */
-onMounted(fetchItems);
+onMounted(() => {
+  fetchItems();
+  if (counter.isAdmin || counter.isHead) fetchPjOptions();
+});
 </script>

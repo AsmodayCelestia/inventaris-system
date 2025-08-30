@@ -307,7 +307,7 @@ public function need(Request $request)
             'responsiblePerson',
             'creator'
         ])
-        ->whereIn('status', ['on_progress', 'handled'])
+        ->whereIn('status', ['on_progress', 'handled', 'cancelled'])
         ->orderBy('inspection_date', 'desc');
 
         $user = Auth::user();
@@ -448,7 +448,74 @@ public function need(Request $request)
         }
         return response()->json($maintenance);
     }
+/* MaintenanceController.php */
+public function activeDatatable(Request $request)
+{
+    $query = InventoryMaintenance::with([
+        'inventory.item',
+        'inventory.room',
+        'responsiblePerson',
+        'creator'
+    ])->whereIn('status', ['on_progress', 'handled', 'cancelled']);
 
+    /* hak akses (sama seperti done-datatable, ubah status filter) */
+    $user = Auth::user();
+    $division = $user->division?->name;
+    if (in_array($user->role, ['admin', 'head'])) {
+        // bebas
+    } elseif ($user->role === 'karyawan' && $division === 'Umum') {
+        $query->where('user_id', $user->id);
+    } elseif ($user->role === 'karyawan') {
+        $query->whereHas('inventory.room', fn ($q) => $q->where('pj_lokasi_id', $user->id));
+    } else {
+        $query->where('creator_id', $user->id);
+    }
+
+    /* search, date, pj_id filter */
+    if ($keyword = $request->input('search')) {
+        $query->where(function ($q) use ($keyword) {
+            $q->whereHas('inventory.item', fn($q) => $q->where('name', 'like', "%{$keyword}%"))
+              ->orWhereHas('inventory', fn($q) => $q->where('inventory_number', 'like', "%{$keyword}%"));
+        });
+    }
+    if ($pj = $request->input('pj_id')) {
+        $query->where('user_id', $pj);
+    }
+    if ($from = $request->input('date_from')) {
+        $query->whereDate('inspection_date', '>=', $from);
+    }
+    if ($to = $request->input('date_to')) {
+        $query->whereDate('inspection_date', '<=', $to);
+    }
+
+    /* pagination */
+    $recordsTotal = (clone $query)->count();
+    $length = (int) $request->input('per_page', 10);
+    $page   = (int) $request->input('page', 1);
+    $items  = (clone $query)
+        ->orderBy('inspection_date', 'desc')
+        ->offset(($page - 1) * $length)
+        ->limit($length)
+        ->get();
+
+    $data = $items->map(fn($row) => [
+        'id'               => $row->id,
+        'inventory'        => [
+            'item' => ['name' => $row->inventory->item->name ?? '-'],
+            'inventory_number' => $row->inventory->inventory_number ?? '-',
+        ],
+        'responsible_person' => ['name' => $row->responsiblePerson->name ?? '-'],
+        'inspection_date' => $row->inspection_date,
+        'status'          => $row->status,
+    ]);
+
+    return response()->json([
+        'draw'            => (int) $request->input('draw', 1),
+        'recordsTotal'    => $recordsTotal,
+        'recordsFiltered' => $recordsTotal,
+        'data'            => $data,
+    ]);
+}
     /* ---------------------------------------------
  *  DATATABLE – maintenance yang status = done
  * --------------------------------------------- */
@@ -483,6 +550,9 @@ public function doneDatatable(Request $request)
             $q->whereHas('inventory.item', fn ($q) => $q->where('name', 'like', "%{$keyword}%"))
               ->orWhereHas('inventory', fn ($q) => $q->where('inventory_number', 'like', "%{$keyword}%"));
         });
+    }
+    if ($request->filled('pj_id') && in_array($user->role, ['admin', 'head'])) {
+        $query->where('user_id', $request->pj_id);
     }
 
     /* ---------- rentang tanggal ---------- */
@@ -541,6 +611,19 @@ public function storeScheduled(Request $request, $inventoryId)
         'notes'           => 'nullable|string',
     ]);
 
+    // 1. Cek apakah sudah ada scheduled yang belum selesai
+    $alreadyScheduled = InventoryMaintenance::where('inventory_id', $inventoryId)
+        ->whereNotNull('user_id')            // punya PJ = scheduled
+        ->whereIn('status', ['on_progress', 'handled'])
+        ->exists();
+
+    if ($alreadyScheduled) {
+        return response()->json([
+            'message' => 'Masih ada maintenance scheduled yang berjalan untuk barang ini.'
+        ], 422);
+    }
+
+    // 2. Buat record scheduled baru
     $maintenance = InventoryMaintenance::create([
         'inventory_id'    => $inventoryId,
         'inspection_date' => $validated['inspection_date'],

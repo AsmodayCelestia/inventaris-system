@@ -1,4 +1,4 @@
-<!-- Maintenance Aktif (full copy-paste) -->
+<!--  =========  Maintenance Aktif (full copy-paste)  =========  -->
 <template>
   <div>
     <!-- Header -->
@@ -13,7 +13,7 @@
               <li class="breadcrumb-item">
                 <router-link to="/dashboard">Home</router-link>
               </li>
-              <li class="breadcrumb-item active">Maintenance</li>
+              <li class="breadcrumb-item active">Maintenance Aktif</li>
             </ol>
           </div>
         </div>
@@ -23,9 +23,68 @@
     <!-- Content -->
     <div class="content">
       <div class="container-fluid">
+        <!-- FILTER -->
+        <div class="card">
+          <div class="card-header">
+            <h5>Filter & Pencarian</h5>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <!-- Search -->
+              <div class="col-md-3 mb-2">
+                <label>Cari</label>
+                <input
+                  v-model="filters.search"
+                  @input="debounceSearch"
+                  class="form-control"
+                  placeholder="Nama barang / nomor inventaris"
+                />
+              </div>
+
+              <!-- Rentang Tanggal -->
+              <div class="col-md-3 mb-2">
+                <label>Rentang Tanggal</label>
+                <div class="input-group">
+                  <input
+                    type="date"
+                    v-model="filters.dateFrom"
+                    class="form-control"
+                    @change="reloadTable"
+                  />
+                  <div class="input-group-prepend input-group-append">
+                    <span class="input-group-text">s/d</span>
+                  </div>
+                  <input
+                    type="date"
+                    v-model="filters.dateTo"
+                    class="form-control"
+                    @change="reloadTable"
+                  />
+                </div>
+              </div>
+
+              <!-- Filter PJ (khusus admin & head) – karyawan Umum saja -->
+              <div v-if="counter.isAdmin || counter.isHead" class="col-md-3 mb-2">
+                <label>Penanggung Jawab</label>
+                <select v-model="filters.pjId" class="form-control" @change="reloadTable">
+                  <option value="">Semua PJ</option>
+                  <option v-for="u in pjOptions" :key="u.id" :value="u.id">{{ u.name }}</option>
+                </select>
+              </div>
+
+              <!-- Tombol -->
+              <div class="col-md-3 mb-2 align-self-end d-flex gap-1">
+                <button class="btn btn-primary w-50" @click="reloadTable">Terapkan</button>
+                <button class="btn btn-secondary w-50" @click="resetFilter">Reset</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TABEL -->
         <div class="card">
           <div class="card-header d-flex justify-content-between align-items-center">
-            <h3 class="card-title">Daftar Maintenance</h3>
+            <h3 class="card-title">Daftar Maintenance Aktif</h3>
             <router-link
               to="/maintenance/create"
               class="btn btn-primary btn-sm"
@@ -36,56 +95,105 @@
           </div>
 
           <div class="card-body">
-            <div v-if="counter.maintenanceLoading" class="text-center p-4">
+            <div v-if="loading" class="text-center p-4">
               <i class="fas fa-spinner fa-spin fa-2x"></i>
-              <p class="mt-2">Memuat data maintenance...</p>
+              <p class="mt-2">Memuat data...</p>
             </div>
 
-            <div v-else-if="counter.maintenanceError" class="alert alert-danger m-3">
-              Terjadi kesalahan: {{ counter.maintenanceError }}
-            </div>
-
-            <div v-else-if="filteredList.length === 0" class="alert alert-info m-3">
+            <div v-else-if="!items.length" class="alert alert-info m-3">
               Belum ada maintenance aktif.
             </div>
 
-            <table v-else class="table table-striped table-valign-middle">
-              <thead>
-                <tr>
-                  <th>Nama Barang</th>
-                  <th>Nomor Inventaris</th>
-                  <th>Penanggung Jawab</th>
-                  <th>Tanggal</th>
-                  <th>Status</th>
-                  <th>Aksi</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="item in filteredList" :key="item.id">
-                  <td>{{ item.inventory?.item?.name || '-' }}</td>
-                  <td>{{ item.inventory?.inventory_number || '-' }}</td>
-                  <td>{{ item.responsible_person?.name ?? '-' }}</td>
-                  <td>{{ formatDate(item.inspection_date) }}</td>
-                  <td>
-                    <span :class="badgeClass(item.status)">
-                      {{ item.status_label || item.status }}
-                    </span>
-                  </td>
-                  <td>
-                    <router-link :to="`/maintenance/${item.id}`" class="text-muted mr-2">
-                      <i class="fas fa-eye"></i>
-                    </router-link>
-                    <router-link
-                      v-if="canEdit(item)"
-                      :to="`/maintenance/edit/${item.id}`"
-                      class="text-muted"
-                    >
-                      <i class="fas fa-edit"></i>
-                    </router-link>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+            <div v-else>
+              <table class="table table-striped table-valign-middle">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Nama Barang</th>
+                    <th>Nomor Inventaris</th>
+                    <th>Penanggung Jawab</th>
+                    <th>Tanggal</th>
+                    <th>Status</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(row, idx) in items" :key="row.id">
+                    <td>{{ (currentPage - 1) * perPage + idx + 1 }}</td>
+                    <td>{{ row.inventory?.item?.name || '-' }}</td>
+                    <td>{{ row.inventory?.inventory_number || '-' }}</td>
+                    <td>{{ row.responsible_person?.name ?? '-' }}</td>
+                    <td>{{ formatDate(row.inspection_date) }}</td>
+                    <td>
+                      <span :class="badgeClass(row.status)">
+                        {{ statusLabel[row.status] || row.status }}
+                      </span>
+                    </td>
+                    <td>
+                      <router-link :to="`/maintenance/${row.id}`" class="text-muted mr-2">
+                        <i class="fas fa-eye"></i>
+                      </router-link>
+                      <router-link
+                        v-if="canEdit(row)"
+                        :to="`/maintenance/edit/${row.id}`"
+                        class="text-muted"
+                      >
+                        <i class="fas fa-edit"></i>
+                      </router-link>
+                      <button
+                        v-if="row.status === 'cancelled' && (counter.isAdmin || counter.isHead)"
+                        class="btn btn-sm btn-link text-danger"
+                        @click="confirmDelete(row.id)"
+                      >
+                        <i class="fas fa-trash"></i>
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <!-- PAGINATION -->
+              <nav v-if="lastPage > 1">
+                <ul class="pagination justify-content-center">
+                  <li class="page-item" :class="{ disabled: currentPage === 1 }">
+                    <a class="page-link" href="#" @click.prevent="prevPage">Previous</a>
+                  </li>
+
+                  <template v-if="windowStart > 1">
+                    <li class="page-item">
+                      <a class="page-link" href="#" @click.prevent="goPage(1)">1</a>
+                    </li>
+                    <li v-if="windowStart > 2" class="page-item disabled">
+                      <span class="page-link">...</span>
+                    </li>
+                  </template>
+
+                  <li
+                    v-for="p in visiblePages"
+                    :key="p"
+                    class="page-item"
+                    :class="{ active: p === currentPage }"
+                  >
+                    <a class="page-link" href="#" @click.prevent="goPage(p)">{{ p }}</a>
+                  </li>
+
+                  <template v-if="windowEnd < lastPage">
+                    <li v-if="windowEnd < lastPage - 1" class="page-item disabled">
+                      <span class="page-link">...</span>
+                    </li>
+                    <li class="page-item">
+                      <a class="page-link" href="#" @click.prevent="goPage(lastPage)">
+                        {{ lastPage }}
+                      </a>
+                    </li>
+                  </template>
+
+                  <li class="page-item" :class="{ disabled: currentPage === lastPage }">
+                    <a class="page-link" href="#" @click.prevent="nextPage">Next</a>
+                  </li>
+                </ul>
+              </nav>
+            </div>
           </div>
         </div>
       </div>
@@ -94,37 +202,45 @@
 </template>
 
 <script setup>
-import { onMounted, computed } from 'vue';
+import { ref, reactive, computed, onMounted } from 'vue';
+import axios from 'axios';
 import { useCounterStore } from '@/stores/counter';
+
 const counter = useCounterStore();
 
-const userId   = computed(() => counter.userId);
-const userRole = computed(() => counter.userRole);
-const userDiv  = computed(() => counter.userDivisi);
+/* ---------- state ---------- */
+const items     = ref([]);
+const loading   = ref(false);
+const pjOptions = ref([]);
 
-/* 1. Filter status aktif (on_progress / handled) + hak akses */
-const filteredList = computed(() => {
-  let list = counter.maintenanceHistory.filter(
-    m => !['reported', 'done', 'cancelled'].includes(m.status)
-  );
-
-  /* 2. Hak akses per role (urutan penting!) */
-  if (userRole.value === 'karyawan' && userDiv.value === 'Umum') {
-    // a) Karyawan Umum → cuma yang dia kerjakan
-    list = list.filter(m => m.user_id === userId.value);
-  } else if (userRole.value === 'karyawan' && userDiv.value !== 'Umum') {
-    // b) Karyawan biasa & pengawas ruangan
-    list = list.filter(
-      m =>
-        m.creator_id === userId.value ||                 // dia yang lapor
-        m.inventory?.room?.pj_lokasi_id === userId.value // atau dia pengawas ruangannya
-    );
-  }
-  // c) admin & head langsung lewat (tidak ada filter)
-
-  return list;
+const filters = reactive({
+  search  : '',
+  dateFrom: '',
+  dateTo  : '',
+  pjId    : '',
 });
 
+const pagination = reactive({
+  currentPage: 1,
+  perPage    : 10,
+  total      : 0,
+});
+
+/* ---------- computed ---------- */
+const currentPage  = computed(() => pagination.currentPage);
+const perPage      = computed(() => pagination.perPage);
+const lastPage     = computed(() => Math.max(1, Math.ceil(pagination.total / perPage)));
+
+const windowSize   = 2;
+const windowStart  = computed(() => Math.max(1, currentPage.value - windowSize));
+const windowEnd    = computed(() => Math.min(lastPage.value, currentPage.value + windowSize));
+const visiblePages = computed(() => {
+  const pages = [];
+  for (let i = windowStart.value; i <= windowEnd.value; i++) pages.push(i);
+  return pages;
+});
+
+/* ---------- helpers ---------- */
 const badgeClass = (status) => ({
   reported   : 'badge-danger',
   on_progress: 'badge-warning',
@@ -133,38 +249,129 @@ const badgeClass = (status) => ({
   cancelled  : 'badge-secondary',
 }[status] || 'badge-light');
 
+const statusLabel = {
+  reported   : 'Dilaporkan',
+  on_progress: 'Dalam Proses',
+  handled    : 'Ditangani',
+  done       : 'Selesai',
+  cancelled  : 'Dibatalkan',
+};
+
 const formatDate = (date) =>
-  !date
-    ? '-'
-    : new Date(date).toLocaleDateString('id-ID', {
+  date
+    ? new Date(date).toLocaleDateString('id-ID', {
         year: 'numeric',
         month: 'long',
         day: 'numeric',
-      });
+      })
+    : '-';
 
-/* 3. Hak edit sesuai rule final */
-const canEdit = (item) => {
-  const role   = userRole.value;
-  const divisi = userDiv.value;
-  const isPj   = item.user_id === userId.value;
-  const isSuper = item.inventory?.room?.pj_lokasi_id === userId.value;
+/* ---------- methods ---------- */
+const fetchPjOptions = async () => {
+  if (!(counter.isAdmin || counter.isHead)) return;
+  await counter.fetchUsersList('Umum');
+  pjOptions.value = counter.usersList;
+};
+
+const fetchItems = async () => {
+  loading.value = true;
+  try {
+    const params = new URLSearchParams();
+    params.set('per_page', pagination.perPage);
+    params.set('page', pagination.currentPage);
+
+    if (filters.search)   params.set('search', filters.search);
+    if (filters.dateFrom) params.set('date_from', filters.dateFrom);
+    if (filters.dateTo)   params.set('date_to', filters.dateTo);
+    if (filters.pjId)     params.set('pj_id', filters.pjId);
+
+    const { data } = await axios.get(
+      `${counter.API_BASE_URL}/maintenance/active-datatable?${params}`,
+      { headers: { Authorization: `Bearer ${counter.token}` } }
+    );
+
+    items.value      = data.data;
+    pagination.total = Number(data.recordsFiltered);
+    /* pastikan loading benar-benar mati */
+    loading.value = false;
+  } catch (e) {
+    console.error(e);
+    loading.value = false;
+  }
+};
+
+const debounceSearch = (() => {
+  let t;
+  return () => {
+    clearTimeout(t);
+    t = setTimeout(reloadTable, 400);
+  };
+})();
+
+const reloadTable = () => {
+  pagination.currentPage = 1;
+  fetchItems();
+};
+
+const resetFilter = () => {
+  filters.search   = '';
+  filters.dateFrom = '';
+  filters.dateTo   = '';
+  filters.pjId     = '';
+  reloadTable();
+};
+
+const prevPage = () => {
+  if (pagination.currentPage > 1) {
+    pagination.currentPage--;
+    fetchItems();
+  }
+};
+
+const nextPage = () => {
+  if (pagination.currentPage < lastPage.value) {
+    pagination.currentPage++;
+    fetchItems();
+  }
+};
+
+const goPage = (p) => {
+  pagination.currentPage = p;
+  fetchItems();
+};
+
+const confirmDelete = async (id) => {
+  if (confirm('Yakin ingin menghapus maintenance yang dibatalkan ini?')) {
+    try {
+      await counter.deleteMaintenance(id);
+      reloadTable();
+    } catch (e) {
+      alert('Gagal menghapus: ' + e.message);
+    }
+  }
+};
+function canEdit(item) {
+  const role   = counter.userRole;
+  const divisi = counter.userDivisi;
+  const userId = counter.userId;
+
+  const isPj   = item.user_id === userId;
+  const isSuper = item.inventory?.room?.pj_lokasi_id === userId;
 
   switch (item.status) {
     case 'reported':
       return ['admin', 'head'].includes(role);
-
     case 'on_progress':
-      return (
-        (role === 'karyawan' && divisi === 'Umum' && isPj) || isSuper
-      );
+      return (role === 'karyawan' && divisi === 'Umum' && isPj) || isSuper;
     case 'handled':
       return ['admin', 'head'].includes(role) || isSuper;
     default:
       return false;
   }
-};
-
+}
+/* ---------- lifecycle ---------- */
 onMounted(() => {
-  counter.fetchMaintenanceHistory();
+  fetchItems();
+  if (counter.isAdmin || counter.isHead) fetchPjOptions();
 });
 </script>
