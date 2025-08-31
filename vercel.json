@@ -2,23 +2,15 @@
   "version": 2,
   "functions": {
     "api/index.php": {
-      "runtime": "vercel-php@0.6.0"
+      "runtime": "vercel-php@0.7.4"
     }
   },
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/api/index.php" }
+  "routes": [
+    { "src": "/build/(.*)", "dest": "/build/$1" },
+
+    { "src": "/(.*)", "dest": "/api/index.php" }
   ],
   "framework": null,
-"headers": [
-  {
-    "source": "/api/(.*)",
-    "headers": [
-      { "key": "Access-Control-Allow-Origin", "value": "https://inventaris-laravel12-4ou3iioet-herus-projects.vercel.app" },
-      { "key": "Access-Control-Allow-Methods", "value": "GET, POST, PUT, PATCH, DELETE, OPTIONS" },
-      { "key": "Access-Control-Allow-Headers", "value": "Content-Type, Authorization" }
-    ]
-  }
-],
   "env": {
     "APP_NAME": "Laravel",
     "APP_ENV": "production",
