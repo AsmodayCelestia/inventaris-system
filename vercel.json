@@ -5,11 +5,12 @@
       "runtime": "vercel-php@0.7.4"
     }
   },
-  "rewrites": [
-    { "source": "/build/(.*)", "destination": "/build/$1" },
-    { "source": "/(.*)", "destination": "/api/index.php" }
+  "routes": [
+    { "src": "/build/(.*)", "dest": "/build/$1" },
+    { "src": "/(.*)", "dest": "/api/index.php" }
   ],
-  "headers": [
+  "framework": null,
+    "headers": [
     {
       "source": "/api/(.*)",
       "headers": [
@@ -24,8 +25,8 @@
     "APP_ENV": "production",
     "APP_DEBUG": "false",
     "APP_KEY": "base64:62QlpS4no+dALTswamt9pOsnN1rNzscOmE0gYff3Ee0=",
-    "APP_URL": "https://inventaris-laravel12.vercel.app",
-    "ASSET_URL": "https://inventaris-laravel12.vercel.app",
+"APP_URL": "https://inventaris-laravel12.vercel.app",
+"ASSET_URL": "https://inventaris-laravel12.vercel.app",
     "CLOUDINARY_URL": "cloudinary://188563735557777:FCQM3_LWaifR6WJcx-o1y3rMoZ8@dvc6sy7wn",
     "DB_CONNECTION": "pgsql",
     "DB_HOST": "aws-0-ap-southeast-1.pooler.supabase.com",
@@ -38,7 +39,7 @@
     "SESSION_ENCRYPT": "false",
     "SESSION_PATH": "/",
     "SESSION_DOMAIN": "",
-    "VITE_API_BASE_URL": "https://inventaris-laravel12.vercel.app/api",
+"VITE_API_BASE_URL": "https://inventaris-laravel12.vercel.app/api",
     "LOG_CHANNEL": "stderr",
     "LOG_LEVEL": "debug",
     "CACHE_DRIVER": "array",
