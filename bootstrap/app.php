@@ -17,16 +17,6 @@ return Application::configure(basePath: dirname(__DIR__))
             'role' => \App\Http\Middleware\CheckUserRole::class,
             'auth:sanctum' => \Laravel\Sanctum\Http\Middleware\AuthenticateWithApiTokens::class,
         ]);
-            $middleware->statefulApi();   // hanya perlu kalau pakai Sanctum cookie
-    $middleware->cors([
-        'allowed_origins' => [
-            'https://inventaris-laravel12-ko0da0841-herus-projects.vercel.app',
-        ],
-        'allowed_methods' => ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-        'allowed_headers' => ['Content-Type', 'Authorization', 'X-Requested-With'],
-        'supports_credentials' => false, // ubah jadi true kalau pakai cookie / Sanctum SPA
-    ]);
-
         $middleware->api(prepend: [
             \Illuminate\Http\Middleware\HandleCors::class,
         ]);
