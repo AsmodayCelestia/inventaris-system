@@ -53,6 +53,7 @@
     <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
     
     <!-- Vite (untuk memuat bundle Vue.js kamu) -->
-    @vite('resources/js/app.js')
+     <link rel="stylesheet" href="{{ asset('build/assets/app-ClLkAh38.css') }}">
+    <!-- @vite('resources/js/app.js') -->
 </body>
 </html>
