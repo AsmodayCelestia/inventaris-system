@@ -10,6 +10,16 @@
     { "src": "/(.*)", "dest": "/api/index.php" }
   ],
   "framework": null,
+    "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin", "value": "https://inventaris-laravel12-4ou3iioet-herus-projects.vercel.app" },
+        { "key": "Access-Control-Allow-Methods", "value": "GET, POST, PUT, PATCH, DELETE, OPTIONS" },
+        { "key": "Access-Control-Allow-Headers", "value": "Content-Type, Authorization" }
+      ]
+    }
+  ],
   "env": {
     "APP_NAME": "Laravel",
     "APP_ENV": "production",
