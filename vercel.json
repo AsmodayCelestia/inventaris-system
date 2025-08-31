@@ -9,7 +9,7 @@
     { "source": "/build/(.*)", "destination": "/build/$1" },
     { "source": "/(.*)", "destination": "/api/index.php" }
   ],
-  "framework": null,
+  "framework": "",
   "headers": [
     {
       "source": "/api/(.*)",
