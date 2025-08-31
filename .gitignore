@@ -28,3 +28,5 @@ topologi_klinik_lengkap.drawio
 .vercel
 storage/framework/views
 storage/logs/*.log
+storage/framework/views
+storage/logs/*.log
