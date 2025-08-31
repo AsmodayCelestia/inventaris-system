@@ -6,7 +6,9 @@
         "dev": "vite",
         "build:prod": "vite build --mode production",
         "start:dev": "bash scripts/dev.sh",
-        "start:prod": "bash scripts/prod.sh"
+        "start:prod": "bash scripts/prod.sh",
+        "deploy": "npm run build:prod && git add . && git diff --cached --quiet || (git commit -m '🚀 build & deploy' && git push origin vercel)"
+
     },
     "devDependencies": {
         "autoprefixer": "^10.4.21",
