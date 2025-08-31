@@ -27,7 +27,7 @@
     "SESSION_LIFETIME": "120",
     "SESSION_ENCRYPT": "false",
     "SESSION_PATH": "/",
-    "SESSION_DOMAIN": null,
+    "SESSION_DOMAIN": "",
     "VITE_API_BASE_URL": "https://inventaris-p3sqki595-herus-projects.vercel.app/api",
     "LOG_CHANNEL": "stderr",
     "LOG_LEVEL": "debug",
