@@ -1,0 +1,36 @@
+{
+  "version": 2,
+  "functions": {
+    "api/index.php": {
+      "runtime": "vercel-php@0.7.4"
+    }
+  },
+  "routes": [
+    { "src": "/(.*)", "dest": "/api/index.php" }
+  ],
+  "buildCommand": "composer install --no-dev --optimize-autoloader",
+  "env": {
+    "APP_NAME": "Laravel",
+    "APP_ENV": "production",
+    "APP_DEBUG": "false",
+    "APP_KEY": "base64:62QlpS4no+dALTswamt9pOsnN1rNzscOmE0gYff3Ee0=",
+    "APP_URL": "https://inventaris-p3sqki595-herus-projects.vercel.app",
+    "ASSET_URL": "https://inventaris-p3sqki595-herus-projects.vercel.app",
+    "CLOUDINARY_URL": "cloudinary://188563735557777:FCQM3_LWaifR6WJcx-o1y3rMoZ8@dvc6sy7wn",
+    "DB_CONNECTION": "pgsql",
+    "DB_HOST": "aws-0-ap-southeast-1.pooler.supabase.com",
+    "DB_PORT": "5432",
+    "DB_DATABASE": "postgres",
+    "DB_USERNAME": "postgres.zhmhoquounzzcufdlbwm",
+    "DB_PASSWORD": "kUsshhiRvS6WH2PO",
+    "SESSION_DRIVER": "array",
+    "SESSION_LIFETIME": "120",
+    "SESSION_ENCRYPT": "false",
+    "SESSION_PATH": "/",
+    "SESSION_DOMAIN": null,
+    "VITE_API_BASE_URL": "https://inventaris-p3sqki595-herus-projects.vercel.app/api",
+    "LOG_CHANNEL": "stderr",
+    "LOG_LEVEL": "debug",
+    "CACHE_DRIVER": "array"
+  }
+}
