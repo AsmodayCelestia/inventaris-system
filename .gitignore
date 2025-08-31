@@ -26,3 +26,5 @@ Thumbs.db
 topologi_klinik_lengkap.drawio
 .env.vercel
 .vercel
+storage/framework/views
+storage/logs/*.log
