@@ -36,7 +36,8 @@ export default defineConfig(({ mode }) => {
             },
         },
         base: mode === 'production'
-            ? env.ASSET_URL ? new URL(env.ASSET_URL).origin + '/' : '/'
-            : '/',
+            ? (env.ASSET_URL || '/') 
+            : '/',                  
+
     };
 });
