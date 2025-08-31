@@ -32,6 +32,12 @@
     "VITE_API_BASE_URL": "https://inventaris-p3sqki595-herus-projects.vercel.app/api",
     "LOG_CHANNEL": "stderr",
     "LOG_LEVEL": "debug",
-    "CACHE_DRIVER": "array"
+    "CACHE_DRIVER": "array",
+    "VIEW_COMPILED_PATH": "/tmp/views",
+    "APP_CONFIG_CACHE": "/tmp/config.php",
+    "APP_EVENTS_CACHE": "/tmp/events.php",
+    "APP_PACKAGES_CACHE": "/tmp/packages.php",
+    "APP_ROUTES_CACHE": "/tmp/routes.php",
+    "APP_SERVICES_CACHE": "/tmp/services.php"
   }
 }
