@@ -109,7 +109,7 @@ const handleLogin = async () => {
 .login-wrapper {
     position: relative;
     min-height: 100vh;
-    background: url('/images/login-bg.jpg') no-repeat center center;
+    background: url('/images/login-bg.webp') no-repeat center center;
     background-size: cover;
     display: flex;
     justify-content: flex-end;
