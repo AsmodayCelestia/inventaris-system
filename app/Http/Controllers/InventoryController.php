@@ -504,44 +504,30 @@ private function ensureQrGenerated(Inventory $inventory): void
     }
 
     try {
-        // parameter styling sama dengan route /qr-preview
         $detailUrl   = config('app.short_url') . '/' . $inventory->id;
         $inventoryNo = $inventory->inventory_number;
-        $logo        = 'android-chrome-192x192.png';
-        $logoPath    = public_path($logo);
-        $logoPath    = file_exists($logoPath) ? $logoPath : null;
 
-        $fontPath = base_path('vendor/endroid/qr-code/assets/noto_sans.otf');
-        $font     = new \Endroid\QrCode\Label\Font\Font($fontPath, 12);
-
-        $qrResult = \Endroid\QrCode\Builder\Builder::create()
+        $result = \Endroid\QrCode\Builder\Builder::create()
             ->writer(new \Endroid\QrCode\Writer\PngWriter())
             ->data($detailUrl)
             ->size(260)
             ->margin(20)
-            ->foregroundColor(new \Endroid\QrCode\Color\Color(0, 0, 0))   // hitam
-            ->backgroundColor(new \Endroid\QrCode\Color\Color(255, 255, 255))
-            ->logoPath($logoPath)
-            ->logoResizeToWidth(50)
             ->labelText($inventoryNo)
-            ->labelFont($font)
             ->build();
 
-        // simpan ke Cloudinary seperti sebelumnya
-        $qrFile = 'qrcodes/inventories/' . $inventoryNo . '-' . Str::random(10) . '.png';
-        Storage::disk('public')->put($qrFile, $qrResult->getString());
+        $uploaded = \CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary::upload(
+            'data:image/png;base64,' . base64_encode($result->getString()),
+            [
+                'folder'    => 'inventories_qrcodes',
+                'public_id' => 'qr-' . \Illuminate\Support\Str::slug($inventoryNo) . '-' . \Illuminate\Support\Str::random(8),
+            ]
+        );
 
-        $cloud = Cloudinary::upload(storage_path('app/public/' . $qrFile), [
-            'folder'    => 'inventories_qrcodes',
-            'public_id' => 'qr-' . Str::slug($inventoryNo) . '-' . Str::random(8),
-        ]);
-        Storage::disk('public')->delete($qrFile);
-
-        $inventory->qr_code_path = $cloud->getSecurePath();
+        $inventory->qr_code_path = $uploaded->getSecurePath();
         $inventory->saveQuietly();
 
-    } catch (\Exception $e) {
-        \Log::error('QR helper error: ' . $e->getMessage());
+    } catch (\Throwable $e) {
+        \Log::error('QR Cloudinary upload error: ' . $e->getMessage());
     }
 }
 
