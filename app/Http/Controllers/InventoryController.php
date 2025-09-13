@@ -136,7 +136,8 @@ if (!empty($floorIds)) {
 
 public function index(Request $request)
 {
-    $query = Inventory::with(['item', 'room', 'unit']);
+    $query = Inventory::with(['item', 'room', 'unit'])
+                        ->orderBy('inventories.id', 'asc');
 
     if ($request->has('inventory_item_id')) {
         $query->where('inventory_item_id', $request->inventory_item_id);
